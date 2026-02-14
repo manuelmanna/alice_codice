@@ -18,23 +18,37 @@ export async function loginOperatore(formData: FormData) {
         return { error: error.message };
     }
 
+    // Verifica che l'utente abbia il ruolo operatore
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', authUser.id)
+            .single();
+
+        if (profile?.role !== 'operatore') {
+            await supabase.auth.signOut();
+            return { error: 'Questo account non è registrato come operatore.' };
+        }
+    }
+
     // Dopo il login, verifica che il record operatore esista
     // Se manca (trigger fallito), lo crea via RPC
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
+    if (authUser) {
         const { data: operatore } = await supabase
             .from('operatori')
             .select('id')
-            .eq('profile_id', user.id)
+            .eq('profile_id', authUser.id)
             .single();
 
-        if (!operatore && user.user_metadata?.role === 'operatore') {
-            const meta = user.user_metadata;
+        if (!operatore && authUser.user_metadata?.role === 'operatore') {
+            const meta = authUser.user_metadata;
             await supabase.rpc('crea_profilo_operatore', {
-                p_profile_id: user.id,
+                p_profile_id: authUser.id,
                 p_codice_operatore: meta.codice_operatore || generateCodiceOperatore(),
-                p_nome_completo: meta.nome_completo || user.email,
-                p_email: user.email,
+                p_nome_completo: meta.nome_completo || authUser.email,
+                p_email: authUser.email,
                 p_struttura_sanitaria: meta.struttura_sanitaria || null,
                 p_telefono: meta.telefono || null,
             });
