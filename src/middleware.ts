@@ -35,6 +35,15 @@ export async function middleware(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
+    // ── Home ──
+    // Se autenticato e va alla home, redirect in base al ruolo
+    if (user && pathname === '/') {
+        const url = request.nextUrl.clone();
+        const role = user.user_metadata?.role;
+        url.pathname = role === 'paziente' ? '/paziente/home' : '/operatore/dashboard';
+        return NextResponse.redirect(url);
+    }
+
     // ── Operatore ──
     // Proteggi dashboard operatore
     if (!user && pathname.startsWith('/operatore/dashboard')) {
@@ -80,5 +89,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/operatore/:path*', '/paziente/:path*'],
+    matcher: ['/', '/operatore/:path*', '/paziente/:path*'],
 };

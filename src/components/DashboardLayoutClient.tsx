@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { logoutOperatore } from '../actions';
-import styles from './dashboard.module.css';
+import { logoutOperatore } from '../app/operatore/actions';
+import styles from '../app/operatore/dashboard/dashboard.module.css';
 
 interface Operatore {
     id: string;

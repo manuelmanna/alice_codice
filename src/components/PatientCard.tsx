@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import styles from './dashboard.module.css';
-import type { PazienteConMetriche } from './page';
+import styles from '../app/operatore/dashboard/dashboard.module.css';
+import type { PazienteConMetriche } from '../app/operatore/dashboard/page';
 
 function getStatusEmoji(stato: string) {
     switch (stato) {

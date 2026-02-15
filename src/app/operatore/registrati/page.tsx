@@ -11,8 +11,30 @@ export default function RegistrazioneOperatorePage() {
     const [showPassword, setShowPassword] = useState(false);
 
     async function handleSubmit(formData: FormData) {
-        setLoading(true);
         setError(null);
+        const nome = formData.get('nome_completo') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const conferma = formData.get('conferma_password') as string;
+
+        if (!nome || nome.trim().length < 2) {
+            setError('Inserisci il tuo nome completo.');
+            return;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Inserisci un indirizzo email valido.');
+            return;
+        }
+        if (!password || password.length < 6) {
+            setError('La password deve essere di almeno 6 caratteri.');
+            return;
+        }
+        if (password !== conferma) {
+            setError('Le password non coincidono.');
+            return;
+        }
+
+        setLoading(true);
         const result = await registraOperatore(formData);
         if (result?.error) {
             setError(result.error);

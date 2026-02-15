@@ -39,12 +39,17 @@ export async function aggiungiFarmaco(pazienteId: string, formData: FormData) {
 
     const nome = formData.get('nome') as string;
     const dosaggio = formData.get('dosaggio') as string;
-    const fascia = formData.get('fascia') as string;
     const orario = formData.get('orario') as string;
 
-    if (!nome || !dosaggio || !fascia || !orario) {
+    if (!nome || !dosaggio || !orario) {
         return { error: 'Tutti i campi sono obbligatori.' };
     }
+
+    // Auto-compute fascia from orario
+    const ora = parseInt(orario.split(':')[0], 10);
+    let fascia = 'sera';
+    if (ora >= 6 && ora < 12) fascia = 'mattina';
+    else if (ora >= 12 && ora < 18) fascia = 'pranzo';
 
     const { error } = await supabase
         .from('farmaci')

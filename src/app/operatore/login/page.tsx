@@ -11,8 +11,20 @@ export default function LoginOperatorePage() {
     const [showPassword, setShowPassword] = useState(false);
 
     async function handleSubmit(formData: FormData) {
-        setLoading(true);
         setError(null);
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Inserisci un indirizzo email valido.');
+            return;
+        }
+        if (!password || password.length < 6) {
+            setError('La password deve essere di almeno 6 caratteri.');
+            return;
+        }
+
+        setLoading(true);
         const result = await loginOperatore(formData);
         if (result?.error) {
             setError(result.error);
