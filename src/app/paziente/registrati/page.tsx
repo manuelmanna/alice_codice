@@ -62,7 +62,7 @@ export default function RegistrazionePazientePage() {
     }
 
     return (
-        <div className="paziente-auth-page">
+        <div className="paziente-auth-page theme-paziente">
             <div className={styles.container}>
                 <Link href="/" className="auth-back">
                     ← Indietro

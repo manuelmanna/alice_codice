@@ -99,7 +99,7 @@ export default function EserciziPage() {
 
     if (loading) {
         return (
-            <div className="paziente-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="paziente-page theme-paziente" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="spinner" /> Caricamento...
             </div>
         );
@@ -108,7 +108,7 @@ export default function EserciziPage() {
     // Schermata completamento
     if (view === 'done') {
         return (
-            <div className="success-screen" style={{ background: 'var(--paziente-green-light)' }}>
+            <div className="success-screen theme-paziente" style={{ background: 'var(--paziente-green-light)' }}>
                 <div className="success-card">
                     <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉</div>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '8px' }}>Bravo!</h2>
@@ -116,8 +116,7 @@ export default function EserciziPage() {
                         Hai completato l&apos;esercizio!
                     </p>
                     <button
-                        className="btn btn-paziente btn-lg"
-                        style={{ width: '100%' }}
+                        className="btn btn-paziente btn-lg btn-full"
                         onClick={() => { setView('list'); setCurrentExercise(null); }}
                     >
                         💪 Altri Esercizi
@@ -133,7 +132,7 @@ export default function EserciziPage() {
         const totalSteps = steps.length;
 
         return (
-            <div className="paziente-page" style={{ background: 'var(--paziente-green-light)' }}>
+            <div className="paziente-page theme-paziente" style={{ background: 'var(--paziente-green-light)' }}>
                 <div style={{ maxWidth: '480px', margin: '0 auto' }}>
                     <button
                         className="auth-back"
@@ -154,8 +153,7 @@ export default function EserciziPage() {
                         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                             <p style={{ color: '#64748B', marginBottom: '24px' }}>Nessuno step definito per questo esercizio.</p>
                             <button
-                                className="btn btn-paziente btn-lg"
-                                style={{ width: '100%' }}
+                                className="btn btn-paziente btn-lg btn-full"
                                 onClick={completeExercise}
                             >
                                 Fatto ✓

@@ -13,10 +13,10 @@ export default function LandingPage() {
         </p>
 
         <div className={styles.buttons}>
-          <Link href="/operatore/login" className="btn btn-primary btn-lg" style={{ width: '100%' }}>
+          <Link href="/operatore/login" className="btn btn-primary btn-lg btn-full">
             🔒 Accesso Operatore
           </Link>
-          <Link href="/paziente/login" className="btn btn-success btn-lg" style={{ width: '100%' }}>
+          <Link href="/paziente/login" className="btn btn-success btn-lg btn-full">
             👋 Accesso Paziente
           </Link>
         </div>

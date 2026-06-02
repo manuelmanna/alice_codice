@@ -96,9 +96,8 @@ export default function LoginOperatorePage() {
 
                         <button
                             type="submit"
-                            className="btn btn-primary btn-lg"
+                            className="btn btn-primary btn-lg btn-full mt-8"
                             disabled={loading}
-                            style={{ width: '100%', marginTop: '8px' }}
                         >
                             {loading ? (
                                 <>

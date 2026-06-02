@@ -22,7 +22,7 @@ export default function HomePazientePage() {
     }
 
     return (
-        <div className="paziente-page" style={{ position: 'relative' }}>
+        <div className="paziente-page theme-paziente" style={{ position: 'relative' }}>
             <form onSubmit={async (e) => { e.preventDefault(); await handleLogout(); }}>
                 <button type="submit" className={styles.logoutBtn}>
                     🚪 Esci

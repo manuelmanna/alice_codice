@@ -109,14 +109,14 @@ export default function FarmaciPage() {
 
     if (loading) {
         return (
-            <div className="paziente-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="paziente-page theme-paziente" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="spinner" /> Caricamento...
             </div>
         );
     }
 
     return (
-        <div className="paziente-page" style={{ background: '#FFF0F6' }}>
+        <div className="paziente-page theme-paziente" style={{ background: '#FFF0F6' }}>
             <div style={{ maxWidth: '540px', margin: '0 auto' }}>
                 <Link href="/paziente/home" className="auth-back" style={{ marginBottom: '16px', display: 'inline-block' }}>
                     ← Torna alla Home

@@ -4,6 +4,40 @@
     flex-direction: column;
 }
 
+.missingProfilePage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background);
+    padding: 20px;
+}
+
+.missingProfileCard {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.missingProfileIcon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.missingProfileTitle {
+    margin-bottom: 8px;
+}
+
+.missingProfileDescription {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
 /* Header */
 .header {
     background: var(--surface);

@@ -93,7 +93,7 @@ export default function UmorePage() {
 
     if (loading) {
         return (
-            <div className="paziente-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="paziente-page theme-paziente" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="spinner" /> Caricamento...
             </div>
         );
@@ -102,7 +102,7 @@ export default function UmorePage() {
     // Schermata di conferma
     if (submitted) {
         return (
-            <div className="success-screen" style={{ background: 'var(--paziente-green-light)' }}>
+            <div className="success-screen theme-paziente" style={{ background: 'var(--paziente-green-light)' }}>
                 <div className="success-card">
                     <div className="success-icon">✓</div>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '8px' }}>Grazie!</h2>
@@ -111,8 +111,7 @@ export default function UmorePage() {
                     </p>
                     <Link
                         href="/paziente/home"
-                        className="btn btn-paziente btn-lg"
-                        style={{ width: '100%' }}
+                        className="btn btn-paziente btn-lg btn-full"
                     >
                         ← Torna alla Home
                     </Link>
@@ -122,7 +121,7 @@ export default function UmorePage() {
     }
 
     return (
-        <div className="paziente-page" style={{ background: '#FFF7ED' }}>
+        <div className="paziente-page theme-paziente" style={{ background: '#FFF7ED' }}>
             <div style={{ maxWidth: '420px', margin: '0 auto' }}>
                 <Link href="/paziente/home" className="auth-back" style={{ marginBottom: '16px', display: 'inline-block' }}>
                     ← Torna alla Home
@@ -151,8 +150,7 @@ export default function UmorePage() {
                 </div>
 
                 <button
-                    className="btn btn-paziente btn-lg"
-                    style={{ width: '100%' }}
+                    className="btn btn-paziente btn-lg btn-full"
                     disabled={!selected || saving}
                     onClick={handleSubmit}
                 >

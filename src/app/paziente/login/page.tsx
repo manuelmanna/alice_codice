@@ -25,7 +25,7 @@ export default function LoginPazientePage() {
     }
 
     return (
-        <div className="paziente-auth-page">
+        <div className="paziente-auth-page theme-paziente">
             <div className={styles.container}>
                 <Link href="/" className="auth-back">
                     ← Indietro
@@ -88,9 +88,8 @@ export default function LoginPazientePage() {
 
                         <button
                             type="submit"
-                            className="btn btn-paziente btn-lg"
+                            className="btn btn-paziente btn-lg btn-full mt-8"
                             disabled={loading}
-                            style={{ width: '100%', marginTop: '8px' }}
                         >
                             {loading ? (
                                 <>
