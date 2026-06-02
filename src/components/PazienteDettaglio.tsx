@@ -73,6 +73,9 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
   const [showEsercizioModal, setShowEsercizioModal] = useState(false);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [esercizioSteps, setEsercizioSteps] = useState<string[]>(['']);
+  const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const umoreEmoji: Record<string, string> = { felice: '😊', normale: '😐', triste: '😢' };
 
@@ -147,6 +150,60 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
     return styles.metricSuccess;
   }
 
+  async function handleGenerateSuggestion() {
+    setAiLoading(true);
+    setAiError(null);
+    setAiSuggestion(null);
+
+    // Prendo l'ultimo umore registrato, se esiste.
+    // Se non ci sono dati sull'umore mando null.
+    const ultimoUmore =
+      metriche.umoreLog.length > 0
+        ? metriche.umoreLog[metriche.umoreLog.length - 1].valore
+        : null;
+
+    try {
+      // Chiamo la API route creata in Next.
+      // Non chiamo Groq direttamente dal browser, cosi' la API key resta segreta.
+      const response = await fetch('/api/ai/suggerimento-operatore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // Mando solo dati utili e sintetici, non dati personali inutili.
+          eta: paziente.eta,
+          stato: paziente.stato,
+          aderenzaFarmaci: metriche.aderenzaFarmaci,
+          complianceEsercizi: metriche.complianceEsercizi,
+          ultimoUmore,
+          farmaciAttivi: farmaci.length,
+          eserciziAttivi: esercizi.length,
+        }),
+      });
+
+      // La route ritorna sempre JSON:
+      // - { text: "..." } se tutto va bene
+      // - { error: "..." } se qualcosa non va
+      const data = (await response.json()) as { text?: string; error?: string };
+
+      if (!response.ok) {
+        setAiError(data.error || 'Impossibile generare il suggerimento.');
+        return;
+      }
+
+      if (!data.text) {
+        setAiError('Il modello non ha restituito testo.');
+        return;
+      }
+
+      // Qui mostro direttamente la risposta completa.
+      setAiSuggestion(data.text);
+    } catch {
+      setAiError('Errore di connessione al servizio AI.');
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
   return (
     <div className={styles.page}>
       {/* Header */}
@@ -214,6 +271,35 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
               <div className={`${styles.metricBigValue} ${metricColor(metriche.complianceEsercizi)}`}>
                 {metriche.complianceEsercizi}%
               </div>
+            </div>
+          </div>
+
+          <div className={`card ${styles.section}`}>
+            <div className="card-header">
+              <h3 className="card-title">Suggerimento AI</h3>
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={handleGenerateSuggestion}
+                disabled={aiLoading}
+              >
+                {aiLoading ? (
+                  <><span className="spinner" /> Generando...</>
+                ) : (
+                  'Genera suggerimento'
+                )}
+              </button>
+            </div>
+            <div className={styles.aiSuggestionBody}>
+              {aiError ? (
+                <div className="alert alert-danger">{aiError}</div>
+              ) : aiSuggestion ? (
+                <p>{aiSuggestion}</p>
+              ) : (
+                <p className={styles.aiSuggestionEmpty}>
+                  Genera un breve suggerimento operativo basato su aderenza, esercizi e umore recente.
+                </p>
+              )}
             </div>
           </div>
 

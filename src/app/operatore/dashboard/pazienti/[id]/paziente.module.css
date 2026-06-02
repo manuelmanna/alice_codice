@@ -112,6 +112,21 @@
   font-size: 14px;
 }
 
+.aiSuggestionBody {
+  padding: 18px 20px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.aiSuggestionBody p {
+  margin: 0;
+}
+
+.aiSuggestionEmpty {
+  color: var(--text-muted);
+}
+
 /* Attività recenti */
 .attivitaList {
   display: flex;
