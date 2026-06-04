@@ -1,11 +1,48 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import {
+  leggiNumeroOpzionale,
+  leggiTesto,
+  leggiTestoOpzionale,
+} from '@/lib/form';
 import { revalidatePath } from 'next/cache';
 
-// ============================================================
-// AGGIORNA DATI PAZIENTE
-// ============================================================
+type FasciaFarmaco = 'mattina' | 'pranzo' | 'sera';
+
+function calcolaFasciaDaOrario(orario: string): FasciaFarmaco {
+  const ora = Number.parseInt(orario.split(':')[0], 10);
+
+  if (ora >= 6 && ora < 12) return 'mattina';
+  if (ora >= 12 && ora < 18) return 'pranzo';
+  return 'sera';
+}
+
+function leggiStepEsercizio(esercizioId: string, formData: FormData) {
+  const steps: {
+    esercizio_id: string;
+    numero_step: number;
+    istruzione: string;
+  }[] = [];
+
+  let numeroStep = 1;
+
+  while (formData.get(`step_${numeroStep}`)) {
+    const istruzione = leggiTesto(formData, `step_${numeroStep}`).trim();
+
+    if (istruzione) {
+      steps.push({
+        esercizio_id: esercizioId,
+        numero_step: numeroStep,
+        istruzione,
+      });
+    }
+
+    numeroStep++;
+  }
+
+  return steps;
+}
 
 export async function aggiornaPaziente(pazienteId: string, formData: FormData) {
   const supabase = await createClient();
@@ -13,12 +50,15 @@ export async function aggiornaPaziente(pazienteId: string, formData: FormData) {
   const { error } = await supabase
     .from('pazienti')
     .update({
-      nome_completo: formData.get('nome_completo') as string,
-      eta: parseInt(formData.get('eta') as string) || null,
-      email: formData.get('email') as string || null,
-      telefono: formData.get('telefono') as string || null,
-      indirizzo: formData.get('indirizzo') as string || null,
-      contatto_emergenza: formData.get('contatto_emergenza') as string || null,
+      nome_completo: leggiTesto(formData, 'nome_completo'),
+      eta: leggiNumeroOpzionale(formData, 'eta') || null,
+      email: leggiTestoOpzionale(formData, 'email'),
+      telefono: leggiTestoOpzionale(formData, 'telefono'),
+      indirizzo: leggiTestoOpzionale(formData, 'indirizzo'),
+      contatto_emergenza: leggiTestoOpzionale(
+        formData,
+        'contatto_emergenza'
+      ),
     })
     .eq('id', pazienteId);
 
@@ -30,26 +70,16 @@ export async function aggiornaPaziente(pazienteId: string, formData: FormData) {
   return { success: true };
 }
 
-// ============================================================
-// FARMACI
-// ============================================================
-
 export async function aggiungiFarmaco(pazienteId: string, formData: FormData) {
   const supabase = await createClient();
 
-  const nome = formData.get('nome') as string;
-  const dosaggio = formData.get('dosaggio') as string;
-  const orario = formData.get('orario') as string;
+  const nome = leggiTesto(formData, 'nome');
+  const dosaggio = leggiTesto(formData, 'dosaggio');
+  const orario = leggiTesto(formData, 'orario');
 
   if (!nome || !dosaggio || !orario) {
     return { error: 'Tutti i campi sono obbligatori.' };
   }
-
-  // Auto-compute fascia from orario
-  const ora = parseInt(orario.split(':')[0], 10);
-  let fascia = 'sera';
-  if (ora >= 6 && ora < 12) fascia = 'mattina';
-  else if (ora >= 12 && ora < 18) fascia = 'pranzo';
 
   const { error } = await supabase
     .from('farmaci')
@@ -57,7 +87,7 @@ export async function aggiungiFarmaco(pazienteId: string, formData: FormData) {
       paziente_id: pazienteId,
       nome,
       dosaggio,
-      fascia,
+      fascia: calcolaFasciaDaOrario(orario),
       orario,
     });
 
@@ -65,7 +95,7 @@ export async function aggiungiFarmaco(pazienteId: string, formData: FormData) {
     return { error: error.message };
   }
 
-  // Svuota la cache e aggiorna i dati della pagina del paziente per mostrare le modifiche
+  // Aggiorna i dati mostrati nella pagina dopo la modifica.
   revalidatePath(`/operatore/dashboard/pazienti/${pazienteId}`);
   return { success: true };
 }
@@ -86,32 +116,28 @@ export async function eliminaFarmaco(farmacoId: string, pazienteId: string) {
   return { success: true };
 }
 
-// ============================================================
-// ESERCIZI
-// ============================================================
-
 export async function creaEsercizio(
   pazienteId: string,
   formData: FormData
 ) {
   const supabase = await createClient();
 
-  const nome = formData.get('nome_esercizio') as string;
-  const durataMinuti = parseInt(formData.get('durata_minuti') as string);
-  const frequenza = formData.get('frequenza') as string;
+  const nome = leggiTesto(formData, 'nome_esercizio');
+  const durataMinuti = leggiNumeroOpzionale(formData, 'durata_minuti');
+  const frequenza = leggiTestoOpzionale(formData, 'frequenza');
 
   if (!nome || !durataMinuti) {
     return { error: 'Nome e durata sono obbligatori.' };
   }
 
-  // 1. Crea l'esercizio
+  // Prima creo l'esercizio, poi uso il suo id per salvare gli step.
   const { data: esercizio, error: esError } = await supabase
     .from('esercizi')
     .insert({
       paziente_id: pazienteId,
       nome,
       durata_minuti: durataMinuti,
-      frequenza: frequenza || null,
+      frequenza,
     })
     .select()
     .single();
@@ -120,20 +146,7 @@ export async function creaEsercizio(
     return { error: esError?.message || 'Errore nella creazione.' };
   }
 
-  // 2. Crea gli step (li recupera dal formData con chiavi step_1, step_2, ecc.)
-  const steps: { esercizio_id: string; numero_step: number; istruzione: string }[] = [];
-  let i = 1;
-  while (formData.get(`step_${i}`)) {
-    const istruzione = formData.get(`step_${i}`) as string;
-    if (istruzione.trim()) {
-      steps.push({
-        esercizio_id: esercizio.id,
-        numero_step: i,
-        istruzione: istruzione.trim(),
-      });
-    }
-    i++;
-  }
+  const steps = leggiStepEsercizio(esercizio.id, formData);
 
   if (steps.length > 0) {
     const { error: stepError } = await supabase

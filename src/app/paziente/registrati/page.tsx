@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { registraPaziente } from '../actions';
 import { createClient } from '@/lib/supabase/client';
+import { emailValida, leggiTesto } from '@/lib/form';
 import styles from './registrati.module.css';
 
 interface Operatore {
@@ -46,8 +47,30 @@ export default function RegistrazionePazientePage() {
         setLoading(true);
         setError(null);
 
-        if (!formData.get('operatore_id')) {
+        const email = leggiTesto(formData, 'email');
+        const password = leggiTesto(formData, 'password');
+        const confermaPassword = leggiTesto(formData, 'conferma_password');
+
+        if (!leggiTesto(formData, 'operatore_id')) {
             setError('Devi selezionare un operatore.');
+            setLoading(false);
+            return;
+        }
+
+        if (!emailValida(email)) {
+            setError('Inserisci un indirizzo email valido.');
+            setLoading(false);
+            return;
+        }
+
+        if (password.length < 6) {
+            setError('La password deve essere di almeno 6 caratteri.');
+            setLoading(false);
+            return;
+        }
+
+        if (password !== confermaPassword) {
+            setError('Le password non coincidono.');
             setLoading(false);
             return;
         }

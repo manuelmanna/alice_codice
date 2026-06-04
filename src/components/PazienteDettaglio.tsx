@@ -39,14 +39,6 @@ interface UmoreEntry {
   valore: string;
 }
 
-interface AttivitaRecente {
-  id: string;
-  preso: boolean;
-  created_at: string;
-  farmaci: { nome: string } | null;
-  nome: string;
-}
-
 interface Metriche {
   aderenzaFarmaci: number; // Percentuale 0-100
   complianceEsercizi: number; // Percentuale 0-100
@@ -66,18 +58,69 @@ interface Paziente {
   stato: string;
 }
 
-export default function PazienteDettaglio({ paziente, farmaci, esercizi, metriche, tab, }: { paziente: Paziente; farmaci: Farmaco[]; esercizi: Esercizio[]; metriche: Metriche; tab: 'dettagli' | 'gestisci'; }) {
+interface PazienteDettaglioProps {
+  paziente: Paziente;
+  farmaci: Farmaco[];
+  esercizi: Esercizio[];
+  metriche: Metriche;
+  tab: 'dettagli' | 'gestisci';
+}
+
+const SAVE_MESSAGE_DURATION_MS = 3000;
+const SALVATAGGIO_OK = 'Dati salvati con successo.';
+
+const UMORE_EMOJI: Record<string, string> = {
+  felice: '😊',
+  normale: '😐',
+  triste: '😢',
+};
+
+function getUltimoUmore(umoreLog: UmoreEntry[]) {
+  if (umoreLog.length === 0) return null;
+
+  return umoreLog[umoreLog.length - 1].valore;
+}
+
+function getMetricClass(value: number) {
+  if (value < 50) return styles.metricDanger;
+  if (value < 75) return styles.metricWarning;
+  return styles.metricSuccess;
+}
+
+function getFarmaciLogIcon(presiCount: number, totaleCount: number) {
+  if (totaleCount === 0) return '➖';
+  if (presiCount === totaleCount) return '✅';
+  if (presiCount > 0) return '⚠️';
+  return '❌';
+}
+
+function getEserciziLogIcon(completatiCount: number, totaleCount: number) {
+  if (totaleCount === 0) return '➖';
+  if (completatiCount === totaleCount) return '✅';
+  if (completatiCount > 0) return '⚠️';
+  return '❌';
+}
+
+function getStepOrdinati(steps: EsercizioStep[]) {
+  // Copio l'array prima del sort, cosi' non modifico direttamente le props.
+  return [...steps].sort((a, b) => a.numero_step - b.numero_step);
+}
+
+export default function PazienteDettaglio({
+  paziente,
+  farmaci,
+  esercizi,
+  metriche,
+  tab,
+}: PazienteDettaglioProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<string | null>(null);
   const [showEsercizioModal, setShowEsercizioModal] = useState(false);
-  const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [esercizioSteps, setEsercizioSteps] = useState<string[]>(['']);
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
-
-  const umoreEmoji: Record<string, string> = { felice: '😊', normale: '😐', triste: '😢' };
 
   // ---- Salva dati paziente ----
   async function handleSavePaziente(formData: FormData) {
@@ -85,12 +128,12 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
     setSaveMsg(null);
     const result = await aggiornaPaziente(paziente.id, formData);
     if (result?.error) {
-      setSaveMsg('❌ ' + result.error);
+      setSaveMsg('Errore: ' + result.error);
     } else {
-      setSaveMsg('✅ Dati salvati con successo!');
+      setSaveMsg(SALVATAGGIO_OK);
     }
     setSaving(false);
-    setTimeout(() => setSaveMsg(null), 3000);
+    setTimeout(() => setSaveMsg(null), SAVE_MESSAGE_DURATION_MS);
   }
 
   // ---- Aggiungi farmaco ----
@@ -143,24 +186,12 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
     setEsercizioSteps(esercizioSteps.filter((_, i) => i !== index));
   }
 
-  // Helper per colore metriche
-  function metricColor(value: number) {
-    if (value < 50) return styles.metricDanger;
-    if (value < 75) return styles.metricWarning;
-    return styles.metricSuccess;
-  }
-
   async function handleGenerateSuggestion() {
     setAiLoading(true);
     setAiError(null);
     setAiSuggestion(null);
 
-    // Prendo l'ultimo umore registrato, se esiste.
-    // Se non ci sono dati sull'umore mando null.
-    const ultimoUmore =
-      metriche.umoreLog.length > 0
-        ? metriche.umoreLog[metriche.umoreLog.length - 1].valore
-        : null;
+    const ultimoUmore = getUltimoUmore(metriche.umoreLog);
 
     try {
       // Chiamo la API route creata in Next.
@@ -234,7 +265,7 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
       </div>
 
       {saveMsg && (
-        <div className={`alert ${saveMsg.startsWith('✅') ? 'alert-success' : 'alert-danger'}`} style={{ marginBottom: '20px' }}>
+        <div className={`alert ${saveMsg === SALVATAGGIO_OK ? 'alert-success' : 'alert-danger'}`} style={{ marginBottom: '20px' }}>
           {saveMsg}
         </div>
       )}
@@ -262,13 +293,13 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
           <div className={styles.metricsRow}>
             <div className={styles.metricCard}>
               <div className={styles.metricTitle}>Aderenza Farmaci</div>
-              <div className={`${styles.metricBigValue} ${metricColor(metriche.aderenzaFarmaci)}`}>
+              <div className={`${styles.metricBigValue} ${getMetricClass(metriche.aderenzaFarmaci)}`}>
                 {metriche.aderenzaFarmaci}%
               </div>
             </div>
             <div className={styles.metricCard}>
               <div className={styles.metricTitle}>Compliance Esercizi</div>
-              <div className={`${styles.metricBigValue} ${metricColor(metriche.complianceEsercizi)}`}>
+              <div className={`${styles.metricBigValue} ${getMetricClass(metriche.complianceEsercizi)}`}>
                 {metriche.complianceEsercizi}%
               </div>
             </div>
@@ -314,7 +345,7 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
               ) : (
                 metriche.umoreLog.map((u, i) => (
                   <div key={i} style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '28px' }}>{umoreEmoji[u.valore] || '❓'}</div>
+                    <div style={{ fontSize: '28px' }}>{UMORE_EMOJI[u.valore] || '❓'}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
                       {new Date(u.data).toLocaleDateString('it-IT', { weekday: 'short' })}
                     </div>
@@ -336,7 +367,7 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
                 metriche.farmaciLogSettimana.map((d, i) => (
                   <div key={i} style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '28px' }}>
-                      {d.totaleCount === 0 ? '➖' : d.presiCount === d.totaleCount ? '✅' : d.presiCount > 0 ? '⚠️' : '❌'}
+                      {getFarmaciLogIcon(d.presiCount, d.totaleCount)}
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
                       {new Date(d.data).toLocaleDateString('it-IT', { weekday: 'short' })}
@@ -362,7 +393,7 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
                 metriche.eserciziLogSettimana.map((d, i) => (
                   <div key={i} style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '28px' }}>
-                      {d.totaleCount === 0 ? '➖' : d.completatiCount === d.totaleCount ? '✅' : d.completatiCount > 0 ? '⚠️' : '❌'}
+                      {getEserciziLogIcon(d.completatiCount, d.totaleCount)}
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
                       {new Date(d.data).toLocaleDateString('it-IT', { weekday: 'short' })}
@@ -514,8 +545,7 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
                     {es.esercizi_step && es.esercizi_step.length > 0 && (
                       <div className={styles.stepList}>
                         <div className={styles.stepListTitle}>Passaggi:</div>
-                        {es.esercizi_step
-                          .sort((a, b) => a.numero_step - b.numero_step)
+                        {getStepOrdinati(es.esercizi_step)
                           .map((step) => (
                             <div key={step.id} className={styles.stepItem}>
                               <span className={styles.stepNumber}>{step.numero_step}</span>
@@ -620,34 +650,6 @@ export default function PazienteDettaglio({ paziente, farmaci, esercizi, metrich
         </div>
       )}
 
-      {/* ============================================================ */}
-      {/* MODAL: Scarta Modifiche */}
-      {/* ============================================================ */}
-      {showDiscardModal && (
-        <div className="modal-overlay" onClick={() => setShowDiscardModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '400px', textAlign: 'center' }}>
-            <div style={{ fontSize: '48px', marginBottom: '12px' }}>❌</div>
-            <h2 className="modal-title" style={{ justifyContent: 'center', marginBottom: '8px' }}>
-              Scartare le modifiche?
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>
-              Tutte le modifiche non salvate andranno perse. Questa azione non può essere annullata.
-            </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              <button onClick={() => setShowDiscardModal(false)} className="btn btn-outline">Annulla</button>
-              <button
-                onClick={() => {
-                  setShowDiscardModal(false);
-                  router.refresh();
-                }}
-                className="btn btn-danger"
-              >
-                Scarta
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
