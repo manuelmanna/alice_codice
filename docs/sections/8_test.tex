@@ -1,15 +1,56 @@
 \section{Test}
 
-Per il test del sistema A.L.I.C.E. sono stati utilizzati i seguenti strumenti:
+I test del progetto sono stati organizzati in modo pratico, controllando sia la correttezza tecnica
+della build sia i flussi principali usati da operatore e paziente.
+
+\subsection{Strumenti utilizzati}
 
 \begin{itemize}
-    \item \textbf{Postman} -- Applicazione utilizzata per effettuare test funzionali sulle API di Supabase, verificandone il corretto funzionamento simulando richieste HTTP (GET, POST, PATCH, DELETE) verso gli endpoint REST auto-generati da PostgREST.
+    \item \textbf{Build Next.js:} il comando \texttt{npm.cmd run build} controlla compilazione, tipi TypeScript e generazione delle route.
+    \item \textbf{Browser e DevTools:} usati per verificare navigazione, responsive design, richieste di rete e assenza di errori runtime.
+    \item \textbf{Supabase Dashboard:} usata per controllare dati inseriti, tabelle, funzioni SQL e policy RLS.
+    \item \textbf{Postman:} usato per testare manualmente le API Supabase e, quando configurata la chiave, la route del suggerimento AI.
+\end{itemize}
 
-    \item \textbf{ESLint} -- Strumento di analisi statica del codice JavaScript/TypeScript, utilizzato per individuare e correggere bug, errori di sintassi e problemi di stile, migliorando la qualità e la coerenza del codice sorgente.
+\subsection{Casi di test principali}
 
-    \item \textbf{Supabase Dashboard (SQL Editor)} -- Interfaccia web fornita da Supabase per eseguire query SQL dirette sul database PostgreSQL, utilizzata per verificare la corretta persistenza dei dati e il funzionamento delle policy Row Level Security.
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{4cm}|X|X|}
+\hline
+\textbf{Area} & \textbf{Test} & \textbf{Risultato atteso} \\
+\hline
+Autenticazione & Login e registrazione separati per operatore e paziente. & L'utente entra solo nella propria area. \\
+\hline
+Proxy & Accesso diretto a pagine private senza sessione. & Redirect alla pagina di login corretta. \\
+\hline
+Dashboard & Ricerca e filtro dei pazienti. & La lista mostra solo i pazienti corrispondenti. \\
+\hline
+Dettaglio paziente & Apertura di un paziente associato all'operatore. & Vengono mostrati dati, farmaci, esercizi, umore e storico. \\
+\hline
+Farmaci & Conferma giornaliera di un farmaco lato paziente. & Viene creato o aggiornato il record in \texttt{farmaci\_log}. \\
+\hline
+Esercizi & Completamento di un esercizio guidato. & Viene salvato il completamento in \texttt{esercizi\_log}. \\
+\hline
+Umore & Inserimento o modifica dell'umore del giorno. & Viene salvato un solo valore per paziente e data. \\
+\hline
+AI & Richiesta di suggerimento dal dettaglio paziente. & La route restituisce una frase breve per l'operatore. \\
+\hline
+\end{tabularx}
+\caption{Casi di test funzionali}
+\label{tab:casi-test}
+\end{table}
 
-    \item \textbf{Chrome DevTools} -- Strumenti di sviluppo integrati nel browser Google Chrome, utilizzati per il debug del frontend React, l'analisi delle richieste di rete, il controllo del rendering dei componenti e la verifica della responsività dell'interfaccia.
+\subsection{Verifiche sul database}
+
+Le verifiche su Supabase hanno controllato:
+
+\begin{itemize}
+    \item creazione automatica del profilo dopo la registrazione;
+    \item associazione corretta tra operatore e paziente;
+    \item inserimento dei log giornalieri per farmaci, esercizi e umore;
+    \item visibilita' dei dati coerente con le policy RLS.
 \end{itemize}
 
 \newpage

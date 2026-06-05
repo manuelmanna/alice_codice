@@ -1,74 +1,97 @@
 \section{Matrice RACI}
 
-La matrice RACI (Responsible, Accountable, Consulted, Informed) definisce le responsabilità rispetto alle principali attività del progetto. Il team è composto da tre membri sotto la supervisione del docente.
+La matrice RACI indica chi ha seguito le principali attivita' del progetto. Usiamo le stesse
+quattro sigle della metodologia classica:
 
-\subsection{Matrice -- Documentazione}
+\begin{itemize}
+    \item \textbf{R} -- Responsible: chi esegue materialmente l'attivita';
+    \item \textbf{A} -- Accountable: chi approva il risultato finale;
+    \item \textbf{C} -- Consulted: chi viene consultato;
+    \item \textbf{I} -- Informed: chi viene informato.
+\end{itemize}
 
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.4}
-\footnotesize
-\begin{tabular}{|p{4.5cm}|c|c|c|c|}
-\hline
-\textbf{Attività} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} & \textbf{Docente} \\
-\hline
-Analisi dei requisiti & R/A & R & C & C \\
-\hline
-Stakeholder e goal & R/A & C & C & I \\
-\hline
-Stato dell'arte e concorrenza & R & R/A & C & I \\
-\hline
-Modello informativo & R/A & C & C & I \\
-\hline
-Modello di navigazione & R & C & R/A & I \\
-\hline
-Modello architetturale & R/A & C & C & I \\
-\hline
-Stesura documentazione & R & R & R & C \\
-\hline
-Revisione finale & R & R & R & A \\
-\hline
-\end{tabular}
-\caption{Matrice RACI -- Documentazione}
-\label{tab:raci_doc}
-\end{table}
-
-\subsection{Matrice -- Sviluppo}
+\subsection{Team}
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.4}
-\footnotesize
-\begin{tabular}{|p{4.5cm}|c|c|c|c|}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|l|l|}
 \hline
-\textbf{Attività} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} & \textbf{Docente} \\
+\textbf{Studente} & \textbf{Ruolo prevalente nel progetto} \\
 \hline
-Architettura software & R/A & C & C & I \\
+Manuel Manna & Coordinamento documentazione e revisione complessiva. \\
 \hline
-Schema database e RLS & R/A & C & I & I \\
+Alessio Mininni & Sviluppo applicativo, integrazione Supabase e refactoring. \\
 \hline
-Frontend operatore (dashboard) & R/A & R & C & I \\
-\hline
-Frontend paziente (semplificato) & R & C & R/A & I \\
-\hline
-Memory Card (Serious Game) & R & R/A & C & I \\
-\hline
-Mood \& Health Check & R/A & C & R & I \\
-\hline
-Configurazione Supabase & R/A & I & I & I \\
-\hline
-Integrazione frontend-backend & R/A & R & C & I \\
-\hline
-Testing e verifica & R & R & R/A & I \\
-\hline
-Deploy su Vercel & R/A & I & I & I \\
+Andrius Tamuliunaite & Analisi, supporto alla documentazione e verifica funzionale. \\
 \hline
 \end{tabular}
-\caption{Matrice RACI -- Sviluppo}
-\label{tab:raci_sviluppo}
+\caption{Team di progetto}
+\label{tab:team-raci}
 \end{table}
 
-\paragraph{Legenda:}
-\textbf{R} = Responsible (esegue), \textbf{A} = Accountable (approva), \textbf{C} = Consulted (fornisce input), \textbf{I} = Informed (informato).
+\subsection{Documentazione}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\footnotesize
+\begin{tabularx}{\textwidth}{|X|c|c|c|}
+\hline
+\textbf{Attivita'} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
+\hline
+Descrizione del contesto e obiettivi & A/R & C & C \\
+\hline
+Stakeholder, goal e scambio di valore & R & C & A \\
+\hline
+Analisi dello stato dell'arte & R & I & A/C \\
+\hline
+Modello informativo e schema relazionale & C & A/R & C \\
+\hline
+Modello di navigazione aderente alle pagine reali & C & A/R & C \\
+\hline
+Modello architetturale e architettura software & C & A/R & C \\
+\hline
+Aspetti implementativi & C & A/R & I \\
+\hline
+Test, conclusioni e revisione finale & A/R & C & C \\
+\hline
+\end{tabularx}
+\caption{Matrice RACI della documentazione}
+\label{tab:raci-documentazione}
+\end{table}
+
+\subsection{Sviluppo}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\footnotesize
+\begin{tabularx}{\textwidth}{|X|c|c|c|}
+\hline
+\textbf{Attivita'} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
+\hline
+Configurazione Next.js e struttura \texttt{src/app} & C & A/R & I \\
+\hline
+Schema Supabase, tabelle e policy RLS & C & A/R & C \\
+\hline
+Autenticazione operatore e paziente & I & A/R & C \\
+\hline
+Dashboard operatore e dettaglio paziente & C & A/R & C \\
+\hline
+Pagine paziente per umore, esercizi e farmaci & C & A/R & C \\
+\hline
+Proxy Next.js per redirect e sessione & I & A/R & C \\
+\hline
+Route AI con Groq & I & A/R & C \\
+\hline
+Refactoring helper in \texttt{src/lib} & I & A/R & C \\
+\hline
+Test manuali dei flussi principali & R & C & A/R \\
+\hline
+\end{tabularx}
+\caption{Matrice RACI dello sviluppo}
+\label{tab:raci-sviluppo}
+\end{table}
 
 \newpage

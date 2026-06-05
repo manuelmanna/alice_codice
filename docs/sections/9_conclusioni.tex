@@ -1,23 +1,54 @@
 \section{Conclusioni}
 
-Il progetto A.L.I.C.E. nasce per rispondere a un'esigenza concreta: offrire uno strumento digitale integrato per l'assistenza domiciliare agli anziani, che metta in comunicazione il paziente e l'operatore sanitario attraverso un'unica piattaforma.
+Il progetto A.L.I.C.E. realizza una piattaforma web semplice per il monitoraggio remoto di pazienti
+anziani. La soluzione mette insieme tre aree concrete: farmaci, esercizi fisici e umore quotidiano.
+L'operatore usa una dashboard per controllare i pazienti, mentre il paziente usa pagine lineari con
+azioni brevi e leggibili.
 
-Il risultato è un'applicazione web composta da circa 20 componenti React, 14 pagine distribuite tra le due viste (operatore e paziente), 6 Server Actions per le operazioni sui dati, e un database PostgreSQL con 8 tabelle. L'intera piattaforma si appoggia su tecnologie open source (Next.js, Supabase) con costi di infrastruttura praticamente nulli nella fase iniziale grazie ai piani gratuiti.
+\subsection{Risultati raggiunti}
 
-I punti di forza principali sono:
 \begin{itemize}
-    \item La \textbf{doppia interfaccia}: una dashboard analitica per l'operatore e un'interfaccia semplificata per il paziente anziano.
-    \item L'\textbf{integrazione} di funzionalità normalmente separate: stimolazione cognitiva, monitoraggio emotivo, attività fisica e gestione farmaci in un unico sistema.
-    \item L'\textbf{accessibilità}: elementi grafici grandi, flussi lineari e linguaggio familiare per l'utenza anziana.
+    \item \textbf{Separazione dei ruoli:} operatore e paziente hanno pagine, login e percorsi distinti.
+    \item \textbf{Dashboard operatore:} l'operatore visualizza pazienti, stato, metriche e dettaglio individuale.
+    \item \textbf{Area paziente semplificata:} il paziente accede a umore, esercizi e farmaci partendo da una home con tre scelte principali.
+    \item \textbf{Database coerente:} lo schema contiene tabelle dedicate a profili, operatori, pazienti, farmaci, esercizi e log.
+    \item \textbf{Navigazione protetta:} il proxy Next.js gestisce i redirect principali in base alla sessione Supabase.
+    \item \textbf{Suggerimento AI:} l'operatore puo' ricevere una frase sintetica di supporto basata sui dati del paziente.
 \end{itemize}
 
-\subsection{Sviluppi futuri}
-Tra gli sviluppi futuri si possono considerare:
+\subsection{Benefici attesi}
+
+\paragraph{Per il paziente}
 \begin{itemize}
-    \item Integrazione con dispositivi IoT wearable per il monitoraggio automatico dei parametri vitali.
-    \item Ampliamento della libreria di Serious Games con giochi adattivi.
-    \item Sistema di videocomunicazione semplificata (WebRTC) tra paziente e operatore.
-    \item Versione app mobile nativa per una maggiore integrazione con il dispositivo.
+    \item interfaccia piu' semplice rispetto a un gestionale sanitario tradizionale;
+    \item meno passaggi per registrare umore, farmaci ed esercizi;
+    \item conferma immediata delle azioni completate.
+\end{itemize}
+
+\paragraph{Per l'operatore}
+\begin{itemize}
+    \item visione centralizzata dei pazienti seguiti;
+    \item controllo piu' rapido di aderenza farmacologica, esercizi e umore;
+    \item possibilita' di modificare piano e dati del paziente da una sola pagina.
+\end{itemize}
+
+\subsection{Limiti attuali}
+
+Il progetto copre il flusso principale, ma resta una piattaforma didattica. Alcune funzioni sono
+volutamente semplici: non sono presenti notifiche automatiche, videochiamate, app mobile nativa o
+integrazione con dispositivi medici. Questa scelta mantiene il codice piu' leggibile e adatto alla
+presentazione universitaria.
+
+\subsection{Sviluppi futuri}
+
+Possibili miglioramenti futuri sono:
+
+\begin{itemize}
+    \item notifiche per ricordare al paziente farmaci ed esercizi;
+    \item grafici piu' avanzati per lo storico dell'operatore;
+    \item esportazione dei report del paziente;
+    \item videochiamata semplificata tra operatore e paziente;
+    \item app mobile o Progressive Web App installabile.
 \end{itemize}
 
 \newpage

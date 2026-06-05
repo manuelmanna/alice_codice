@@ -2,135 +2,132 @@
 
 \subsection{Stakeholder e Goal}
 
-L'analisi degli stakeholder ha identificato due attori principali che interagiscono con la piattaforma A.L.I.C.E.
+Gli stakeholder principali sono due: \textbf{Operatore Sanitario} e \textbf{Paziente Anziano}. I loro obiettivi sono differenti, per questo il sistema usa due interfacce separate.
 
-\textbf{Operatore Sanitario / Caregiver:} professionista responsabile dell'assistenza clinica e della pianificazione terapeutica. Può trattarsi di un medico, un infermiere o un caregiver professionale. Utilizza la piattaforma per gestire i pazienti, assegnare attività e monitorare il loro stato di salute.
+\subsubsection{Operatore Sanitario / Caregiver}
 
-\textbf{Paziente Anziano:} utente fragile che fruisce dei servizi assistenziali dal proprio domicilio. Rappresenta il vincolo progettuale più stringente in termini di usabilità e accessibilità, data la scarsa familiarità con interfacce digitali complesse.
-
-\subsubsection{Goal Operatore Sanitario}
+L'operatore sanitario e' il professionista che segue i pazienti. Nel sistema puo' registrarsi, accedere alla dashboard, consultare i pazienti assegnati e gestire farmaci ed esercizi.
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.3}
 \footnotesize
-\begin{tabular}{|c|l|l|c|c|c|c|}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{3.2cm}|p{4.4cm}|p{4.7cm}|c|c|c|c|}
 \hline
 \textbf{Stakeholder} & \textbf{Goal} & \textbf{Subgoal} & \textbf{C} & \textbf{R} & \textbf{U} & \textbf{D} \\
 \hline
-\multirow{11}{*}{\textit{Operatore Sanitario}} 
-    & \multirow{4}{*}{Gestione pazienti} 
-        & \textit{Aggiungi nuovo paziente} & \checkmark & & & \\
-    & & \textit{Visualizza lista pazienti} & & \checkmark & & \\
-    & & \textit{Modifica dati paziente} & & & \checkmark & \\
-    & & \textit{Rimuovi paziente} & & & & \checkmark \\
-\cline{2-7}
-    & \multirow{2}{*}{Gestione attività} 
-        & \textit{Assegna esercizi a paziente} & \checkmark & & & \\
-    & & \textit{Visualizza attività assegnate} & & \checkmark & & \\
-\cline{2-7}
-    & \multirow{3}{*}{Monitoraggio} 
-        & \textit{Visualizza risultati cognitivi} & & \checkmark & & \\
-    & & \textit{Visualizza storico Mood Check} & & \checkmark & & \\
-    & & \textit{Visualizza aderenza terapeutica} & & \checkmark & & \\
-\cline{2-7}
-    & \multirow{2}{*}{Gestione contatti} 
-        & \textit{Aggiungi contatto emergenza} & \checkmark & & & \\
-    & & \textit{Modifica contatto emergenza} & & & \checkmark & \\
+Operatore Sanitario & Gestione pazienti & Visualizza lista pazienti & & X & & \\
+\cline{3-7}
+ & & Modifica dati anagrafici paziente & & & X & \\
+\cline{3-7}
+ & & Visualizza dettaglio paziente e metriche & & X & & \\
+\hline
+Operatore Sanitario & Gestione farmaci & Aggiunge farmaco & X & & & \\
+\cline{3-7}
+ & & Visualizza farmaci assegnati & & X & & \\
+\cline{3-7}
+ & & Elimina farmaco & & & & X \\
+\hline
+Operatore Sanitario & Gestione esercizi & Crea esercizio con passaggi & X & & & \\
+\cline{3-7}
+ & & Visualizza esercizi assegnati & & X & & \\
+\cline{3-7}
+ & & Elimina esercizio & & & & X \\
+\hline
+Operatore Sanitario & Monitoraggio & Consulta umore, farmaci ed esercizi degli ultimi giorni & & X & & \\
+\cline{3-7}
+ & & Genera suggerimento AI sintetico & X & & & \\
 \hline
 \end{tabular}
 \caption{Goal e operazioni CRUD dell'Operatore Sanitario}
-\label{tab:goal_operatore}
+\label{tab:goal-operatore}
 \end{table}
 
-\subsubsection{Goal Paziente Anziano}
+\subsubsection{Paziente Anziano}
+
+Il paziente anziano utilizza un'interfaccia semplificata. L'obiettivo non e' gestire dati complessi, ma svolgere azioni quotidiane: indicare l'umore, completare esercizi e confermare i farmaci.
 
 \begin{table}[H]
 \centering
-\renewcommand{\arraystretch}{1.3}
 \footnotesize
-\begin{tabular}{|c|l|l|c|c|c|c|}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{3.2cm}|p{4.2cm}|p{4.9cm}|c|c|c|c|}
 \hline
 \textbf{Stakeholder} & \textbf{Goal} & \textbf{Subgoal} & \textbf{C} & \textbf{R} & \textbf{U} & \textbf{D} \\
 \hline
-\multirow{7}{*}{\textit{Paziente Anziano}} 
-    & Accesso & \textit{Login semplificato} & & \checkmark & & \\
-\cline{2-7}
-    & Piano giornaliero & \textit{Visualizza attività del giorno} & & \checkmark & & \\
-\cline{2-7}
-    & Giochi cognitivi & \textit{Esegui Memory Card} & \checkmark & \checkmark & & \\
-\cline{2-7}
-    & \multirow{2}{*}{Mood Check} 
-        & \textit{Compila questionario umore} & \checkmark & & & \\
-    & & \textit{Visualizza storico personale} & & \checkmark & & \\
-\cline{2-7}
-    & Esercizi fisici & \textit{Visualizza esercizi assegnati} & & \checkmark & & \\
-\cline{2-7}
-    & Farmaci & \textit{Conferma assunzione farmaco} & & & \checkmark & \\
+Paziente Anziano & Accesso & Login con email e password & & X & & \\
+\cline{3-7}
+ & & Registrazione associata a un operatore & X & & & \\
+\hline
+Paziente Anziano & Umore & Registra umore quotidiano & X & X & X & \\
+\hline
+Paziente Anziano & Esercizi fisici & Visualizza lista esercizi & & X & & \\
+\cline{3-7}
+ & & Completa esercizio guidato passo-passo & X & X & & \\
+\hline
+Paziente Anziano & Farmaci & Visualizza farmaci per fascia oraria & & X & & \\
+\cline{3-7}
+ & & Conferma o annulla assunzione farmaco & X & X & X & \\
 \hline
 \end{tabular}
 \caption{Goal e operazioni CRUD del Paziente Anziano}
-\label{tab:goal_paziente}
+\label{tab:goal-paziente}
 \end{table}
 
 \newpage
 \subsection{Diagramma di Contesto}
 
+Il diagramma di contesto rappresenta gli attori esterni e i principali flussi informativi. Rispetto alla versione precedente, il diagramma e' allineato al codice effettivo: il sistema usa Next.js come applicazione web, Supabase per dati/autenticazione e Groq solo per il suggerimento AI.
+
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3.5cm, minimum height=1.2cm, text centered, font=\small\bfseries},
-    system/.style={rectangle, draw=aliceblue, fill=aliceblue!15, thick, rounded corners=8pt, minimum width=5cm, minimum height=2.5cm, text centered, font=\large\bfseries, text=aliceblue},
-    flow/.style={-{Stealth[length=3mm]}, thick, color=aliceblue},
-    flowlabel/.style={font=\scriptsize, fill=white, inner sep=2pt},
+    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3.5cm, minimum height=1cm, text centered, font=\small\bfseries},
+    system/.style={rectangle, draw=aliceblue, fill=aliceblue!15, thick, rounded corners=6pt, minimum width=4.5cm, minimum height=2cm, text centered, font=\large\bfseries},
+    service/.style={rectangle, draw=alicegreen, fill=green!8, thick, rounded corners=4pt, minimum width=3.6cm, minimum height=1cm, text centered, font=\small\bfseries},
+    flow/.style={-{Stealth[length=2.5mm]}, thick, color=aliceblue},
+    flowlabel/.style={font=\scriptsize, fill=white, inner sep=2pt, align=center},
 ]
+\node[system] (alice) {A.L.I.C.E.\\Next.js};
+\node[entity, above left=2.4cm and 2.8cm of alice] (operatore) {Operatore\\Sanitario};
+\node[entity, above right=2.4cm and 2.8cm of alice] (paziente) {Paziente\\Anziano};
+\node[service, below left=2.2cm and 1.8cm of alice] (supabase) {Supabase\\PostgreSQL + Auth};
+\node[service, below right=2.2cm and 1.8cm of alice] (groq) {Groq API\\Suggerimento AI};
 
-% Sistema centrale
-\node[system] (alice) {A.L.I.C.E.};
-
-% Entità esterne
-\node[entity, above left=2.5cm and 3cm of alice] (caregiver) {Operatore\\Sanitario};
-\node[entity, above right=2.5cm and 3cm of alice] (paziente) {Paziente\\Anziano};
-\node[entity, below=2.5cm of alice] (db) {Supabase\\(PostgreSQL)};
-
-% Flussi Caregiver -> Sistema
-\draw[flow] (caregiver.south) -- node[flowlabel, left, align=right] {Dati pazienti,\\Piani terapeutici,\\Esercizi assegnati} (alice.north west);
-\draw[flow] (alice.north west) ++(0.3,0.3) -- node[flowlabel, right, align=left] {Report aderenza,\\Risultati cognitivi,\\Mood check} (caregiver.south east);
-
-% Flussi Paziente -> Sistema
-\draw[flow] (paziente.south) -- node[flowlabel, right, align=left] {Risposte questionari,\\Risultati giochi,\\Conferme farmaci} (alice.north east);
-\draw[flow] (alice.north east) ++(-0.3,0.3) -- node[flowlabel, left, align=right] {Piano giornaliero,\\Promemoria,\\Esercizi} (paziente.south west);
-
-% Flussi DB
-\draw[flow] (alice.south) -- node[flowlabel, right] {Supabase Client} (db.north);
-\draw[flow] (db.north east) -- node[flowlabel, right] {Dati persistenti} (alice.south east);
-
+\draw[flow] (operatore) -- node[flowlabel] {pazienti, farmaci,\\esercizi} (alice);
+\draw[flow] (alice) -- node[flowlabel] {dashboard, metriche,\\storici} (operatore);
+\draw[flow] (paziente) -- node[flowlabel] {umore, farmaci presi,\\esercizi completati} (alice);
+\draw[flow] (alice) -- node[flowlabel] {home, esercizi,\\lista farmaci} (paziente);
+\draw[flow] (alice) -- node[flowlabel] {query e sessioni} (supabase);
+\draw[flow] (supabase) -- node[flowlabel] {dati persistenti} (alice);
+\draw[flow] (alice) -- node[flowlabel] {dati sintetici} (groq);
+\draw[flow] (groq) -- node[flowlabel] {frase operativa} (alice);
 \end{tikzpicture}
 \caption{Diagramma di contesto del sistema A.L.I.C.E.}
 \label{fig:contesto}
 \end{figure}
 
-\newpage
 \subsection{Scambio di Valore}
 
-\begin{table}[H]
+\begin{figure}[H]
 \centering
-\renewcommand{\arraystretch}{1.4}
-\begin{tabularx}{\textwidth}{|l|X|X|}
-\hline
-\textbf{Attore} & \textbf{Cosa offre al sistema} & \textbf{Cosa riceve dal sistema} \\
-\hline
-\textbf{Operatore Sanitario} & 
-Dati anagrafici dei pazienti; piani terapeutici personalizzati; assegnazione degli esercizi fisici e cognitivi. & 
-Quadro sintetico dello stato di ciascun paziente; report di aderenza terapeutica; storico dei risultati cognitivi; riduzione del carico amministrativo. \\
-\hline
-\textbf{Paziente Anziano} & 
-Informazioni sul proprio stato emotivo e fisico (Mood Check); risultati delle attività cognitive (Memory Card); conferma di assunzione farmaci. & 
-Piano giornaliero strutturato; promemoria automatici per i farmaci; stimolazione cognitiva attraverso giochi; senso di autonomia. \\
-\hline
-\end{tabularx}
-\caption{Analisi dello scambio di valore tra gli attori e il sistema A.L.I.C.E.}
-\label{tab:scambio_valore}
-\end{table}
+\begin{tikzpicture}[
+    actor/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=4pt, minimum width=3.4cm, minimum height=1cm, text centered, font=\small\bfseries},
+    system/.style={circle, draw=aliceblue, fill=aliceblue!15, thick, minimum size=2.4cm, text centered, font=\bfseries},
+    flow/.style={-{Stealth[length=2.3mm]}, thick},
+    label/.style={font=\scriptsize, fill=white, inner sep=2pt, align=center},
+]
+\node[system] (alice) {A.L.I.C.E.};
+\node[actor, left=4.5cm of alice] (op) {Operatore\\Sanitario};
+\node[actor, right=4.5cm of alice] (pz) {Paziente\\Anziano};
+
+\draw[flow, color=aliceblue] (op.north east) -- node[label] {configura\\pazienti, farmaci, esercizi} (alice.north west);
+\draw[flow, color=alicegreen] (alice.south west) -- node[label] {metriche, storici,\\suggerimento AI} (op.south east);
+\draw[flow, color=aliceorange] (pz.north west) -- node[label] {umore, conferme,\\completamenti} (alice.north east);
+\draw[flow, color=aliceblue] (alice.south east) -- node[label] {interfaccia semplice,\\piano giornaliero} (pz.south west);
+\end{tikzpicture}
+\caption{Scambio di valore tra stakeholder e sistema}
+\label{fig:scambio-valore}
+\end{figure}
 
 \newpage

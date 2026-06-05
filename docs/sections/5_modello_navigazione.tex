@@ -1,146 +1,143 @@
 \section{Modello di Navigazione}
 
-\subsection{Struttura delle pagine}
-Il sistema A.L.I.C.E. prevede due viste completamente separate: una per l'operatore sanitario e una per il paziente anziano. L'accesso avviene attraverso una pagina di login comune, dalla quale l'utente viene indirizzato alla vista appropriata in base al proprio ruolo.
+Il modello di navigazione e' stato aggiornato partendo dalla struttura reale delle cartelle in
+\texttt{src/app}. In Next.js App Router, infatti, ogni cartella con un file \texttt{page.tsx}
+corrisponde a una pagina visitabile. In questo modo la documentazione descrive le pagine
+effettivamente presenti nel progetto, senza aggiungere viste non implementate.
 
-\subsection{Site Map -- Vista Operatore Sanitario}
-L'operatore accede a un'interfaccia con navigazione laterale (sidebar) che fornisce accesso diretto a tutte le sezioni.
+\subsection{Legenda}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|p{10cm}|}
+\hline
+\textbf{Sigla} & \textbf{Significato} \\
+\hline
+VP & Vista pubblica, accessibile senza autenticazione. \\
+\hline
+VF & Vista di form, usata per login o registrazione. \\
+\hline
+VD & Vista dashboard o vista di riepilogo. \\
+\hline
+VG & Vista gestionale, usata per modificare dati o configurazioni. \\
+\hline
+VA & Vista assistita per il paziente, con percorso semplice e pochi pulsanti. \\
+\hline
+API & Route non navigabile dal browser come pagina, usata dal codice applicativo. \\
+\hline
+\end{tabular}
+\caption{Legenda del modello di navigazione}
+\label{tab:legenda-navigazione}
+\end{table}
+
+\subsection{Albero di navigazione reale}
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{
 \begin{tikzpicture}[
-    page/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3.2cm, minimum height=0.8cm, text centered, font=\scriptsize\bfseries},
-    subpage/.style={rectangle, draw=gray, fill=gray!8, thin, rounded corners=2pt, minimum width=2.8cm, minimum height=0.6cm, text centered, font=\tiny},
-    line/.style={thick, color=aliceblue, -{Stealth[length=2mm]}},
-    node distance=0.4cm,
+    page/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3.5cm, minimum height=0.9cm, align=center, font=\scriptsize},
+    role/.style={rectangle, draw=alicegreen, fill=alicegreen!10, thick, rounded corners=3pt, minimum width=3.5cm, minimum height=0.9cm, align=center, font=\scriptsize\bfseries},
+    api/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=3pt, minimum width=4cm, minimum height=0.9cm, align=center, font=\scriptsize},
+    line/.style={thick, color=aliceblue, -{Stealth[length=2.5mm]}},
+    apiLine/.style={thick, dashed, color=aliceorange, -{Stealth[length=2.5mm]}},
+    node distance=1cm and 1.2cm,
 ]
 
-% Login
-\node[page] (login) at (0, 0) {Login};
+\node[page] (landing) at (0, 0) {\texttt{/}\\Landing\\VP};
 
-% Dashboard
-\node[page, below=1cm of login] (dashboard) {Dashboard};
-\draw[line] (login) -- (dashboard);
+\node[role] (opArea) at (-5.5, -1.7) {Area Operatore};
+\node[role] (pzArea) at (5.5, -1.7) {Area Paziente};
+\draw[line] (landing) -- (opArea);
+\draw[line] (landing) -- (pzArea);
 
-% Sezioni principali
-\node[page, below left=1.2cm and 4cm of dashboard] (pazienti) {Gestione Pazienti};
-\node[page, below left=1.2cm and 1cm of dashboard] (attivita) {Attivit\`a};
-\node[page, below right=1.2cm and 1cm of dashboard] (monitoraggio) {Monitoraggio};
-\node[page, below right=1.2cm and 4cm of dashboard] (profilo) {Profilo};
+\node[page] (opLogin) at (-8.2, -3.4) {\texttt{/operatore/login}\\Login\\VF};
+\node[page] (opReg) at (-5.5, -3.4) {\texttt{/operatore/registrati}\\Registrazione\\VF};
+\node[page] (opDash) at (-2.8, -3.4) {\texttt{/operatore/dashboard}\\Dashboard\\VD};
+\draw[line] (opArea) -- (opLogin);
+\draw[line] (opArea) -- (opReg);
+\draw[line] (opLogin) -- (opDash);
+\draw[line] (opReg) -- (opDash);
 
-\draw[line] (dashboard) -- (pazienti);
-\draw[line] (dashboard) -- (attivita);
-\draw[line] (dashboard) -- (monitoraggio);
-\draw[line] (dashboard) -- (profilo);
+\node[page] (opDetail) at (-2.8, -5.2) {\texttt{/operatore/dashboard/pazienti/[id]}\\Dettaglio paziente\\VD};
+\node[page] (opManage) at (-2.8, -7.0) {\texttt{?tab=gestisci}\\Gestione farmaci, esercizi e dati\\VG};
+\draw[line] (opDash) -- (opDetail);
+\draw[line] (opDetail) -- (opManage);
 
-% Sotto-pagine Pazienti
-\node[subpage, below=0.4cm of pazienti] (lista) {Lista Pazienti};
-\node[subpage, below=0.3cm of lista] (dettaglio) {Dettaglio Paziente};
-\node[subpage, below=0.3cm of dettaglio] (nuovo) {Nuovo Paziente};
-\node[subpage, below=0.3cm of nuovo] (contatti) {Contatti Emergenza};
+\node[api] (aiApi) at (-7.5, -6.1) {\texttt{/api/ai/suggerimento-operatore}\\Suggerimento AI\\API};
+\draw[apiLine] (opDetail) -- (aiApi);
 
-\draw[line, gray, thin] (pazienti) -- (lista);
-\draw[line, gray, thin] (lista) -- (dettaglio);
-\draw[line, gray, thin] (dettaglio) -- (nuovo);
-\draw[line, gray, thin] (nuovo) -- (contatti);
+\node[page] (pzLogin) at (2.5, -3.4) {\texttt{/paziente/login}\\Login\\VF};
+\node[page] (pzReg) at (5.5, -3.4) {\texttt{/paziente/registrati}\\Registrazione\\VF};
+\node[page] (pzHome) at (8.5, -3.4) {\texttt{/paziente/home}\\Home\\VA};
+\draw[line] (pzArea) -- (pzLogin);
+\draw[line] (pzArea) -- (pzReg);
+\draw[line] (pzLogin) -- (pzHome);
+\draw[line] (pzReg) -- (pzHome);
 
-% Sotto-pagine Attività
-\node[subpage, below=0.4cm of attivita] (assegna) {Assegna Esercizi};
-\node[subpage, below=0.3cm of assegna] (piano) {Piani Terapeutici};
-
-\draw[line, gray, thin] (attivita) -- (assegna);
-\draw[line, gray, thin] (assegna) -- (piano);
-
-% Sotto-pagine Monitoraggio
-\node[subpage, below=0.4cm of monitoraggio] (mood) {Mood Check};
-\node[subpage, below=0.3cm of mood] (cognitivo) {Risultati Cognitivi};
-\node[subpage, below=0.3cm of cognitivo] (aderenza) {Aderenza Terapia};
-
-\draw[line, gray, thin] (monitoraggio) -- (mood);
-\draw[line, gray, thin] (mood) -- (cognitivo);
-\draw[line, gray, thin] (cognitivo) -- (aderenza);
+\node[page] (pzMood) at (5.3, -5.3) {\texttt{/paziente/umore}\\Umore\\VA};
+\node[page] (pzEx) at (8.5, -5.3) {\texttt{/paziente/esercizi}\\Esercizi\\VA};
+\node[page] (pzMed) at (11.7, -5.3) {\texttt{/paziente/farmaci}\\Farmaci\\VA};
+\draw[line] (pzHome) -- (pzMood);
+\draw[line] (pzHome) -- (pzEx);
+\draw[line] (pzHome) -- (pzMed);
 
 \end{tikzpicture}
-\caption{Site Map -- Vista Operatore Sanitario}
-\label{fig:sitemap_caregiver}
+}
+\caption{Albero di navigazione aggiornato alla struttura reale delle pagine}
+\label{fig:navigazione-reale}
 \end{figure}
 
+\subsection{Descrizione delle viste}
+
+\subsubsection{Area comune}
 \begin{itemize}
-    \item \textbf{Dashboard:} panoramica con widget informativi (pazienti attivi, alert, statistiche di aderenza, mood check del giorno).
-    \item \textbf{Gestione Pazienti:} CRUD completo con ricerca, filtri, dettaglio paziente e contatti di emergenza.
-    \item \textbf{Attivit\`a:} pianificazione terapeutica con selezione esercizi da un catalogo.
-    \item \textbf{Monitoraggio:} grafici e tabelle con risultati Mood Check, punteggi cognitivi e aderenza.
-    \item \textbf{Profilo:} gestione del proprio account operatore.
+    \item \textbf{\texttt{/}:} pagina iniziale. Presenta l'accesso alle due aree del sistema. Se l'utente e' gia' autenticato, il file \texttt{proxy.ts} lo reindirizza alla home corretta in base al ruolo.
 \end{itemize}
 
-\newpage
-\subsection{Site Map -- Vista Paziente Anziano}
-L'interfaccia del paziente segue un modello lineare con pochi elementi per pagina e pulsanti grandi. La navigazione avviene attraverso un menu con icone grandi e testi leggibili.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    page/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3cm, minimum height=0.8cm, text centered, font=\scriptsize\bfseries},
-    subpage/.style={rectangle, draw=gray, fill=gray!8, thin, rounded corners=2pt, minimum width=2.5cm, minimum height=0.6cm, text centered, font=\tiny},
-    line/.style={thick, color=aliceblue, -{Stealth[length=2mm]}},
-]
-
-% Login semplificato
-\node[page] (login) at (0, 0) {Login Semplificato};
-
-% Home
-\node[page, below=1cm of login] (home) {Home / Piano Giornaliero};
-\draw[line] (login) -- (home);
-
-% Sezioni principali
-\node[page, below left=1.2cm and 3cm of home] (esercizi) {Esercizi Fisici};
-\node[page, below left=1.2cm and 0cm of home] (giochi) {Giochi Cognitivi};
-\node[page, below right=1.2cm and 0cm of home] (mood) {Mood Check};
-\node[page, below right=1.2cm and 3cm of home] (farmaci) {Farmaci};
-
-\draw[line] (home) -- (esercizi);
-\draw[line] (home) -- (giochi);
-\draw[line] (home) -- (mood);
-\draw[line] (home) -- (farmaci);
-
-% Sotto-pagine Esercizi
-\node[subpage, below=0.5cm of esercizi] (lista_es) {Lista Esercizi};
-\node[subpage, below=0.3cm of lista_es] (esecuzione) {Esecuzione Guidata};
-\draw[line, gray, thin] (esercizi) -- (lista_es);
-\draw[line, gray, thin] (lista_es) -- (esecuzione);
-
-% Sotto-pagine Giochi
-\node[subpage, below=0.5cm of giochi] (memory) {Memory Card};
-\node[subpage, below=0.3cm of memory] (risultato) {Risultato};
-\draw[line, gray, thin] (giochi) -- (memory);
-\draw[line, gray, thin] (memory) -- (risultato);
-
-% Sotto-pagine Mood
-\node[subpage, below=0.5cm of mood] (compilazione) {Compilazione};
-\node[subpage, below=0.3cm of compilazione] (conferma) {Conferma Invio};
-\draw[line, gray, thin] (mood) -- (compilazione);
-\draw[line, gray, thin] (compilazione) -- (conferma);
-
-% Sotto-pagine Farmaci
-\node[subpage, below=0.5cm of farmaci] (promemoria) {Promemoria};
-\node[subpage, below=0.3cm of promemoria] (confermaf) {Conferma Assunzione};
-\draw[line, gray, thin] (farmaci) -- (promemoria);
-\draw[line, gray, thin] (promemoria) -- (confermaf);
-
-\end{tikzpicture}
-\caption{Site Map -- Vista Paziente Anziano}
-\label{fig:sitemap_paziente}
-\end{figure}
-
+\subsubsection{Area operatore}
 \begin{itemize}
-    \item \textbf{Login Semplificato:} accesso con codice numerico, senza password complesse.
-    \item \textbf{Home / Piano Giornaliero:} card grandi e colorate con le attività del giorno e il loro stato.
-    \item \textbf{Esercizi Fisici:} lista esercizi con istruzioni semplificate.
-    \item \textbf{Giochi Cognitivi:} accesso diretto al Memory Card, con carte grandi e feedback gratificanti.
-    \item \textbf{Mood Check:} emoji grandi per comunicare lo stato d'animo.
-    \item \textbf{Farmaci:} elenco farmaci del giorno con pulsante di conferma per ciascuno.
+    \item \textbf{\texttt{/operatore/login}:} form di accesso per l'operatore sanitario.
+    \item \textbf{\texttt{/operatore/registrati}:} form di registrazione dell'operatore.
+    \item \textbf{\texttt{/operatore/dashboard}:} vista principale dell'operatore. Mostra elenco pazienti, ricerca, filtri per stato e metriche sintetiche.
+    \item \textbf{\texttt{/operatore/dashboard/pazienti/[id]}:} dettaglio del singolo paziente. Mostra dati anagrafici, farmaci, esercizi, umore, storico settimanale e suggerimento AI.
+    \item \textbf{\texttt{?tab=gestisci}:} non e' una nuova pagina, ma uno stato della pagina di dettaglio. Permette di modificare dati del paziente e gestire farmaci ed esercizi.
 \end{itemize}
 
-Principi di navigazione: massimo 2 livelli di profondità, pulsante ``Torna indietro'' sempre visibile, nessun menu hamburger, feedback visivo immediato per ogni azione.
+\subsubsection{Area paziente}
+\begin{itemize}
+    \item \textbf{\texttt{/paziente/login}:} form di accesso del paziente.
+    \item \textbf{\texttt{/paziente/registrati}:} form di registrazione del paziente.
+    \item \textbf{\texttt{/paziente/home}:} menu principale semplificato, composto da tre card grandi.
+    \item \textbf{\texttt{/paziente/umore}:} registrazione o aggiornamento dell'umore giornaliero.
+    \item \textbf{\texttt{/paziente/esercizi}:} elenco degli esercizi assegnati e percorso guidato step-by-step.
+    \item \textbf{\texttt{/paziente/farmaci}:} elenco dei farmaci del giorno, divisi per fascia oraria, con conferma di assunzione.
+\end{itemize}
+
+\subsubsection{Route API}
+\begin{itemize}
+    \item \textbf{\texttt{/api/ai/suggerimento-operatore}:} route server-side chiamata dalla pagina dettaglio paziente. Riceve dati sintetici e restituisce una frase di supporto per l'operatore. Non e' una pagina navigabile.
+\end{itemize}
+
+\subsection{Regole di protezione e reindirizzamento}
+
+La navigazione privata viene controllata dal file \texttt{src/proxy.ts}. Il proxy legge la sessione Supabase e applica poche regole semplici:
+
+\begin{itemize}
+    \item un utente non autenticato che prova ad aprire \texttt{/operatore/dashboard} viene mandato a \texttt{/operatore/login};
+    \item un utente non autenticato che prova ad aprire una pagina privata sotto \texttt{/paziente/} viene mandato a \texttt{/paziente/login};
+    \item un utente gia' autenticato che torna alla landing page viene mandato alla propria area principale;
+    \item un utente gia' autenticato che apre le pagine pubbliche di login o registrazione viene reindirizzato alla home del proprio ruolo.
+\end{itemize}
+
+\subsection{Principi di navigazione}
+
+\begin{enumerate}
+    \item \textbf{Separazione per ruolo:} operatore e paziente hanno percorsi distinti, cosi' le due esperienze non si mischiano.
+    \item \textbf{Percorso breve per il paziente:} dalla home paziente si raggiungono umore, esercizi e farmaci con un solo click.
+    \item \textbf{Dashboard unica per l'operatore:} l'operatore parte sempre dalla dashboard e poi entra nel dettaglio del paziente.
+    \item \textbf{Nessuna pagina fantasma:} il modello contiene solo route realmente presenti nel codice.
+\end{enumerate}
 
 \newpage

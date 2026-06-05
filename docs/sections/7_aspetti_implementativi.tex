@@ -1,70 +1,181 @@
 \section{Aspetti Implementativi}
 
-\subsection{Struttura del Progetto}
-Il progetto è organizzato secondo la struttura standard di un'applicazione Next.js con App Router. Di seguito i file e le cartelle principali:
+Questa sezione descrive come il modello architetturale viene realizzato nel codice. La struttura
+e' stata mantenuta volutamente semplice: poche cartelle principali, nomi espliciti e logica
+vicina alle pagine che la utilizzano.
 
-\subsubsection{Lato Client (\texttt{app/})}
+\subsection{Struttura del progetto}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{5cm}|X|}
+\hline
+\textbf{Percorso} & \textbf{Contenuto} \\
+\hline
+\texttt{src/app} & Route Next.js, layout, pagine e Server Actions. \\
+\hline
+\texttt{src/app/operatore} & Login, registrazione, dashboard e gestione dei pazienti lato operatore. \\
+\hline
+\texttt{src/app/paziente} & Login, registrazione, home paziente, umore, esercizi e farmaci. \\
+\hline
+\texttt{src/app/api/ai} & Route API per il suggerimento operativo generato da Groq. \\
+\hline
+\texttt{src/components} & Componenti React riutilizzati dalle pagine, come dashboard, card paziente e dettaglio paziente. \\
+\hline
+\texttt{src/lib} & Funzioni di supporto semplici: date, lettura form, metriche e recupero paziente corrente. \\
+\hline
+\texttt{src/proxy.ts} & Proxy Next.js per sessione Supabase e redirect delle aree private. \\
+\hline
+\texttt{supabase\_reverse\_engineered\_schema.sql} & Schema SQL del database Supabase ricostruito dal progetto. \\
+\hline
+\end{tabularx}
+\caption{Struttura implementativa del progetto}
+\label{tab:struttura-progetto}
+\end{table}
+
+\subsection{Pagine principali}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\footnotesize
+\begin{tabularx}{\textwidth}{|p{5.3cm}|X|}
+\hline
+\textbf{File} & \textbf{Ruolo} \\
+\hline
+\texttt{src/app/page.tsx} & Landing page pubblica. \\
+\hline
+\texttt{src/app/operatore/login/page.tsx} & Form di login operatore. \\
+\hline
+\texttt{src/app/operatore/registrati/page.tsx} & Form di registrazione operatore. \\
+\hline
+\texttt{src/app/operatore/dashboard/page.tsx} & Dashboard server-side con lista pazienti e metriche. \\
+\hline
+\texttt{src/app/operatore/dashboard/pazienti/[id]/page.tsx} & Dettaglio paziente con dati, storico, farmaci, esercizi e umore. \\
+\hline
+\texttt{src/app/paziente/home/page.tsx} & Home semplificata del paziente. \\
+\hline
+\texttt{src/app/paziente/umore/page.tsx} & Pagina client per salvare l'umore giornaliero. \\
+\hline
+\texttt{src/app/paziente/esercizi/page.tsx} & Pagina client per eseguire esercizi guidati. \\
+\hline
+\texttt{src/app/paziente/farmaci/page.tsx} & Pagina client per confermare l'assunzione dei farmaci. \\
+\hline
+\end{tabularx}
+\caption{Pagine principali implementate}
+\label{tab:pagine-implementate}
+\end{table}
+
+\subsection{Componenti React}
+
+I componenti principali sono:
+
 \begin{itemize}
-    \item \texttt{app/layout.tsx} $\rightarrow$ Layout radice dell'applicazione, include i font e i metadata condivisi.
-    \item \texttt{app/page.tsx} $\rightarrow$ Pagina di login comune per operatore e paziente.
-    \item \texttt{app/(operatore)/layout.tsx} $\rightarrow$ Layout con sidebar per la vista operatore.
-    \item \texttt{app/(operatore)/dashboard/page.tsx} $\rightarrow$ Dashboard con widget riepilogativi (pazienti attivi, alert, mood check).
-    \item \texttt{app/(operatore)/pazienti/page.tsx} $\rightarrow$ Lista pazienti con ricerca e filtri.
-    \item \texttt{app/(operatore)/pazienti/[id]/page.tsx} $\rightarrow$ Dettaglio paziente con anagrafica, stato clinico e contatti di emergenza.
-    \item \texttt{app/(operatore)/attivita/page.tsx} $\rightarrow$ Interfaccia per assegnare esercizi fisici e cognitivi.
-    \item \texttt{app/(operatore)/monitoraggio/page.tsx} $\rightarrow$ Grafici di aderenza terapeutica, risultati cognitivi e mood check.
-    \item \texttt{app/(paziente)/layout.tsx} $\rightarrow$ Layout semplificato con icone grandi per la vista paziente.
-    \item \texttt{app/(paziente)/home/page.tsx} $\rightarrow$ Piano giornaliero con card delle attività.
-    \item \texttt{app/(paziente)/giochi/page.tsx} $\rightarrow$ Memory Card con feedback visivi e sonori.
-    \item \texttt{app/(paziente)/mood/page.tsx} $\rightarrow$ Questionario umore con emoji.
-    \item \texttt{app/(paziente)/esercizi/page.tsx} $\rightarrow$ Lista esercizi assegnati.
-    \item \texttt{app/(paziente)/farmaci/page.tsx} $\rightarrow$ Conferma assunzione farmaci.
+    \item \textbf{\texttt{DashboardContent.tsx}:} gestisce ricerca, filtri e visualizzazione delle card paziente.
+    \item \textbf{\texttt{PatientCard.tsx}:} mostra il riepilogo di un paziente nella dashboard.
+    \item \textbf{\texttt{PazienteDettaglio.tsx}:} componente client piu' ricco del progetto. Gestisce tab, form, modali, farmaci, esercizi, grafici testuali e chiamata al suggerimento AI.
 \end{itemize}
 
-\subsubsection{Componenti Riutilizzabili (\texttt{components/})}
+\subsection{Server Actions}
+
+Le Server Actions sono funzioni server-side richiamate dai form o dai componenti client. Sono state
+usate per evitare un numero eccessivo di endpoint API manuali.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{|p{5.8cm}|X|}
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\texttt{src/app/operatore/actions.ts} & Login, registrazione e logout dell'operatore. \\
+\hline
+\texttt{src/app/paziente/actions.ts} & Login, registrazione e logout del paziente. \\
+\hline
+\texttt{src/app/operatore/dashboard/pazienti/actions.ts} & Modifica dati paziente, aggiunta/eliminazione farmaci, aggiunta/eliminazione esercizi. \\
+\hline
+\end{tabularx}
+\caption{Server Actions del progetto}
+\label{tab:server-actions}
+\end{table}
+
+\subsection{Funzioni di supporto}
+
+Durante il refactoring alcune parti ripetute sono state spostate in file piccoli dentro
+\texttt{src/lib}. Questa scelta riduce duplicazione senza introdurre astrazioni difficili.
+
 \begin{itemize}
-    \item \texttt{components/Sidebar.tsx} $\rightarrow$ Barra laterale di navigazione per l'operatore.
-    \item \texttt{components/PatientCard.tsx} $\rightarrow$ Card riepilogativa di un paziente.
-    \item \texttt{components/MoodEmoji.tsx} $\rightarrow$ Componente interattivo con emoji per il mood check.
-    \item \texttt{components/MemoryGame.tsx} $\rightarrow$ Logica e UI del gioco Memory Card.
-    \item \texttt{components/ExerciseList.tsx} $\rightarrow$ Lista esercizi con stato di completamento.
-    \item \texttt{components/DashboardChart.tsx} $\rightarrow$ Grafico riutilizzabile per la dashboard (Recharts).
+    \item \textbf{\texttt{date.ts}:} contiene funzioni per ottenere la data corrente in formato ISO.
+    \item \textbf{\texttt{form.ts}:} contiene letture sicure e semplici dei valori di \texttt{FormData}.
+    \item \textbf{\texttt{metriche.ts}:} contiene il calcolo percentuale usato nelle metriche della dashboard.
+    \item \textbf{\texttt{paziente-client.ts}:} recupera l'id del paziente collegato all'utente autenticato.
 \end{itemize}
 
-\subsubsection{Lato Server (\texttt{lib/})}
-\begin{itemize}
-    \item \texttt{lib/supabase/client.ts} $\rightarrow$ Configurazione del client Supabase (browser).
-    \item \texttt{lib/supabase/server.ts} $\rightarrow$ Configurazione del client Supabase (server-side, con cookie).
-    \item \texttt{lib/actions/pazienti.ts} $\rightarrow$ Server Actions per operazioni CRUD sui pazienti.
-    \item \texttt{lib/actions/attivita.ts} $\rightarrow$ Server Actions per assegnazione e gestione attività.
-    \item \texttt{lib/actions/questionari.ts} $\rightarrow$ Server Actions per il mood check.
-    \item \texttt{lib/actions/giochi.ts} $\rightarrow$ Server Actions per il salvataggio risultati giochi.
-    \item \texttt{lib/schemas.ts} $\rightarrow$ Schemi di validazione Zod per i dati in ingresso.
-    \item \texttt{middleware.ts} $\rightarrow$ Middleware per la verifica della sessione autenticata e redirect per ruolo.
-\end{itemize}
+\subsection{Integrazione con Supabase}
 
-\newpage
+Supabase viene usato per due responsabilita' principali:
+
+\begin{enumerate}
+    \item \textbf{Autenticazione:} login, registrazione, sessione e recupero dell'utente corrente.
+    \item \textbf{Database:} lettura e modifica di \texttt{pazienti}, \texttt{farmaci}, \texttt{esercizi} e log giornalieri.
+\end{enumerate}
+
+Esempio semplificato di lettura dei pazienti dell'operatore:
+
+\begin{verbatim}
+const { data: pazienti } = await supabase
+  .from('pazienti')
+  .select('*')
+  .eq('operatore_id', operatore.id);
+\end{verbatim}
+
+Esempio semplificato di registrazione dell'umore:
+
+\begin{verbatim}
+await supabase
+  .from('umore_log')
+  .upsert({
+    paziente_id: pazienteId,
+    data: dataOggi,
+    valore: umore,
+  });
+\end{verbatim}
+
+\subsection{Suggerimento AI}
+
+Il suggerimento AI e' implementato in
+\texttt{src/app/api/ai/suggerimento-operatore/route.ts}. La pagina di dettaglio invia solo dati
+sintetici, come eta', stato del paziente, percentuale di aderenza ai farmaci, percentuale di
+completamento esercizi e ultimo umore. La route chiama Groq tramite \texttt{fetch} e restituisce
+una sola frase breve per l'operatore.
+
+La chiave \texttt{GROQ\_API\_KEY} resta sul server e non viene inviata al browser. Per mantenere
+il codice semplice, il controllo di accesso principale resta nella navigazione protetta e nelle
+query Supabase usate dalle pagine.
+
 \subsection{Sicurezza}
 
-\subsubsection{Autenticazione}
-Il sistema utilizza \textbf{Supabase Auth} per la gestione delle sessioni:
+La sicurezza e' gestita principalmente su tre livelli:
+
 \begin{itemize}
-    \item L'operatore accede tramite email e password.
-    \item Il paziente accede tramite \textbf{magic link} o codice PIN numerico, pensato per la semplicità d'uso.
-    \item Le sessioni sono gestite tramite JWT con refresh automatico. Il middleware Next.js verifica la validità ad ogni richiesta.
-    \item Le password sono hashate con \textbf{bcrypt} dal servizio Supabase Auth.
+    \item \textbf{Supabase Auth:} controlla identita', login, logout e sessione.
+    \item \textbf{Proxy Next.js:} protegge le pagine private e reindirizza gli utenti non autenticati.
+    \item \textbf{Row Level Security:} limita l'accesso ai dati nel database in base al ruolo e all'associazione operatore-paziente.
 \end{itemize}
 
-\subsubsection{Row Level Security (RLS)}
-La sicurezza a livello di dato è implementata con le policy RLS di PostgreSQL. Ogni tabella ha regole che garantiscono che un paziente possa vedere solo i propri dati e un operatore possa accedere solo ai dati dei pazienti a lui assegnati.
+Inoltre, le pagine server controllano i dati prima di mostrarli. Ad esempio, la pagina di dettaglio
+paziente verifica che il paziente richiesto appartenga all'operatore autenticato.
 
-\subsubsection{Conformità GDPR}
+\subsection{Scelte di semplicita'}
+
+Alcune scelte sono state fatte per rendere il progetto piu' facile da spiegare e mantenere:
+
 \begin{itemize}
-    \item \textbf{Minimizzazione dei dati:} si raccolgono solo i dati necessari.
-    \item \textbf{Consenso informato:} al primo accesso il paziente conferma il consenso al trattamento.
-    \item \textbf{Diritto alla cancellazione:} l'operatore può anonimizzare o eliminare i dati su richiesta.
-    \item \textbf{Crittografia:} tutte le comunicazioni avvengono su HTTPS (TLS 1.2+). Supabase cifra i dati anche a riposo.
-    \item \textbf{Istanza europea:} il progetto utilizza un server Supabase in regione EU.
+    \item niente backend separato, perche' Next.js e Supabase coprono gia' le necessita' del progetto;
+    \item niente librerie grafiche esterne, per mantenere lo stile controllato dal codice CSS;
+    \item poche funzioni helper, solo dove riducono codice duplicato;
+    \item route AI isolata, cosi' la logica di Groq non finisce dentro il componente React.
 \end{itemize}
 
 \newpage
