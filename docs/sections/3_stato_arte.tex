@@ -1,0 +1,113 @@
+\section{Stato dell'Arte, Analisi della Concorrenza e Analisi ``Make or Buy''}
+
+\subsection{Stato dell'Arte}
+Il settore dell'assistenza domiciliare per anziani dispone oggi di diverse soluzioni tecnologiche, ma ciascuna si concentra su un singolo aspetto: alcune puntano sulla stimolazione cognitiva, altre sul monitoraggio farmacologico, altre ancora sulla telemedicina. Nessuna offre una visione integrata come quella proposta da A.L.I.C.E.
+
+Le tecnologie su cui ci siamo concentrati sono:
+\begin{itemize}
+    \item \textbf{Serious Games e Gamification:} giochi digitali pensati per stimolare la memoria e l'attenzione. Diversi studi dimostrano che sessioni regolari di brain training possono rallentare il declino cognitivo negli anziani.
+    \item \textbf{Framework web moderni:} Next.js e Supabase permettono di realizzare interfacce responsive accessibili da qualsiasi dispositivo con un browser. In particolare Supabase offre un database PostgreSQL gestito con API auto-generate, autenticazione integrata e sicurezza a livello di riga.
+    \item \textbf{IoT e Wearable:} i dispositivi indossabili consentono il monitoraggio remoto dei parametri vitali, ma le interfacce esistenti non sono pensate per un'utenza anziana con bassa alfabetizzazione digitale.
+\end{itemize}
+
+\newpage
+\subsection{Analisi della Concorrenza}
+Abbiamo analizzato tre competitor principali presenti sul mercato, ognuno valido nel proprio ambito ma con limitazioni significative rispetto alla nostra proposta.
+
+\subsubsection{Lumosity}
+Lumosity è una delle piattaforme più note per il brain training. Offre una vasta gamma di giochi cognitivi con algoritmi adattivi che regolano la difficoltà in base alle performance. La qualità grafica è elevata e le meccaniche di gamification sono ben progettate. Tuttavia, Lumosity si concentra esclusivamente sulla dimensione cognitiva: non prevede alcuna integrazione con il monitoraggio fisico o emotivo del paziente, e soprattutto non offre strumenti per l'operatore sanitario. L'interfaccia, pensata per un pubblico giovane, risulta troppo complessa per l'utenza anziana.
+
+\subsubsection{MyTherapy}
+MyTherapy è un'applicazione focalizzata sull'aderenza terapeutica. Gestisce promemoria per i farmaci, consente il tracciamento dei parametri vitali e genera reportistica per il personale medico. È molto precisa nella gestione farmacologica, ma l'esperienza utente ha un taglio ``clinico'' che può generare ansia nel paziente anziano. Non prevede alcuna forma di stimolazione attiva delle capacità cognitive o fisiche, né dispone di strumenti per il monitoraggio emotivo.
+
+\subsubsection{ADiLife}
+ADiLife è un sistema professionale di teleassistenza per cliniche e strutture sanitarie. Dispone di hardware dedicato per la rilevazione dei parametri e offre un'infrastruttura robusta e sicura. I limiti principali sono l'interfaccia complessa e poco ``calda'', inadatta all'uso domestico da parte di anziani, e i costi elevati legati all'hardware e alle licenze professionali. Il focus è sull'emergenza e sulla patologia cronica grave, senza componenti di prevenzione.
+
+\paragraph{Sintesi comparativa}\mbox{}\\
+A.L.I.C.E. è l'unica soluzione in grado di coprire simultaneamente tutte le dimensioni rilevanti:
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{2.2cm}|c|c|c|c|c|}
+\hline
+\textbf{Piattaforma} & 
+\textbf{Brain Training} & 
+\textbf{Attività Fisica} & 
+\textbf{Mood Check} & 
+\textbf{Dashboard OS} & 
+\textbf{Gestione Sanitaria} \\
+\hline
+\textbf{Lumosity} & 
+\textcolor{green}{\checkmark} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} \\
+\hline
+\textbf{MyTherapy} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} & 
+Parziale & 
+\textcolor{green}{\checkmark} \\
+\hline
+\textbf{ADiLife} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} & 
+\textcolor{red}{$\times$} & 
+\textcolor{green}{\checkmark} & 
+\textcolor{green}{\checkmark} \\
+\hline
+\textbf{A.L.I.C.E.} & 
+\textcolor{green}{\checkmark} & 
+\textcolor{green}{\checkmark} & 
+\textcolor{green}{\checkmark} & 
+\textcolor{green}{\checkmark} & 
+\textcolor{green}{\checkmark} \\
+\hline
+\end{tabular}
+\caption{Confronto delle funzionalità tra A.L.I.C.E. e i principali competitor}
+\label{tab:confronto_competitor}
+\end{table}
+
+\newpage
+\subsection{Analisi ``Make or Buy''}
+Abbiamo valutato se fosse più conveniente sviluppare l'applicazione internamente o acquistare una soluzione esistente.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Criterio} & \textbf{Make (Sviluppo Interno)} & \textbf{Buy (Soluzione Commerciale)} \\
+\hline
+\textbf{Personalizzazione} & 
+Completa: interfaccia progettata ad hoc per anziani e operatori sanitari. & 
+Limitata: personalizzazioni parametriche insufficienti per le esigenze di accessibilità richieste. \\
+\hline
+\textbf{Costi iniziali} & 
+Bassi: tecnologie open source (Next.js, Supabase con piano gratuito). & 
+Elevati: licenze annuali per utente con costi crescenti. \\
+\hline
+\textbf{Integrazione} & 
+Nativa: cognitive, fisiche ed emotive in un'unica piattaforma. & 
+Frammentata: necessità di integrare più prodotti diversi. \\
+\hline
+\textbf{Manutenzione} & 
+A carico del team, con pieno controllo sul codice. & 
+Dipendente dal vendor e dalla sua roadmap commerciale. \\
+\hline
+\textbf{GDPR} & 
+Pieno controllo sui dati sanitari sensibili. & 
+Dipendente dal provider, spesso con server all'estero. \\
+\hline
+\end{tabularx}
+\caption{Analisi comparativa Make vs Buy}
+\label{tab:make_or_buy}
+\end{table}
+
+La scelta finale è ricaduta sull'opzione \textbf{Make}, principalmente perché nessuna soluzione commerciale copre simultaneamente tutte le dimensioni che A.L.I.C.E. propone (cognitiva, emotiva, fisica, gestionale). L'uso di tecnologie open source mantiene i costi contenuti e ci garantisce il pieno controllo sui dati sanitari.
+
+\newpage

@@ -1,0 +1,92 @@
+\section{Modello Architetturale}
+
+\subsection{Architettura Hardware}
+Il sistema A.L.I.C.E. è progettato per operare su un'infrastruttura \textbf{serverless/managed}, sfruttando Supabase come Backend-as-a-Service e Vercel per il deploy del frontend Next.js. Non è necessario gestire server fisici.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Componente} & \textbf{Servizio} & \textbf{Dettaglio} \\
+\hline
+Frontend / SSR & Vercel & Deploy automatico da repository Git \\
+\hline
+Database (PostgreSQL) & Supabase & Istanza PostgreSQL managed \\
+\hline
+Autenticazione & Supabase Auth & Magic link, email/password \\
+\hline
+API REST & Supabase (PostgREST) & API auto-generate dalle tabelle \\
+\hline
+Storage file & Supabase Storage & Bucket per immagini e risorse \\
+\hline
+\end{tabular}
+\caption{Infrastruttura cloud del sistema A.L.I.C.E.}
+\label{tab:infra_cloud}
+\end{table}
+
+I dispositivi client accedono tramite browser web. Il paziente anziano dovrebbe disporre di un tablet da almeno 10'' o un PC desktop; l'operatore sanitario può usare PC, laptop o tablet. Non è richiesta l'installazione di software aggiuntivo.
+
+\newpage
+\subsection{Architettura Software}
+L'architettura usa Next.js come framework full-stack e Supabase come backend gestito.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    tier/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=5pt, minimum width=12cm, minimum height=1.8cm, text centered},
+    comp/.style={rectangle, draw=gray, fill=white, thick, rounded corners=3pt, minimum width=3cm, minimum height=1cm, text centered, font=\small},
+    line/.style={thick, color=aliceblue, -{Stealth[length=3mm]}, dashed},
+    tierlabel/.style={font=\small\bfseries, text=aliceblue},
+]
+
+% Tier Frontend
+\node[tier] (presentation) at (0, 5.5) {};
+\node[tierlabel, above=0.1cm of presentation.north] {Frontend (Next.js)};
+\node[comp] at (-3.5, 5.5) {React / App Router};
+\node[comp] at (0, 5.5) {Server Components};
+\node[comp] at (3.5, 5.5) {CSS Modules};
+
+% Tier API
+\node[tier] (logic) at (0, 1.5) {};
+\node[tierlabel, above=0.1cm of logic.north] {API Layer (Next.js + Supabase)};
+\node[comp] at (-3.5, 1.5) {Route Handlers};
+\node[comp] at (0, 1.5) {Supabase Client};
+\node[comp] at (3.5, 1.5) {Supabase Auth};
+
+% Tier Supabase
+\node[tier] (data) at (0, -2.5) {};
+\node[tierlabel, above=0.1cm of data.north] {Backend-as-a-Service (Supabase)};
+\node[comp] at (-3, -2.5) {PostgreSQL};
+\node[comp] at (0, -2.5) {PostgREST API};
+\node[comp] at (3, -2.5) {Row Level Security};
+
+% Connessioni
+\draw[line] (presentation.south) -- node[right, xshift=8pt, font=\scriptsize, fill=white, inner sep=2pt] {Server Actions / fetch} (logic.north);
+\draw[line] (logic.south) -- node[right, xshift=8pt, font=\scriptsize, fill=white, inner sep=2pt] {Supabase JS Client (HTTPS)} (data.north);
+
+\end{tikzpicture}
+\caption{Architettura software del sistema A.L.I.C.E.}
+\label{fig:architettura}
+\end{figure}
+
+\subsubsection{Stack Tecnologico}
+\begin{itemize}
+    \item \textbf{Next.js 14+} $\rightarrow$ Framework React full-stack. App Router con routing basato su file system, Server Components per ridurre il JavaScript lato client, Server Actions per le mutazioni dati.
+    \item \textbf{React / React-DOM} $\rightarrow$ Libreria UI per la costruzione dei componenti.
+    \item \textbf{Supabase} $\rightarrow$ Backend-as-a-Service open source basato su PostgreSQL. Fornisce database managed, API auto-generate (PostgREST), autenticazione, Row Level Security e storage file.
+    \item \textbf{@supabase/supabase-js} $\rightarrow$ Client JavaScript per l'interazione con Supabase.
+    \item \textbf{@supabase/ssr} $\rightarrow$ Integrazione Supabase con il rendering server-side di Next.js.
+    \item \textbf{Recharts / Chart.js} $\rightarrow$ Librerie per grafici e visualizzazioni nella dashboard.
+    \item \textbf{React Icons} $\rightarrow$ Set di icone vettoriali.
+    \item \textbf{Zod} $\rightarrow$ Validazione e tipizzazione degli schemi dati.
+    \item \textbf{CSS Modules} $\rightarrow$ Styling con scope locale per componente.
+\end{itemize}
+
+\subsubsection{DBMS}
+Il database è \textbf{PostgreSQL 15}, gestito da Supabase. L'accesso avviene tramite le API auto-generate (PostgREST) per le operazioni CRUD standard, oppure tramite SQL diretto per operazioni complesse, stored procedures e policy RLS. PostgreSQL è stato scelto per la sua maturità, l'assenza di vendor lock-in e il supporto nativo a Row Level Security.
+
+\subsubsection{Browser e Sistemi Operativi Supportati}
+Essendo un'applicazione web, il sistema funziona su qualsiasi sistema operativo con un browser moderno. I browser supportati sono: Chrome 90+, Firefox 88+, Edge 90+, Safari 14+, Samsung Internet 14+. Il design responsive si adatta a schermi da 768$\times$1024 pixel (tablet) fino a risoluzioni Full HD e superiori.
+
+\newpage

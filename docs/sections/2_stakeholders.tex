@@ -1,0 +1,136 @@
+\section{Individuazione degli Stakeholder e dei Goal}
+
+\subsection{Stakeholder e Goal}
+
+L'analisi degli stakeholder ha identificato due attori principali che interagiscono con la piattaforma A.L.I.C.E.
+
+\textbf{Operatore Sanitario / Caregiver:} professionista responsabile dell'assistenza clinica e della pianificazione terapeutica. Può trattarsi di un medico, un infermiere o un caregiver professionale. Utilizza la piattaforma per gestire i pazienti, assegnare attività e monitorare il loro stato di salute.
+
+\textbf{Paziente Anziano:} utente fragile che fruisce dei servizi assistenziali dal proprio domicilio. Rappresenta il vincolo progettuale più stringente in termini di usabilità e accessibilità, data la scarsa familiarità con interfacce digitali complesse.
+
+\subsubsection{Goal Operatore Sanitario}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\begin{tabular}{|c|l|l|c|c|c|c|}
+\hline
+\textbf{Stakeholder} & \textbf{Goal} & \textbf{Subgoal} & \textbf{C} & \textbf{R} & \textbf{U} & \textbf{D} \\
+\hline
+\multirow{11}{*}{\textit{Operatore Sanitario}} 
+    & \multirow{4}{*}{Gestione pazienti} 
+        & \textit{Aggiungi nuovo paziente} & \checkmark & & & \\
+    & & \textit{Visualizza lista pazienti} & & \checkmark & & \\
+    & & \textit{Modifica dati paziente} & & & \checkmark & \\
+    & & \textit{Rimuovi paziente} & & & & \checkmark \\
+\cline{2-7}
+    & \multirow{2}{*}{Gestione attività} 
+        & \textit{Assegna esercizi a paziente} & \checkmark & & & \\
+    & & \textit{Visualizza attività assegnate} & & \checkmark & & \\
+\cline{2-7}
+    & \multirow{3}{*}{Monitoraggio} 
+        & \textit{Visualizza risultati cognitivi} & & \checkmark & & \\
+    & & \textit{Visualizza storico Mood Check} & & \checkmark & & \\
+    & & \textit{Visualizza aderenza terapeutica} & & \checkmark & & \\
+\cline{2-7}
+    & \multirow{2}{*}{Gestione contatti} 
+        & \textit{Aggiungi contatto emergenza} & \checkmark & & & \\
+    & & \textit{Modifica contatto emergenza} & & & \checkmark & \\
+\hline
+\end{tabular}
+\caption{Goal e operazioni CRUD dell'Operatore Sanitario}
+\label{tab:goal_operatore}
+\end{table}
+
+\subsubsection{Goal Paziente Anziano}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\begin{tabular}{|c|l|l|c|c|c|c|}
+\hline
+\textbf{Stakeholder} & \textbf{Goal} & \textbf{Subgoal} & \textbf{C} & \textbf{R} & \textbf{U} & \textbf{D} \\
+\hline
+\multirow{7}{*}{\textit{Paziente Anziano}} 
+    & Accesso & \textit{Login semplificato} & & \checkmark & & \\
+\cline{2-7}
+    & Piano giornaliero & \textit{Visualizza attività del giorno} & & \checkmark & & \\
+\cline{2-7}
+    & Giochi cognitivi & \textit{Esegui Memory Card} & \checkmark & \checkmark & & \\
+\cline{2-7}
+    & \multirow{2}{*}{Mood Check} 
+        & \textit{Compila questionario umore} & \checkmark & & & \\
+    & & \textit{Visualizza storico personale} & & \checkmark & & \\
+\cline{2-7}
+    & Esercizi fisici & \textit{Visualizza esercizi assegnati} & & \checkmark & & \\
+\cline{2-7}
+    & Farmaci & \textit{Conferma assunzione farmaco} & & & \checkmark & \\
+\hline
+\end{tabular}
+\caption{Goal e operazioni CRUD del Paziente Anziano}
+\label{tab:goal_paziente}
+\end{table}
+
+\newpage
+\subsection{Diagramma di Contesto}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3.5cm, minimum height=1.2cm, text centered, font=\small\bfseries},
+    system/.style={rectangle, draw=aliceblue, fill=aliceblue!15, thick, rounded corners=8pt, minimum width=5cm, minimum height=2.5cm, text centered, font=\large\bfseries, text=aliceblue},
+    flow/.style={-{Stealth[length=3mm]}, thick, color=aliceblue},
+    flowlabel/.style={font=\scriptsize, fill=white, inner sep=2pt},
+]
+
+% Sistema centrale
+\node[system] (alice) {A.L.I.C.E.};
+
+% Entità esterne
+\node[entity, above left=2.5cm and 3cm of alice] (caregiver) {Operatore\\Sanitario};
+\node[entity, above right=2.5cm and 3cm of alice] (paziente) {Paziente\\Anziano};
+\node[entity, below=2.5cm of alice] (db) {Supabase\\(PostgreSQL)};
+
+% Flussi Caregiver -> Sistema
+\draw[flow] (caregiver.south) -- node[flowlabel, left, align=right] {Dati pazienti,\\Piani terapeutici,\\Esercizi assegnati} (alice.north west);
+\draw[flow] (alice.north west) ++(0.3,0.3) -- node[flowlabel, right, align=left] {Report aderenza,\\Risultati cognitivi,\\Mood check} (caregiver.south east);
+
+% Flussi Paziente -> Sistema
+\draw[flow] (paziente.south) -- node[flowlabel, right, align=left] {Risposte questionari,\\Risultati giochi,\\Conferme farmaci} (alice.north east);
+\draw[flow] (alice.north east) ++(-0.3,0.3) -- node[flowlabel, left, align=right] {Piano giornaliero,\\Promemoria,\\Esercizi} (paziente.south west);
+
+% Flussi DB
+\draw[flow] (alice.south) -- node[flowlabel, right] {Supabase Client} (db.north);
+\draw[flow] (db.north east) -- node[flowlabel, right] {Dati persistenti} (alice.south east);
+
+\end{tikzpicture}
+\caption{Diagramma di contesto del sistema A.L.I.C.E.}
+\label{fig:contesto}
+\end{figure}
+
+\newpage
+\subsection{Scambio di Valore}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Attore} & \textbf{Cosa offre al sistema} & \textbf{Cosa riceve dal sistema} \\
+\hline
+\textbf{Operatore Sanitario} & 
+Dati anagrafici dei pazienti; piani terapeutici personalizzati; assegnazione degli esercizi fisici e cognitivi. & 
+Quadro sintetico dello stato di ciascun paziente; report di aderenza terapeutica; storico dei risultati cognitivi; riduzione del carico amministrativo. \\
+\hline
+\textbf{Paziente Anziano} & 
+Informazioni sul proprio stato emotivo e fisico (Mood Check); risultati delle attività cognitive (Memory Card); conferma di assunzione farmaci. & 
+Piano giornaliero strutturato; promemoria automatici per i farmaci; stimolazione cognitiva attraverso giochi; senso di autonomia. \\
+\hline
+\end{tabularx}
+\caption{Analisi dello scambio di valore tra gli attori e il sistema A.L.I.C.E.}
+\label{tab:scambio_valore}
+\end{table}
+
+\newpage

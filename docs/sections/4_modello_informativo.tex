@@ -1,0 +1,199 @@
+\section{Modello Informativo}
+
+\subsection{Diagramma EER}
+Il diagramma Entity-Enhanced Relationship descrive la struttura concettuale della base di dati. Le entità sono state individuate a partire dall'analisi dei requisiti funzionali.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3cm, minimum height=1cm, text centered, font=\small\bfseries},
+    attribute/.style={ellipse, draw=gray, fill=gray!10, thin, minimum width=1.5cm, font=\tiny, text centered},
+    relation/.style={diamond, draw=aliceblue, fill=aliceblue!20, thick, minimum width=1.5cm, minimum height=1cm, text centered, font=\tiny\bfseries, aspect=2},
+    isa/.style={regular polygon, regular polygon sides=3, draw=aliceblue, fill=aliceblue!20, thick, minimum size=1cm, font=\tiny\bfseries},
+    line/.style={thick, color=aliceblue},
+]
+
+% Entità principale: Utente (generalizzazione)
+\node[entity] (utente) at (0, 0) {Utente};
+
+% ISA
+\node[isa] (isa) at (0, -2) {ISA};
+\draw[line] (utente) -- (isa);
+
+% Sottotipi
+\node[entity] (paziente) at (-4, -4) {Paziente};
+\node[entity] (caregiver) at (4, -4) {Caregiver};
+\draw[line] (isa) -- (paziente);
+\draw[line] (isa) -- (caregiver);
+
+% Entità Attività
+\node[entity] (attivita) at (-8, -2) {Attivit\`a};
+
+% Entità Esercizio
+\node[entity] (esercizio) at (-8, -6) {Esercizio};
+
+% Entità RisultatoGioco
+\node[entity] (risultato) at (0, -7) {RisultatoGioco};
+
+% Entità Questionario
+\node[entity] (questionario) at (8, -2) {Questionario};
+
+% Entità ContattoEmergenza
+\node[entity] (contatto) at (-4, -8.5) {ContattoEmergenza};
+
+% Relazione: Caregiver ASSEGNA Attività
+\node[relation] (assegna) at (0, -2) {};
+\node[relation] (r_assegna) at (-4, -1) {ASSEGNA};
+\draw[line] (caregiver) -- node[above, font=\tiny] {1} (r_assegna);
+\draw[line] (r_assegna) -- node[above, font=\tiny] {N} (attivita);
+
+% Relazione: Attività CONTIENE Esercizio
+\node[relation] (r_contiene) at (-8, -4) {CONTIENE};
+\draw[line] (attivita) -- node[right, font=\tiny] {1} (r_contiene);
+\draw[line] (r_contiene) -- node[right, font=\tiny] {N} (esercizio);
+
+% Relazione: Paziente SVOLGE Attività
+\node[relation] (r_svolge) at (-6, -3) {SVOLGE};
+\draw[line] (paziente) -- node[above, font=\tiny] {1} (r_svolge);
+\draw[line] (r_svolge) -- node[above, font=\tiny] {N} (attivita);
+
+% Relazione: Paziente GENERA RisultatoGioco
+\node[relation] (r_genera) at (-2, -5.5) {GENERA};
+\draw[line] (paziente) -- node[left, font=\tiny] {1} (r_genera);
+\draw[line] (r_genera) -- node[left, font=\tiny] {N} (risultato);
+
+% Relazione: Paziente COMPILA Questionario
+\node[relation] (r_compila) at (4, -1) {COMPILA};
+\draw[line] (paziente) ++ (0, 0) -- node[above, font=\tiny] {} (r_compila);
+\draw[line] (r_compila) -- node[above, font=\tiny] {N} (questionario);
+
+% Relazione: Paziente HA ContattoEmergenza
+\node[relation] (r_ha) at (-4, -6.5) {HA};
+\draw[line] (paziente) -- node[left, font=\tiny] {1} (r_ha);
+\draw[line] (r_ha) -- node[left, font=\tiny] {N} (contatto);
+
+% Relazione: Caregiver MONITORA Paziente
+\node[relation] (r_monitora) at (0, -4) {MONITORA};
+\draw[line] (caregiver) -- node[above, font=\tiny] {1} (r_monitora);
+\draw[line] (r_monitora) -- node[above, font=\tiny] {N} (paziente);
+
+\end{tikzpicture}
+}
+\caption{Diagramma EER del sistema A.L.I.C.E.}
+\label{fig:eer}
+\end{figure}
+
+\paragraph{Descrizione delle entità}
+\begin{itemize}
+    \item \textbf{Utente:} entità generalizzata. Attributi: \texttt{id}, \texttt{nome}, \texttt{cognome}, \texttt{email}, \texttt{password\_hash}, \texttt{ruolo}, \texttt{data\_registrazione}.
+    \item \textbf{Paziente:} specializzazione di Utente. Attributi aggiuntivi: \texttt{data\_nascita}, \texttt{codice\_fiscale}, \texttt{stato\_clinico}, \texttt{note\_mediche}, \texttt{id\_caregiver} (FK).
+    \item \textbf{Caregiver:} specializzazione di Utente. Attributi aggiuntivi: \texttt{specializzazione}, \texttt{struttura\_appartenenza}, \texttt{telefono}.
+    \item \textbf{Attivit\`a:} piano di esercizi assegnato. Attributi: \texttt{id}, \texttt{tipologia}, \texttt{data\_assegnazione}, \texttt{data\_scadenza}, \texttt{stato}, \texttt{id\_paziente} (FK), \texttt{id\_caregiver} (FK).
+    \item \textbf{Esercizio:} singolo esercizio. Attributi: \texttt{id}, \texttt{nome}, \texttt{descrizione}, \texttt{durata\_minuti}, \texttt{difficolta}, \texttt{id\_attivita} (FK).
+    \item \textbf{RisultatoGioco:} esito di una sessione di gioco cognitivo. Attributi: \texttt{id}, \texttt{tipo\_gioco}, \texttt{punteggio}, \texttt{tempo\_completamento}, \texttt{errori}, \texttt{data\_esecuzione}, \texttt{id\_paziente} (FK).
+    \item \textbf{Questionario:} risposta al Mood \& Health Check. Attributi: \texttt{id}, \texttt{umore}, \texttt{stato\_fisico}, \texttt{note\_libere}, \texttt{data\_compilazione}, \texttt{id\_paziente} (FK).
+    \item \textbf{ContattoEmergenza:} referente da contattare in caso di necessità. Attributi: \texttt{id}, \texttt{nome}, \texttt{cognome}, \texttt{telefono}, \texttt{relazione}, \texttt{id\_paziente} (FK).
+\end{itemize}
+
+\newpage
+\subsection{Stima Dimensionale del Database}
+
+\subsubsection{Stima per entità}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|r|l|}
+\hline
+\textbf{Tabella} & \textbf{Byte/riga (stimati)} & \textbf{Note} \\
+\hline
+Utente & 512 & Dati anagrafici + hash password \\
+\hline
+Paziente & 1.024 & Estensione Utente + stato clinico + note \\
+\hline
+Caregiver & 640 & Estensione Utente + dati professionali \\
+\hline
+Attivit\`a & 256 & Metadati piano + FK \\
+\hline
+Esercizio & 512 & Descrizione + parametri \\
+\hline
+RisultatoGioco & 128 & Dati numerici compatti \\
+\hline
+Questionario & 256 & Scala + testo breve \\
+\hline
+ContattoEmergenza & 256 & Dati anagrafici referente \\
+\hline
+\end{tabular}
+\caption{Stima della dimensione media per riga di ciascuna tabella}
+\label{tab:stima_byte}
+\end{table}
+
+\subsubsection{Tabella di popolamento e crescita}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|r|r|r|r|}
+\hline
+\textbf{Tabella} & \textbf{N. righe (1° mese)} & \textbf{Byte/riga} & \textbf{Dim. iniziale} & \textbf{Crescita annua} \\
+\hline
+Utente & 105 & 512 & $\sim$ 53 KB & trascurabile \\
+\hline
+Paziente & 100 & 1.024 & $\sim$ 100 KB & trascurabile \\
+\hline
+Caregiver & 5 & 640 & $\sim$ 3 KB & trascurabile \\
+\hline
+Attivit\`a & 500 & 256 & $\sim$ 125 KB & $\sim$ 750 KB \\
+\hline
+Esercizio & 1.500 & 512 & $\sim$ 750 KB & $\sim$ 4,5 MB \\
+\hline
+RisultatoGioco & 3.000 & 128 & $\sim$ 375 KB & $\sim$ 4,5 MB \\
+\hline
+Questionario & 3.000 & 256 & $\sim$ 750 KB & $\sim$ 9 MB \\
+\hline
+ContattoEmergenza & 200 & 256 & $\sim$ 50 KB & trascurabile \\
+\hline
+\multicolumn{3}{|r|}{\textbf{Totale stimato (primo mese)}} & $\sim$ \textbf{2,2 MB} & $\sim$ \textbf{19 MB/anno} \\
+\hline
+\end{tabular}
+\caption{Stima del popolamento iniziale e crescita annuale del database}
+\label{tab:popolamento}
+\end{table}
+
+La dimensione è gestibile con il piano base di Supabase (500 MB inclusi nel piano gratuito).
+
+\newpage
+\subsubsection{Modello di visibilità}
+Il modello di visibilità definisce le policy di accesso ai dati in base al ruolo dell'utente autenticato. Il sistema implementa un modello \textbf{RBAC} (Role-Based Access Control) a due livelli: ruolo (operatore vs paziente) e ownership (ogni utente accede solo ai dati di propria competenza).
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Risorsa} & \textbf{Operatore Sanitario} & \textbf{Paziente Anziano} \\
+\hline
+Profilo proprio & Lettura / Modifica & Lettura \\
+\hline
+Lista pazienti & Lettura / Modifica / Creazione & Non visibile \\
+\hline
+Contatti emergenza & Lettura / Modifica / Creazione & Lettura (solo propri) \\
+\hline
+Attivit\`a assegnate & Lettura / Creazione / Modifica & Lettura (solo proprie) \\
+\hline
+Esercizi & Lettura / Creazione & Lettura / Esecuzione \\
+\hline
+Risultati giochi & Lettura (tutti i pazienti propri) & Lettura (solo propri) \\
+\hline
+Questionari compilati & Lettura (tutti i pazienti propri) & Lettura / Creazione (solo propri) \\
+\hline
+Dashboard analitica & Accesso completo & Non visibile \\
+\hline
+\end{tabular}
+\caption{Matrice di visibilità dei dati per ruolo}
+\label{tab:visibilita}
+\end{table}
+
+\newpage

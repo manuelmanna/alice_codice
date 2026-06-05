@@ -1,0 +1,146 @@
+\section{Modello di Navigazione}
+
+\subsection{Struttura delle pagine}
+Il sistema A.L.I.C.E. prevede due viste completamente separate: una per l'operatore sanitario e una per il paziente anziano. L'accesso avviene attraverso una pagina di login comune, dalla quale l'utente viene indirizzato alla vista appropriata in base al proprio ruolo.
+
+\subsection{Site Map -- Vista Operatore Sanitario}
+L'operatore accede a un'interfaccia con navigazione laterale (sidebar) che fornisce accesso diretto a tutte le sezioni.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    page/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3.2cm, minimum height=0.8cm, text centered, font=\scriptsize\bfseries},
+    subpage/.style={rectangle, draw=gray, fill=gray!8, thin, rounded corners=2pt, minimum width=2.8cm, minimum height=0.6cm, text centered, font=\tiny},
+    line/.style={thick, color=aliceblue, -{Stealth[length=2mm]}},
+    node distance=0.4cm,
+]
+
+% Login
+\node[page] (login) at (0, 0) {Login};
+
+% Dashboard
+\node[page, below=1cm of login] (dashboard) {Dashboard};
+\draw[line] (login) -- (dashboard);
+
+% Sezioni principali
+\node[page, below left=1.2cm and 4cm of dashboard] (pazienti) {Gestione Pazienti};
+\node[page, below left=1.2cm and 1cm of dashboard] (attivita) {Attivit\`a};
+\node[page, below right=1.2cm and 1cm of dashboard] (monitoraggio) {Monitoraggio};
+\node[page, below right=1.2cm and 4cm of dashboard] (profilo) {Profilo};
+
+\draw[line] (dashboard) -- (pazienti);
+\draw[line] (dashboard) -- (attivita);
+\draw[line] (dashboard) -- (monitoraggio);
+\draw[line] (dashboard) -- (profilo);
+
+% Sotto-pagine Pazienti
+\node[subpage, below=0.4cm of pazienti] (lista) {Lista Pazienti};
+\node[subpage, below=0.3cm of lista] (dettaglio) {Dettaglio Paziente};
+\node[subpage, below=0.3cm of dettaglio] (nuovo) {Nuovo Paziente};
+\node[subpage, below=0.3cm of nuovo] (contatti) {Contatti Emergenza};
+
+\draw[line, gray, thin] (pazienti) -- (lista);
+\draw[line, gray, thin] (lista) -- (dettaglio);
+\draw[line, gray, thin] (dettaglio) -- (nuovo);
+\draw[line, gray, thin] (nuovo) -- (contatti);
+
+% Sotto-pagine Attività
+\node[subpage, below=0.4cm of attivita] (assegna) {Assegna Esercizi};
+\node[subpage, below=0.3cm of assegna] (piano) {Piani Terapeutici};
+
+\draw[line, gray, thin] (attivita) -- (assegna);
+\draw[line, gray, thin] (assegna) -- (piano);
+
+% Sotto-pagine Monitoraggio
+\node[subpage, below=0.4cm of monitoraggio] (mood) {Mood Check};
+\node[subpage, below=0.3cm of mood] (cognitivo) {Risultati Cognitivi};
+\node[subpage, below=0.3cm of cognitivo] (aderenza) {Aderenza Terapia};
+
+\draw[line, gray, thin] (monitoraggio) -- (mood);
+\draw[line, gray, thin] (mood) -- (cognitivo);
+\draw[line, gray, thin] (cognitivo) -- (aderenza);
+
+\end{tikzpicture}
+\caption{Site Map -- Vista Operatore Sanitario}
+\label{fig:sitemap_caregiver}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Dashboard:} panoramica con widget informativi (pazienti attivi, alert, statistiche di aderenza, mood check del giorno).
+    \item \textbf{Gestione Pazienti:} CRUD completo con ricerca, filtri, dettaglio paziente e contatti di emergenza.
+    \item \textbf{Attivit\`a:} pianificazione terapeutica con selezione esercizi da un catalogo.
+    \item \textbf{Monitoraggio:} grafici e tabelle con risultati Mood Check, punteggi cognitivi e aderenza.
+    \item \textbf{Profilo:} gestione del proprio account operatore.
+\end{itemize}
+
+\newpage
+\subsection{Site Map -- Vista Paziente Anziano}
+L'interfaccia del paziente segue un modello lineare con pochi elementi per pagina e pulsanti grandi. La navigazione avviene attraverso un menu con icone grandi e testi leggibili.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    page/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3cm, minimum height=0.8cm, text centered, font=\scriptsize\bfseries},
+    subpage/.style={rectangle, draw=gray, fill=gray!8, thin, rounded corners=2pt, minimum width=2.5cm, minimum height=0.6cm, text centered, font=\tiny},
+    line/.style={thick, color=aliceblue, -{Stealth[length=2mm]}},
+]
+
+% Login semplificato
+\node[page] (login) at (0, 0) {Login Semplificato};
+
+% Home
+\node[page, below=1cm of login] (home) {Home / Piano Giornaliero};
+\draw[line] (login) -- (home);
+
+% Sezioni principali
+\node[page, below left=1.2cm and 3cm of home] (esercizi) {Esercizi Fisici};
+\node[page, below left=1.2cm and 0cm of home] (giochi) {Giochi Cognitivi};
+\node[page, below right=1.2cm and 0cm of home] (mood) {Mood Check};
+\node[page, below right=1.2cm and 3cm of home] (farmaci) {Farmaci};
+
+\draw[line] (home) -- (esercizi);
+\draw[line] (home) -- (giochi);
+\draw[line] (home) -- (mood);
+\draw[line] (home) -- (farmaci);
+
+% Sotto-pagine Esercizi
+\node[subpage, below=0.5cm of esercizi] (lista_es) {Lista Esercizi};
+\node[subpage, below=0.3cm of lista_es] (esecuzione) {Esecuzione Guidata};
+\draw[line, gray, thin] (esercizi) -- (lista_es);
+\draw[line, gray, thin] (lista_es) -- (esecuzione);
+
+% Sotto-pagine Giochi
+\node[subpage, below=0.5cm of giochi] (memory) {Memory Card};
+\node[subpage, below=0.3cm of memory] (risultato) {Risultato};
+\draw[line, gray, thin] (giochi) -- (memory);
+\draw[line, gray, thin] (memory) -- (risultato);
+
+% Sotto-pagine Mood
+\node[subpage, below=0.5cm of mood] (compilazione) {Compilazione};
+\node[subpage, below=0.3cm of compilazione] (conferma) {Conferma Invio};
+\draw[line, gray, thin] (mood) -- (compilazione);
+\draw[line, gray, thin] (compilazione) -- (conferma);
+
+% Sotto-pagine Farmaci
+\node[subpage, below=0.5cm of farmaci] (promemoria) {Promemoria};
+\node[subpage, below=0.3cm of promemoria] (confermaf) {Conferma Assunzione};
+\draw[line, gray, thin] (farmaci) -- (promemoria);
+\draw[line, gray, thin] (promemoria) -- (confermaf);
+
+\end{tikzpicture}
+\caption{Site Map -- Vista Paziente Anziano}
+\label{fig:sitemap_paziente}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Login Semplificato:} accesso con codice numerico, senza password complesse.
+    \item \textbf{Home / Piano Giornaliero:} card grandi e colorate con le attività del giorno e il loro stato.
+    \item \textbf{Esercizi Fisici:} lista esercizi con istruzioni semplificate.
+    \item \textbf{Giochi Cognitivi:} accesso diretto al Memory Card, con carte grandi e feedback gratificanti.
+    \item \textbf{Mood Check:} emoji grandi per comunicare lo stato d'animo.
+    \item \textbf{Farmaci:} elenco farmaci del giorno con pulsante di conferma per ciascuno.
+\end{itemize}
+
+Principi di navigazione: massimo 2 livelli di profondità, pulsante ``Torna indietro'' sempre visibile, nessun menu hamburger, feedback visivo immediato per ogni azione.
+
+\newpage

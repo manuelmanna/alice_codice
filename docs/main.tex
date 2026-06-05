@@ -1,0 +1,122 @@
+\documentclass[12pt, a4paper]{article}
+
+% Pacchetti base essenziali
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{multirow}
+
+% Configurazione margini
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=30mm,
+    bottom=20mm,
+    headheight=1.5cm,
+    headsep=10mm,
+    footskip=15mm,
+}
+
+% Rimuove l'indentazione dei paragrafi
+\setlength{\parindent}{0pt}
+
+% Configurazione header e footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\textbf{A.L.I.C.E. -- Documentazione di Progetto}}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyfoot[L]{Gruppo Flow}
+\fancyfoot[R]{Pagina \thepage\ di \pageref{LastPage}}
+
+\fancypagestyle{plain}{%
+    \fancyhf{}
+    \fancyhead[C]{\textbf{A.L.I.C.E. -- Documentazione di Progetto}}
+    \renewcommand{\headrulewidth}{0.4pt}
+    \fancyfoot[L]{Gruppo Flow}
+    \fancyfoot[R]{Pagina \thepage\ di \pageref{LastPage}}
+}
+
+% Colori personalizzati
+\definecolor{aliceblue}{RGB}{0, 102, 153}
+\definecolor{alicelight}{RGB}{230, 242, 250}
+
+% Configurazione hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=aliceblue,
+    urlcolor=aliceblue,
+    citecolor=aliceblue,
+}
+
+\begin{document}
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \vspace*{3cm}
+
+  {\Huge\bfseries A.L.I.C.E.\par}
+  \vspace{0.5cm}
+  {\large\textit{Assistente Intelligente per la Cura degli Elderly}\par}
+  \vspace{2cm}
+
+  {\LARGE Documentazione di Progetto\par}
+  {\LARGE\bfseries Piattaforma Web per il Monitoraggio\par}
+  {\LARGE\bfseries Remoto di Anziani\par}
+  \vspace{2cm}
+
+  {\large Anno Accademico:\par}
+  {\large 2025/2026\par}
+  \vspace{1cm}
+
+  {\large Esame:\par}
+  {\large PROGRAMMAZIONE PER IL WEB\par}
+  \vspace{1.5cm}
+
+  {\large\bfseries Realizzato da\par}
+  \vspace{0.5cm}
+  \begin{tabular}{l l l l}
+    Manuel  & Manna         & 803080 & m.manna6@studenti.uniba.it       \\
+    Alessio & Mininni       & 798191 & a.mininni14@studenti.uniba.it    \\
+    Andrius & Tamuliunaite & 800256 & a.tamuliunaite@studenti.uniba.it \\
+  \end{tabular}
+
+  \vspace{1cm}
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+% Inclusione delle sezioni
+\input{sections/1_descrizione}
+\input{sections/2_stakeholders}
+\input{sections/3_stato_arte}
+\input{sections/4_modello_informativo}
+\input{sections/5_modello_navigazione}
+\input{sections/6_modello_architetturale}
+\input{sections/7_aspetti_implementativi}
+\input{sections/8_test}
+\input{sections/9_conclusioni}
+\input{sections/10_raci}
+
+\end{document}
