@@ -32,52 +32,7 @@ API & Route non navigabile come pagina, usata dal codice applicativo. \\
 
 \begin{figure}[H]
 \centering
-\resizebox{0.98\textwidth}{!}{
-\begin{tikzpicture}[
-    route/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, text width=3.7cm, minimum height=0.85cm, align=center, font=\scriptsize},
-    role/.style={rectangle, draw=alicegreen, fill=alicegreen!10, thick, rounded corners=3pt, text width=3.4cm, minimum height=0.85cm, align=center, font=\scriptsize\bfseries},
-    api/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=3pt, text width=4cm, minimum height=0.85cm, align=center, font=\scriptsize},
-    line/.style={thick, color=aliceblue, -{Stealth[length=2.3mm]}},
-    apiLine/.style={thick, dashed, color=aliceorange, -{Stealth[length=2.3mm]}},
-]
-
-\node[route] (home) at (0, 0) {\texttt{/}\\Landing\\VP};
-
-\node[role] (opArea) at (-5.2, -1.55) {Area Operatore};
-\node[role] (pzArea) at (5.2, -1.55) {Area Paziente};
-\draw[line] (home) -- (opArea);
-\draw[line] (home) -- (pzArea);
-
-\node[route] (opLogin) at (-8.3, -3.2) {\texttt{/operatore/login}\\Login\\VF};
-\node[route] (opReg) at (-5.2, -3.2) {\texttt{/operatore/registrati}\\Registrazione\\VF};
-\node[route] (opDash) at (-2.1, -3.2) {\texttt{/operatore/dashboard}\\Dashboard\\VD};
-\draw[line] (opArea) -- (opLogin);
-\draw[line] (opArea) -- (opReg);
-\draw[line] (opArea) -- (opDash);
-
-\node[route] (opDetail) at (-2.1, -4.9) {\texttt{/operatore/dashboard/pazienti/[id]}\\Dettaglio paziente\\VD};
-\node[route] (opManage) at (-2.1, -6.6) {\texttt{?tab=gestisci}\\Gestione dati, farmaci, esercizi\\VG};
-\node[api] (aiApi) at (-6.7, -5.75) {\texttt{/api/ai/suggerimento-operatore}\\Suggerimento AI\\API};
-\draw[line] (opDash) -- (opDetail);
-\draw[line] (opDetail) -- (opManage);
-\draw[apiLine] (opDetail) -- (aiApi);
-
-\node[route] (pzLogin) at (2.1, -3.2) {\texttt{/paziente/login}\\Login\\VF};
-\node[route] (pzReg) at (5.2, -3.2) {\texttt{/paziente/registrati}\\Registrazione\\VF};
-\node[route] (pzHome) at (8.3, -3.2) {\texttt{/paziente/home}\\Home\\VA};
-\draw[line] (pzArea) -- (pzLogin);
-\draw[line] (pzArea) -- (pzReg);
-\draw[line] (pzArea) -- (pzHome);
-
-\node[route] (pzMood) at (4.3, -4.9) {\texttt{/paziente/umore}\\Umore\\VA};
-\node[route] (pzEx) at (7.4, -4.9) {\texttt{/paziente/esercizi}\\Esercizi\\VA};
-\node[route] (pzMed) at (10.5, -4.9) {\texttt{/paziente/farmaci}\\Farmaci\\VA};
-\draw[line] (pzHome) -- (pzMood);
-\draw[line] (pzHome) -- (pzEx);
-\draw[line] (pzHome) -- (pzMed);
-
-\end{tikzpicture}
-}
+\includegraphics[width=0.98\textwidth]{diagrams/figura_7_albero_navigazione_reale.png}
 \caption{Albero di navigazione aggiornato alla struttura reale delle pagine}
 \label{fig:navigazione-reale}
 \end{figure}

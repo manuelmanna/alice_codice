@@ -45,36 +45,7 @@ Questa architettura riduce il numero di file necessari rispetto a un backend sep
 
 \begin{figure}[H]
 \centering
-\resizebox{0.98\textwidth}{!}{
-\begin{tikzpicture}[
-    layer/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=4pt, minimum width=11cm, minimum height=1.35cm, align=center},
-    comp/.style={rectangle, draw=gray, fill=white, thick, rounded corners=3pt, minimum width=2.7cm, minimum height=0.75cm, align=center, font=\scriptsize},
-    ext/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=3pt, minimum width=4.2cm, minimum height=0.85cm, align=center, font=\scriptsize\bfseries},
-    line/.style={thick, color=aliceblue, -{Stealth[length=2.5mm]}},
-]
-
-\node[layer] (browser) at (0, 0) {Browser: Operatore e Paziente};
-
-\node[layer] (next) at (0, -2) {};
-\node[comp] at (-3.6, -2) {App Router\\pagine e layout};
-\node[comp] at (-1.2, -2) {Server\\Components};
-\node[comp] at (1.2, -2) {Client\\Components};
-\node[comp] at (3.6, -2) {\texttt{proxy.ts}\\redirect};
-
-\node[layer] (server) at (0, -4) {};
-\node[comp] at (-2.8, -4) {Server Actions\\CRUD e auth};
-\node[comp] at (0, -4) {Route Handler\\AI};
-\node[comp] at (2.8, -4) {Helper\\\texttt{src/lib}};
-
-\node[ext] (supabase) at (-3.0, -6) {Supabase\\Auth + PostgreSQL + RLS};
-\node[ext] (groq) at (3.0, -6) {Groq API\\Suggerimento operatore};
-
-\draw[line] (browser) -- (next);
-\draw[line] (next) -- (server);
-\draw[line] (server) -- (supabase);
-\draw[line] (server) -- (groq);
-\end{tikzpicture}
-}
+\includegraphics[width=0.78\textwidth]{diagrams/figura_8_architettura_software_livelli.png}
 \caption{Architettura software a livelli del sistema A.L.I.C.E.}
 \label{fig:architettura-software}
 \end{figure}

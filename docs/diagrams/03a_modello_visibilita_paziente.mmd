@@ -11,65 +11,29 @@ flowchart LR
 
     %% --- Entita' con matrice RLS per Paziente ---
 
-    E_Prof["profiles<br>===<br>SS<br>_ R U _"]:::entity
-    A_Prof["id (PK)<br>role<br>email<br>nome_completo<br>created_at<br>updated_at"]:::note
-    A_Prof@{ shape: comment }
-    E_Prof -.- A_Prof
-
+    E_Prof["profiles<br>===<br>SS<br>C R U _"]:::entity
     E_Op["operatori<br>===<br>ALL<br>_ R _ _"]:::entity
-    A_Op["id (PK)<br>profile_id (FK, UNIQUE)<br>codice_operatore (UNIQUE)<br>nome_completo<br>email<br>struttura_sanitaria<br>telefono<br>created_at<br>updated_at"]:::note
-    A_Op@{ shape: comment }
-    E_Op -.- A_Op
-
-    E_Paz["pazienti<br>===<br>SS<br>_ R _ _"]:::entity
-    A_Paz["id (PK)<br>profile_id (FK, UNIQUE)<br>operatore_id (FK)<br>nome_completo<br>email<br>eta<br>telefono<br>indirizzo<br>contatto_emergenza<br>stato<br>created_at<br>updated_at"]:::note
-    A_Paz@{ shape: comment }
-    E_Paz -.- A_Paz
-
+    E_Paz["pazienti<br>===<br>SS<br>C R _ _"]:::entity
     E_Far["farmaci<br>===<br>SS<br>_ R _ _"]:::entity
-    A_Far["id (PK)<br>paziente_id (FK)<br>nome<br>dosaggio<br>fascia<br>orario<br>attivo<br>created_at<br>updated_at"]:::note
-    A_Far@{ shape: comment }
-    E_Far -.- A_Far
-
     E_FarLog["farmaci_log<br>===<br>SS<br>C R U _"]:::entity
-    A_FarLog["id (PK)<br>farmaco_id (FK)<br>paziente_id (FK)<br>data<br>preso<br>preso_at<br>created_at<br>UNIQUE (farmaco_id, data)"]:::note
-    A_FarLog@{ shape: comment }
-    E_FarLog -.- A_FarLog
-
     E_Es["esercizi<br>===<br>SS<br>_ R _ _"]:::entity
-    A_Es["id (PK)<br>paziente_id (FK)<br>nome<br>durata_minuti<br>frequenza<br>attivo<br>created_at<br>updated_at"]:::note
-    A_Es@{ shape: comment }
-    E_Es -.- A_Es
-
     E_EsStep["esercizi_step<br>===<br>SS<br>_ R _ _"]:::entity
-    A_EsStep["id (PK)<br>esercizio_id (FK)<br>numero_step<br>istruzione<br>created_at<br>UNIQUE (esercizio_id, numero_step)"]:::note
-    A_EsStep@{ shape: comment }
-    E_EsStep -.- A_EsStep
-
     E_EsLog["esercizi_log<br>===<br>SS<br>C R U _"]:::entity
-    A_EsLog["id (PK)<br>esercizio_id (FK)<br>paziente_id (FK)<br>data<br>completato<br>completato_at<br>created_at<br>UNIQUE (esercizio_id, data)"]:::note
-    A_EsLog@{ shape: comment }
-    E_EsLog -.- A_EsLog
-
     E_UmLog["umore_log<br>===<br>SS<br>C R U _"]:::entity
-    A_UmLog["id (PK)<br>paziente_id (FK)<br>data<br>valore<br>created_at<br>updated_at<br>UNIQUE (paziente_id, data)"]:::note
-    A_UmLog@{ shape: comment }
-    E_UmLog -.- A_UmLog
-
     %% --- Relazioni con visibilita' Paziente ---
 
     R_ProfOp{"profilo di<br>-<br>ALL | _ R _ _"}:::relation
-    R_ProfPaz{"profilo di<br>-<br>SS | _ R _ _"}:::relation
-    R_OpPaz{"gestito da<br>-<br>SS | _ R _ _"}:::relation
+    R_ProfPaz{"profilo di<br>-<br>SS<br>| C R _ _"}:::relation
+    R_OpPaz{"gestito da<br>-<br>SS<br>| C R _ _"}:::relation
 
-    R_PazFar{"deve assumere<br>-<br>SS | _ R _ _"}:::relation
-    R_FarLog{"tracciato tramite<br>-<br>SS | C R U _"}:::relation
+    R_PazFar{"deve assumere<br>-<br>SS<br>| _ R _ _"}:::relation
+    R_FarLog{"tracciato tramite<br>-<br>SS<br>| C R U _"}:::relation
 
-    R_PazEs{"deve svolgere<br>-<br>SS | _ R _ _"}:::relation
-    R_EsStep{"composto da<br>-<br>SS | _ R _ _"}:::relation
-    R_EsLog{"tracciato tramite<br>-<br>SS | C R U _"}:::relation
+    R_PazEs{"deve svolgere<br>-<br>SS<br>| _ R _ _"}:::relation
+    R_EsStep{"composto da<br>-<br>SS<br>| _ R _ _"}:::relation
+    R_EsLog{"tracciato tramite<br>-<br>SS<br>| C R U _"}:::relation
 
-    R_PazUm{"registra umore<br>-<br>SS | C R U _"}:::relation
+    R_PazUm{"registra umore<br>-<br>SS<br>| C R U _"}:::relation
 
     %% --- Collegamenti strutturali con cardinalita' ---
 

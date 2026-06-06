@@ -1,0 +1,36 @@
+flowchart TB
+    %% Figura 8 - Architettura software semplificata del sistema A.L.I.C.E.
+
+    classDef layer fill:#e6f2fa,stroke:#006699,stroke-width:2px,color:#006699,font-weight:bold,text-align:center
+    classDef component fill:#ffffff,stroke:#666666,stroke-width:1px,color:#000,text-align:center
+    classDef external fill:#fff3e6,stroke:#d27e24,stroke-width:2px,color:#000,text-align:center
+
+    subgraph Frontend["Frontend (Next.js)"]
+        direction LR
+        ReactApp["React / App Router"]:::component
+        ServerComponents["Server Components"]:::component
+        CssModules["CSS Modules"]:::component
+    end
+    Frontend:::layer
+
+    subgraph ApiLayer["API Layer (Next.js + Supabase)"]
+        direction LR
+        ServerActions["Server Actions"]:::component
+        SupabaseClient["Supabase Client"]:::component
+        RouteAI["Route AI"]:::component
+    end
+    ApiLayer:::layer
+
+    subgraph Backend["Backend-as-a-Service (Supabase)"]
+        direction LR
+        Auth["Supabase Auth"]:::component
+        Postgres["PostgreSQL"]:::component
+        RLS["Row Level Security"]:::component
+    end
+    Backend:::layer
+
+    Groq["Groq API"]:::external
+
+    Frontend -->|"Server Actions / fetch"| ApiLayer
+    ApiLayer -->|"Supabase JS Client (HTTPS)"| Backend
+    RouteAI -->|"fetch server-side"| Groq

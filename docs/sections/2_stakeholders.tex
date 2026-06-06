@@ -81,28 +81,7 @@ Sul lato dei servizi, Supabase fornisce autenticazione, persistenza dei dati e c
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3.5cm, minimum height=1cm, align=center, font=\small\bfseries},
-    system/.style={rectangle, draw=aliceblue, fill=aliceblue!15, thick, rounded corners=6pt, minimum width=4.5cm, minimum height=2cm, align=center, font=\large\bfseries},
-    service/.style={rectangle, draw=alicegreen, fill=green!8, thick, rounded corners=4pt, minimum width=3.6cm, minimum height=1cm, align=center, font=\small\bfseries},
-    flow/.style={-{Stealth[length=2.5mm]}, thick, color=aliceblue},
-    flowlabel/.style={font=\scriptsize, fill=white, inner sep=2pt, align=center},
-]
-\node[system] (alice) {A.L.I.C.E.\\Applicazione Web};
-\node[entity, above left=2.4cm and 2.8cm of alice] (operatore) {Operatore\\Sanitario};
-\node[entity, above right=2.4cm and 2.8cm of alice] (paziente) {Paziente\\Anziano};
-\node[service, below left=2.2cm and 1.8cm of alice] (supabase) {Supabase\\Auth + PostgreSQL};
-\node[service, below right=2.2cm and 1.8cm of alice] (groq) {Groq API\\AI};
-
-\draw[flow] (operatore) -- node[flowlabel] {configura pazienti,\\farmaci, esercizi} (alice);
-\draw[flow] (alice) -- node[flowlabel] {dashboard, metriche,\\storici, suggerimento} (operatore);
-\draw[flow] (paziente) -- node[flowlabel] {umore, conferme,\\completamenti} (alice);
-\draw[flow] (alice) -- node[flowlabel] {home, farmaci,\\esercizi guidati} (paziente);
-\draw[flow] (alice) -- node[flowlabel] {sessioni e query} (supabase);
-\draw[flow] (supabase) -- node[flowlabel] {dati e RLS} (alice);
-\draw[flow] (alice) -- node[flowlabel] {dati sintetici} (groq);
-\draw[flow] (groq) -- node[flowlabel] {frase operativa} (alice);
-\end{tikzpicture}
+\includegraphics[width=0.95\textwidth]{diagrams/figura_1_diagramma_contesto_alice.png}
 \caption{Diagramma di contesto del sistema A.L.I.C.E.}
 \label{fig:contesto}
 \end{figure}
@@ -111,40 +90,7 @@ Sul lato dei servizi, Supabase fornisce autenticazione, persistenza dei dati e c
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-    system/.style={circle, draw=aliceblue, fill=aliceblue!12, thick, minimum size=2.7cm, align=center, font=\bfseries},
-    ai/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=4pt, minimum width=2.8cm, minimum height=0.8cm, align=center, font=\scriptsize\bfseries},
-    flow/.style={-{Stealth[length=2.5mm]}, thick},
-    label/.style={font=\scriptsize, fill=white, inner sep=2pt, align=center},
-]
-
-\node[system] (alice) at (0, 0) {A.L.I.C.E.};
-\node[ai] (ai) at (0, -2.3) {Feature AI\\Suggerimento};
-
-% omino operatore
-\coordinate (op) at (-5.5, 0);
-\draw[aliceblue, thick] ($(op)+(0,0.8)$) circle (0.35);
-\draw[aliceblue, thick] ($(op)+(0,0.45)$) -- ($(op)+(0,-0.55)$);
-\draw[aliceblue, thick] ($(op)+(-0.65,0.1)$) -- ($(op)+(0.65,0.1)$);
-\draw[aliceblue, thick] ($(op)+(0,-0.55)$) -- ($(op)+(-0.55,-1.25)$);
-\draw[aliceblue, thick] ($(op)+(0,-0.55)$) -- ($(op)+(0.55,-1.25)$);
-\node[align=center, font=\small\bfseries] at ($(op)+(0,-1.75)$) {Operatore\\Sanitario};
-
-% omino paziente
-\coordinate (pz) at (5.5, 0);
-\draw[alicegreen, thick] ($(pz)+(0,0.8)$) circle (0.35);
-\draw[alicegreen, thick] ($(pz)+(0,0.45)$) -- ($(pz)+(0,-0.55)$);
-\draw[alicegreen, thick] ($(pz)+(-0.65,0.1)$) -- ($(pz)+(0.65,0.1)$);
-\draw[alicegreen, thick] ($(pz)+(0,-0.55)$) -- ($(pz)+(-0.55,-1.25)$);
-\draw[alicegreen, thick] ($(pz)+(0,-0.55)$) -- ($(pz)+(0.55,-1.25)$);
-\node[align=center, font=\small\bfseries] at ($(pz)+(0,-1.75)$) {Paziente\\Anziano};
-
-\draw[flow, color=aliceblue] (-4.5, 0.7) -- node[label] {pazienti, farmaci,\\esercizi} (-1.45, 0.75);
-\draw[flow, color=aliceblue] (-1.45, -0.7) -- node[label] {metriche, storico,\\supporto decisionale} (-4.5, -0.7);
-\draw[flow, color=alicegreen] (4.5, 0.7) -- node[label] {umore, conferme,\\completamenti} (1.45, 0.75);
-\draw[flow, color=alicegreen] (1.45, -0.7) -- node[label] {interfaccia semplice,\\routine giornaliera} (4.5, -0.7);
-\draw[flow, color=aliceorange] (alice) -- node[label, right] {genera frase\\per operatore} (ai);
-\end{tikzpicture}
+\includegraphics[width=0.98\textwidth]{diagrams/figura_2_scambio_valore_ai.png}
 \caption{Scambio di valore con Operatore, Paziente e feature AI}
 \label{fig:scambio-valore}
 \end{figure}

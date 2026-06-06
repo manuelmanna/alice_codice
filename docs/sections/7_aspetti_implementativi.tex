@@ -1,55 +1,153 @@
 \section{Aspetti Implementativi}
 
-Gli aspetti implementativi descrivono come l'architettura viene tradotta in file e responsabilita' concrete. Il progetto usa una struttura semplice, coerente con Next.js App Router: le pagine stanno in \texttt{src/app}, i componenti riutilizzabili in \texttt{src/components}, le funzioni di supporto in \texttt{src/lib} e la protezione della navigazione in \texttt{src/proxy.ts}.
+Gli aspetti implementativi descrivono come l'architettura viene tradotta in file e responsabilita' concrete. Il progetto usa una struttura semplice, coerente con Next.js App Router: le pagine stanno in \path{src/app}, i componenti riutilizzabili in \path{src/components}, le funzioni di supporto in \path{src/lib} e la protezione della navigazione in \path{src/proxy.ts}.
 
 \subsection{Struttura del progetto}
 
-\begin{figure}[H]
-\centering
-\resizebox{0.98\textwidth}{!}{
-\begin{tikzpicture}[
-    root/.style={rectangle, draw=aliceblue, fill=aliceblue!12, thick, rounded corners=4pt, minimum width=3.4cm, minimum height=0.9cm, align=center, font=\small\bfseries},
-    folder/.style={rectangle, draw=alicegreen, fill=alicegreen!10, thick, rounded corners=3pt, minimum width=3.5cm, minimum height=0.85cm, align=center, font=\scriptsize\bfseries},
-    file/.style={rectangle, draw=gray, fill=gray!8, rounded corners=3pt, minimum width=3.5cm, minimum height=0.75cm, align=center, font=\scriptsize},
-    line/.style={thick, color=aliceblue},
-]
-\node[root] (src) at (0, 0) {\texttt{src}};
+La struttura del progetto segue l'organizzazione di Next.js App Router. La cartella \path{src/app} contiene pagine, layout, route API e Server Actions; \path{src/components} contiene componenti React riutilizzabili; \path{src/lib} raccoglie funzioni di supporto e client Supabase; \path{src/proxy.ts} controlla sessione e redirect.
 
-\node[folder] (app) at (-5, -1.6) {\texttt{app}\\route e pagine};
-\node[folder] (components) at (0, -1.6) {\texttt{components}\\UI riusabile};
-\node[folder] (lib) at (5, -1.6) {\texttt{lib}\\helper};
-\draw[line] (src) -- (app);
-\draw[line] (src) -- (components);
-\draw[line] (src) -- (lib);
+\paragraph{Radice applicativa}
 
-\node[file] (op) at (-7.2, -3.2) {\texttt{operatore}\\dashboard e actions};
-\node[file] (pz) at (-5, -3.2) {\texttt{paziente}\\home, umore, esercizi, farmaci};
-\node[file] (api) at (-2.8, -3.2) {\texttt{api/ai}\\route Groq};
-\draw[line] (app) -- (op);
-\draw[line] (app) -- (pz);
-\draw[line] (app) -- (api);
+\begin{longtable}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{10.2cm}|}
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endfirsthead
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endhead
+\path{src/proxy.ts} & Middleware Next.js che legge la sessione Supabase e gestisce i redirect tra landing, login, dashboard operatore e area paziente. \\
+\hline
+\path{src/app/layout.tsx} & Layout radice dell'applicazione: definisce struttura HTML comune, metadati e inclusione degli stili globali. \\
+\hline
+\path{src/app/page.tsx} & Landing page pubblica con accesso separato all'area operatore e all'area paziente. \\
+\hline
+\path{src/app/globals.css} & Stili globali condivisi dall'intera applicazione. \\
+\hline
+\path{src/app/landing.module.css} & Stili specifici della landing page. \\
+\hline
+\end{longtable}
 
-\node[file] (dash) at (-1.2, -3.2) {\texttt{DashboardContent}\\filtri e lista};
-\node[file] (card) at (0.9, -3.2) {\texttt{PatientCard}\\riepilogo};
-\node[file] (detail) at (3.0, -3.2) {\texttt{PazienteDettaglio}\\tab e gestione};
-\draw[line] (components) -- (dash);
-\draw[line] (components) -- (card);
-\draw[line] (components) -- (detail);
+\paragraph{Area operatore}
 
-\node[file] (date) at (4.0, -3.2) {\texttt{date.ts}};
-\node[file] (form) at (5.3, -3.2) {\texttt{form.ts}};
-\node[file] (metrics) at (6.6, -3.2) {\texttt{metriche.ts}};
-\draw[line] (lib) -- (date);
-\draw[line] (lib) -- (form);
-\draw[line] (lib) -- (metrics);
+\begin{longtable}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{10.2cm}|}
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endfirsthead
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endhead
+\path{src/app/operatore/actions.ts} & Server Actions per login, registrazione e logout dell'operatore sanitario. \\
+\hline
+\path{src/app/operatore/login/page.tsx} & Pagina client con form di accesso per l'operatore. \\
+\hline
+\path{src/app/operatore/login/login.module.css} & Stili del form di login operatore. \\
+\hline
+\path{src/app/operatore/registrati/page.tsx} & Pagina client con form di registrazione dell'operatore e raccolta dei dati della struttura sanitaria. \\
+\hline
+\path{src/app/operatore/registrati/registrati.module.css} & Stili della pagina di registrazione operatore. \\
+\hline
+\path{src/app/operatore/dashboard/layout.tsx} & Layout dell'area privata operatore; verifica sessione e ruolo prima di mostrare la dashboard. \\
+\hline
+\path{src/app/operatore/dashboard/loading.tsx} & Stato di caricamento della dashboard operatore. \\
+\hline
+\path{src/app/operatore/dashboard/page.tsx} & Pagina server che carica operatore, pazienti assegnati e metriche sintetiche. \\
+\hline
+\path{src/app/operatore/dashboard/dashboard.module.css} & Stili della dashboard operatore. \\
+\hline
+\path{src/app/operatore/dashboard/pazienti/actions.ts} & Server Actions per aggiornare il paziente e creare o cancellare farmaci ed esercizi. \\
+\hline
+\path{src/app/operatore/dashboard/pazienti/[id]/page.tsx} & Pagina server di dettaglio paziente; controlla che il paziente appartenga all'operatore e prepara dati clinico-operativi. \\
+\hline
+\path{src/app/operatore/dashboard/pazienti/[id]/loading.tsx} & Stato di caricamento del dettaglio paziente. \\
+\hline
+\path{src/app/operatore/dashboard/pazienti/[id]/paziente.module.css} & Stili della pagina di dettaglio paziente. \\
+\hline
+\end{longtable}
 
-\node[file] (proxy) at (0, -4.8) {\texttt{src/proxy.ts}\\sessione e redirect};
-\draw[line] (src) -- (proxy);
-\end{tikzpicture}
-}
-\caption{Struttura implementativa principale del progetto}
-\label{fig:struttura-progetto}
-\end{figure}
+\paragraph{Area paziente}
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{10.2cm}|}
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endfirsthead
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endhead
+\path{src/app/paziente/actions.ts} & Server Actions per login, registrazione e logout del paziente. \\
+\hline
+\path{src/app/paziente/login/page.tsx} & Pagina client con form di accesso del paziente. \\
+\hline
+\path{src/app/paziente/login/login.module.css} & Stili del form di login paziente. \\
+\hline
+\path{src/app/paziente/registrati/page.tsx} & Pagina client con form di registrazione del paziente e scelta dell'operatore di riferimento. \\
+\hline
+\path{src/app/paziente/registrati/registrati.module.css} & Stili della pagina di registrazione paziente. \\
+\hline
+\path{src/app/paziente/home/page.tsx} & Home semplificata del paziente con accesso rapido a umore, esercizi e farmaci. \\
+\hline
+\path{src/app/paziente/home/home.module.css} & Stili della home paziente. \\
+\hline
+\path{src/app/paziente/umore/page.tsx} & Pagina client per registrare o aggiornare l'umore giornaliero. \\
+\hline
+\path{src/app/paziente/esercizi/page.tsx} & Pagina client che mostra gli esercizi assegnati, gli step guidati e salva il completamento giornaliero. \\
+\hline
+\path{src/app/paziente/farmaci/page.tsx} & Pagina client che mostra i farmaci del giorno per fascia oraria e registra la conferma di assunzione. \\
+\hline
+\end{longtable}
+
+\paragraph{Componenti riutilizzabili}
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{10.2cm}|}
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endfirsthead
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endhead
+\path{src/components/DashboardLayoutClient.tsx} & Componente client che gestisce il layout interattivo dell'area operatore. \\
+\hline
+\path{src/components/DashboardContent.tsx} & Componente client della dashboard: gestisce ricerca, filtri e lista dei pazienti. \\
+\hline
+\path{src/components/PatientCard.tsx} & Card riassuntiva del paziente, usata nella dashboard operatore per mostrare dati essenziali e stato. \\
+\hline
+\path{src/components/PazienteDettaglio.tsx} & Componente client del dettaglio paziente: gestisce tab, form, modali, storico, farmaci, esercizi e richiesta del suggerimento AI. \\
+\hline
+\end{longtable}
+
+\paragraph{API e helper}
+
+\begin{longtable}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{10.2cm}|}
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endfirsthead
+\hline
+\textbf{File} & \textbf{Responsabilita'} \\
+\hline
+\endhead
+\path{src/app/api/ai/suggerimento-operatore/route.ts} & Route API server-side che verifica il ruolo operatore, invia dati sintetici a Groq e restituisce una frase di suggerimento. \\
+\hline
+\path{src/lib/date.ts} & Funzioni di supporto per gestire date e giorno corrente in formato coerente. \\
+\hline
+\path{src/lib/form.ts} & Helper per leggere e validare valori testuali provenienti da \texttt{FormData}. \\
+\hline
+\path{src/lib/metriche.ts} & Funzioni per calcolare percentuali, aderenza ai farmaci e compliance degli esercizi. \\
+\hline
+\path{src/lib/paziente-client.ts} & Helper client per recuperare il paziente associato all'utente autenticato. \\
+\hline
+\path{src/lib/supabase/client.ts} & Crea il client Supabase utilizzabile nei componenti client del browser. \\
+\hline
+\path{src/lib/supabase/server.ts} & Crea il client Supabase server-side integrato con i cookie di Next.js. \\
+\hline
+\end{longtable}
 
 \subsection{Pagine e route}
 
@@ -59,21 +157,21 @@ Le route principali sono separate per ruolo. L'area operatore contiene login, re
 \centering
 \renewcommand{\arraystretch}{1.25}
 \footnotesize
-\begin{tabularx}{\textwidth}{|p{5.6cm}|X|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.6cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{File} & \textbf{Responsabilita'} \\
 \hline
-\texttt{src/app/operatore/dashboard/page.tsx} & Carica l'operatore, i pazienti assegnati e le metriche di riepilogo. \\
+\path{src/app/operatore/dashboard/page.tsx} & Carica l'operatore, i pazienti assegnati e le metriche di riepilogo. \\
 \hline
-\texttt{src/app/operatore/dashboard/pazienti/[id]/page.tsx} & Verifica che il paziente appartenga all'operatore e prepara dati di dettaglio. \\
+\path{src/app/operatore/dashboard/pazienti/[id]/page.tsx} & Verifica che il paziente appartenga all'operatore e prepara dati di dettaglio. \\
 \hline
-\texttt{src/app/paziente/home/page.tsx} & Mostra la home semplificata del paziente. \\
+\path{src/app/paziente/home/page.tsx} & Mostra la home semplificata del paziente. \\
 \hline
-\texttt{src/app/paziente/umore/page.tsx} & Salva o aggiorna l'umore giornaliero. \\
+\path{src/app/paziente/umore/page.tsx} & Salva o aggiorna l'umore giornaliero. \\
 \hline
-\texttt{src/app/paziente/esercizi/page.tsx} & Gestisce l'esecuzione guidata e il log degli esercizi. \\
+\path{src/app/paziente/esercizi/page.tsx} & Gestisce l'esecuzione guidata e il log degli esercizi. \\
 \hline
-\texttt{src/app/paziente/farmaci/page.tsx} & Mostra farmaci per fascia e registra l'assunzione. \\
+\path{src/app/paziente/farmaci/page.tsx} & Mostra farmaci per fascia e registra l'assunzione. \\
 \hline
 \end{tabularx}
 \caption{Pagine principali}
@@ -87,15 +185,15 @@ Le Server Actions gestiscono le operazioni che modificano dati: registrazione, l
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\textwidth}{|p{5.8cm}|X|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}X|}
 \hline
 \textbf{File} & \textbf{Operazioni principali} \\
 \hline
-\texttt{src/app/operatore/actions.ts} & Login, registrazione e logout operatore. \\
+\path{src/app/operatore/actions.ts} & Login, registrazione e logout operatore. \\
 \hline
-\texttt{src/app/paziente/actions.ts} & Login, registrazione e logout paziente. \\
+\path{src/app/paziente/actions.ts} & Login, registrazione e logout paziente. \\
 \hline
-\texttt{src/app/operatore/dashboard/pazienti/actions.ts} & Update paziente, create/delete farmaco, create/delete esercizio. \\
+\path{src/app/operatore/dashboard/pazienti/actions.ts} & Update paziente, create/delete farmaco, create/delete esercizio. \\
 \hline
 \end{tabularx}
 \caption{Server Actions del progetto}
@@ -108,11 +206,11 @@ I componenti client sono usati dove serve interazione nel browser. \texttt{Dashb
 
 \subsection{Helper di supporto}
 
-Durante il refactoring alcune funzioni ripetute sono state spostate in \texttt{src/lib}. \texttt{date.ts} gestisce la data corrente, \texttt{form.ts} centralizza la lettura dei valori da \texttt{FormData}, \texttt{metriche.ts} calcola percentuali e \texttt{paziente-client.ts} recupera l'id del paziente associato all'utente autenticato.
+Durante il refactoring alcune funzioni ripetute sono state spostate in \path{src/lib}. \texttt{date.ts} gestisce la data corrente, \texttt{form.ts} centralizza la lettura dei valori da \texttt{FormData}, \texttt{metriche.ts} calcola percentuali e \texttt{paziente-client.ts} recupera l'id del paziente associato all'utente autenticato.
 
 \subsection{Suggerimento AI}
 
-Il suggerimento AI e' isolato nella route \texttt{src/app/api/ai/suggerimento-operatore/route.ts}. Il client invia dati sintetici e non identificativi; la route usa la chiave \texttt{GROQ\_API\_KEY} lato server, chiama Groq tramite \texttt{fetch} e restituisce una sola frase per l'operatore. Questa separazione evita di inserire la chiave nel browser e mantiene la logica AI fuori dal componente React.
+Il suggerimento AI e' isolato nella route \path{src/app/api/ai/suggerimento-operatore/route.ts}. Il client invia dati sintetici e non identificativi; la route usa la chiave \texttt{GROQ\_API\_KEY} lato server, chiama Groq tramite \texttt{fetch} e restituisce una sola frase per l'operatore. Questa separazione evita di inserire la chiave nel browser e mantiene la logica AI fuori dal componente React.
 
 \subsection{Sicurezza}
 

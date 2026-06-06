@@ -6,71 +6,43 @@ flowchart LR
 
     %% Legenda interna:
     %% SS = stesso soggetto / dati propri
-    %% AP = pazienti assegnati all'operatore autenticato
     %% ALL = dati leggibili da tutti gli utenti previsti dalla policy
     %% CRUD = Create Read Update Delete, con "_" quando l'azione non e' consentita
 
     %% --- Entita' con matrice RLS per Operatore ---
 
-    E_Prof["profiles<br>===<br>SS<br>_ R U _"]:::entity
-    A_Prof["id (PK)<br>role<br>email<br>nome_completo<br>created_at<br>updated_at"]:::note
-    A_Prof@{ shape: comment }
-    E_Prof -.- A_Prof
+    E_Prof["profiles<br>===<br>SS<br>C R U _"]:::entity
 
-    E_Op["operatori<br>===<br>ALL/SS<br>_ R U _"]:::entity
-    A_Op["id (PK)<br>profile_id (FK, UNIQUE)<br>codice_operatore (UNIQUE)<br>nome_completo<br>email<br>struttura_sanitaria<br>telefono<br>created_at<br>updated_at"]:::note
-    A_Op@{ shape: comment }
-    E_Op -.- A_Op
+    E_Op["operatori<br>===<br>ALL/SS<br>C R U _"]:::entity
 
-    E_Paz["pazienti<br>===<br>AP<br>_ R U _"]:::entity
-    A_Paz["id (PK)<br>profile_id (FK, UNIQUE)<br>operatore_id (FK)<br>nome_completo<br>email<br>eta<br>telefono<br>indirizzo<br>contatto_emergenza<br>stato<br>created_at<br>updated_at"]:::note
-    A_Paz@{ shape: comment }
-    E_Paz -.- A_Paz
+    E_Paz["pazienti<br>===<br>SS<br>_ R U _"]:::entity
 
-    E_Far["farmaci<br>===<br>AP<br>C R U D"]:::entity
-    A_Far["id (PK)<br>paziente_id (FK)<br>nome<br>dosaggio<br>fascia<br>orario<br>attivo<br>created_at<br>updated_at"]:::note
-    A_Far@{ shape: comment }
-    E_Far -.- A_Far
+    E_Far["farmaci<br>===<br>SS<br>C R U D"]:::entity
 
-    E_FarLog["farmaci_log<br>===<br>AP<br>_ R _ _"]:::entity
-    A_FarLog["id (PK)<br>farmaco_id (FK)<br>paziente_id (FK)<br>data<br>preso<br>preso_at<br>created_at<br>UNIQUE (farmaco_id, data)"]:::note
-    A_FarLog@{ shape: comment }
-    E_FarLog -.- A_FarLog
+    E_FarLog["farmaci_log<br>===<br>SS<br>_ R _ _"]:::entity
 
-    E_Es["esercizi<br>===<br>AP<br>C R U D"]:::entity
-    A_Es["id (PK)<br>paziente_id (FK)<br>nome<br>durata_minuti<br>frequenza<br>attivo<br>created_at<br>updated_at"]:::note
-    A_Es@{ shape: comment }
-    E_Es -.- A_Es
+    E_Es["esercizi<br>===<br>SS<br>C R U D"]:::entity
 
-    E_EsStep["esercizi_step<br>===<br>AP<br>C R U D"]:::entity
-    A_EsStep["id (PK)<br>esercizio_id (FK)<br>numero_step<br>istruzione<br>created_at<br>UNIQUE (esercizio_id, numero_step)"]:::note
-    A_EsStep@{ shape: comment }
-    E_EsStep -.- A_EsStep
+    E_EsStep["esercizi_step<br>===<br>SS<br>C R U D"]:::entity
 
-    E_EsLog["esercizi_log<br>===<br>AP<br>_ R _ _"]:::entity
-    A_EsLog["id (PK)<br>esercizio_id (FK)<br>paziente_id (FK)<br>data<br>completato<br>completato_at<br>created_at<br>UNIQUE (esercizio_id, data)"]:::note
-    A_EsLog@{ shape: comment }
-    E_EsLog -.- A_EsLog
+    E_EsLog["esercizi_log<br>===<br>SS<br>_ R _ _"]:::entity
 
-    E_UmLog["umore_log<br>===<br>AP<br>_ R _ _"]:::entity
-    A_UmLog["id (PK)<br>paziente_id (FK)<br>data<br>valore<br>created_at<br>updated_at<br>UNIQUE (paziente_id, data)"]:::note
-    A_UmLog@{ shape: comment }
-    E_UmLog -.- A_UmLog
+    E_UmLog["umore_log<br>===<br>SS<br>_ R _ _"]:::entity
 
     %% --- Relazioni con visibilita' Operatore ---
 
-    R_ProfOp{"profilo di<br>-<br>SS | _ R U _"}:::relation
-    R_ProfPaz{"profilo di<br>-<br>AP | _ R _ _"}:::relation
-    R_OpPaz{"gestisce<br>-<br>AP | _ R U _"}:::relation
+    R_ProfOp{"profilo di<br>-<br>SS<br>| C R U _"}:::relation
+    R_ProfPaz{"profilo di<br>-<br>SS<br>| _ R _ _"}:::relation
+    R_OpPaz{"gestisce<br>-<br>SS<br>| _ R U _"}:::relation
 
-    R_PazFar{"assegna farmaci<br>-<br>AP | C R U D"}:::relation
-    R_FarLog{"controlla assunzioni<br>-<br>AP | _ R _ _"}:::relation
+    R_PazFar{"assegna farmaci<br>-<br>SS<br>| C R U D"}:::relation
+    R_FarLog{"controlla assunzioni<br>-<br>SS<br>| _ R _ _"}:::relation
 
-    R_PazEs{"assegna esercizi<br>-<br>AP | C R U D"}:::relation
-    R_EsStep{"definisce step<br>-<br>AP | C R U D"}:::relation
-    R_EsLog{"controlla completamenti<br>-<br>AP | _ R _ _"}:::relation
+    R_PazEs{"assegna esercizi<br>-<br>SS<br>| C R U D"}:::relation
+    R_EsStep{"definisce step<br>-<br>SS<br>| C R U D"}:::relation
+    R_EsLog{"controlla completamenti<br>-<br>SS<br>| _ R _ _"}:::relation
 
-    R_PazUm{"controlla umore<br>-<br>AP | _ R _ _"}:::relation
+    R_PazUm{"controlla umore<br>-<br>SS<br>| _ R _ _"}:::relation
 
     %% --- Collegamenti strutturali con cardinalita' ---
 

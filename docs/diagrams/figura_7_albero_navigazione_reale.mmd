@@ -1,0 +1,37 @@
+flowchart TB
+    %% Figura 7 - Albero di navigazione aggiornato alla struttura reale delle pagine.
+
+    classDef route fill:#e6f2fa,stroke:#006699,stroke-width:2px,color:#000,text-align:center
+    classDef role fill:#edf7f2,stroke:#2a805d,stroke-width:2px,color:#000,font-weight:bold,text-align:center
+
+    Home["/<br/>Landing<br/>VP"]:::route
+
+    OperatoreArea["Area Operatore"]:::role
+    PazienteArea["Area Paziente"]:::role
+
+    Home --> OperatoreArea
+    Home --> PazienteArea
+
+    OperatoreLogin["/operatore/login<br/>Login<br/>VF"]:::route
+    OperatoreRegistrati["/operatore/registrati<br/>Registrazione<br/>VF"]:::route
+    OperatoreDashboard["/operatore/dashboard<br/>Dashboard<br/>VD"]:::route
+    OperatoreDettaglio["/operatore/dashboard/pazienti/[id]<br/>Dettaglio paziente<br/>VD"]:::route
+
+    OperatoreArea --> OperatoreLogin
+    OperatoreArea --> OperatoreRegistrati
+    OperatoreArea --> OperatoreDashboard
+    OperatoreDashboard --> OperatoreDettaglio
+
+    PazienteLogin["/paziente/login<br/>Login<br/>VF"]:::route
+    PazienteRegistrati["/paziente/registrati<br/>Registrazione<br/>VF"]:::route
+    PazienteHome["/paziente/home<br/>Home<br/>VA"]:::route
+    PazienteUmore["/paziente/umore<br/>Umore<br/>VA"]:::route
+    PazienteEsercizi["/paziente/esercizi<br/>Esercizi<br/>VA"]:::route
+    PazienteFarmaci["/paziente/farmaci<br/>Farmaci<br/>VA"]:::route
+
+    PazienteArea --> PazienteLogin
+    PazienteArea --> PazienteRegistrati
+    PazienteArea --> PazienteHome
+    PazienteHome --> PazienteUmore
+    PazienteHome --> PazienteEsercizi
+    PazienteHome --> PazienteFarmaci

@@ -8,47 +8,47 @@ flowchart LR
     %% --- Entità ---
 
     Prof["profiles"]:::entity
-    ProfA["id (PK)<br>role<br>email<br>nome_completo<br>created_at<br>updated_at"]:::note
+    ProfA["<u>id (PK)</u><br>role<br>email<br>nome_completo<br>created_at<br>updated_at"]:::note
     ProfA@{ shape: comment }
     Prof -.- ProfA
 
     Op["operatori"]:::entity
-    OpA["id (PK)<br>profile_id (FK, UNIQUE)<br>codice_operatore (UNIQUE)<br>nome_completo<br>email<br>struttura_sanitaria<br>telefono<br>created_at<br>updated_at"]:::note
+    OpA["<u>id (PK)</u><br>codice_operatore<br>nome_completo<br>email<br>struttura_sanitaria<br>telefono<br>created_at<br>updated_at"]:::note
     OpA@{ shape: comment }
     Op -.- OpA
 
     Paz["pazienti"]:::entity
-    PazA["id (PK)<br>profile_id (FK, UNIQUE)<br>operatore_id (FK)<br>nome_completo<br>email<br>eta<br>telefono<br>indirizzo<br>contatto_emergenza<br>stato<br>created_at<br>updated_at"]:::note
+    PazA["<u>id (PK)</u><br>nome_completo<br>email<br>eta<br>telefono<br>indirizzo<br>contatto_emergenza<br>stato<br>created_at<br>updated_at"]:::note
     PazA@{ shape: comment }
     Paz -.- PazA
 
     Far["farmaci"]:::entity
-    FarA["id (PK)<br>paziente_id (FK)<br>nome<br>dosaggio<br>fascia<br>orario<br>attivo<br>created_at<br>updated_at"]:::note
+    FarA["<u>id (PK)</u><br>nome<br>dosaggio<br>fascia<br>orario<br>attivo<br>created_at<br>updated_at"]:::note
     FarA@{ shape: comment }
     Far -.- FarA
 
     FarLog["farmaci_log"]:::entity
-    FarLogA["id (PK)<br>farmaco_id (FK)<br>paziente_id (FK)<br>data<br>preso<br>preso_at<br>created_at<br>UNIQUE (farmaco_id, data)"]:::note
+    FarLogA["<u>id (PK)</u><br>data<br>preso<br>preso_at<br>created_at"]:::note
     FarLogA@{ shape: comment }
     FarLog -.- FarLogA
 
     Es["esercizi"]:::entity
-    EsA["id (PK)<br>paziente_id (FK)<br>nome<br>durata_minuti<br>frequenza<br>attivo<br>created_at<br>updated_at"]:::note
+    EsA["<u>id (PK)</u><br>nome<br>durata_minuti<br>frequenza<br>attivo<br>created_at<br>updated_at"]:::note
     EsA@{ shape: comment }
     Es -.- EsA
 
     Step["esercizi_step"]:::entity
-    StepA["id (PK)<br>esercizio_id (FK)<br>numero_step<br>istruzione<br>created_at<br>UNIQUE (esercizio_id, numero_step)"]:::note
+    StepA["<u>id (PK)</u><br>numero_step<br>istruzione<br>created_at"]:::note
     StepA@{ shape: comment }
     Step -.- StepA
 
     EsLog["esercizi_log"]:::entity
-    EsLogA["id (PK)<br>esercizio_id (FK)<br>paziente_id (FK)<br>data<br>completato<br>completato_at<br>created_at<br>UNIQUE (esercizio_id, data)"]:::note
+    EsLogA["<u>id (PK)</u><br>data<br>completato<br>completato_at<br>created_at"]:::note
     EsLogA@{ shape: comment }
     EsLog -.- EsLogA
 
     Um["umore_log"]:::entity
-    UmA["id (PK)<br>paziente_id (FK)<br>data<br>valore<br>created_at<br>updated_at<br>UNIQUE (paziente_id, data)"]:::note
+    UmA["<u>id (PK)</u><br>data<br>valore<br>created_at<br>updated_at"]:::note
     UmA@{ shape: comment }
     Um -.- UmA
 
