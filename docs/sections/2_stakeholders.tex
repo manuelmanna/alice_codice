@@ -2,11 +2,11 @@
 
 \subsection{Stakeholder e Goal}
 
-Gli stakeholder principali sono due: \textbf{Operatore Sanitario} e \textbf{Paziente Anziano}. I loro obiettivi sono differenti, per questo il sistema usa due interfacce separate.
+Gli stakeholder principali del sistema sono l'\textbf{Operatore Sanitario} e il \textbf{Paziente Anziano}. I due attori usano la stessa piattaforma, ma con obiettivi e livelli di complessita' diversi. L'operatore deve gestire e interpretare i dati; il paziente deve svolgere azioni quotidiane semplici.
 
 \subsubsection{Operatore Sanitario / Caregiver}
 
-L'operatore sanitario e' il professionista che segue i pazienti. Nel sistema puo' registrarsi, accedere alla dashboard, consultare i pazienti assegnati e gestire farmaci ed esercizi.
+L'operatore sanitario e' il professionista che segue uno o piu' pazienti. Attraverso la dashboard puo' consultare l'elenco dei pazienti assegnati, entrare nel dettaglio di ciascun paziente, aggiornare alcune informazioni, configurare farmaci ed esercizi e monitorare i log giornalieri.
 
 \begin{table}[H]
 \centering
@@ -18,9 +18,9 @@ L'operatore sanitario e' il professionista che segue i pazienti. Nel sistema puo
 \hline
 Operatore Sanitario & Gestione pazienti & Visualizza lista pazienti & & X & & \\
 \cline{3-7}
- & & Modifica dati anagrafici paziente & & & X & \\
+ & & Modifica dati del paziente & & & X & \\
 \cline{3-7}
- & & Visualizza dettaglio paziente e metriche & & X & & \\
+ & & Consulta dettaglio e metriche & & X & & \\
 \hline
 Operatore Sanitario & Gestione farmaci & Aggiunge farmaco & X & & & \\
 \cline{3-7}
@@ -28,15 +28,15 @@ Operatore Sanitario & Gestione farmaci & Aggiunge farmaco & X & & & \\
 \cline{3-7}
  & & Elimina farmaco & & & & X \\
 \hline
-Operatore Sanitario & Gestione esercizi & Crea esercizio con passaggi & X & & & \\
+Operatore Sanitario & Gestione esercizi & Crea esercizio con step & X & & & \\
 \cline{3-7}
  & & Visualizza esercizi assegnati & & X & & \\
 \cline{3-7}
  & & Elimina esercizio & & & & X \\
 \hline
-Operatore Sanitario & Monitoraggio & Consulta umore, farmaci ed esercizi degli ultimi giorni & & X & & \\
+Operatore Sanitario & Monitoraggio & Consulta umore, farmaci ed esercizi & & X & & \\
 \cline{3-7}
- & & Genera suggerimento AI sintetico & X & & & \\
+ & & Richiede suggerimento AI & X & & & \\
 \hline
 \end{tabular}
 \caption{Goal e operazioni CRUD dell'Operatore Sanitario}
@@ -45,7 +45,7 @@ Operatore Sanitario & Monitoraggio & Consulta umore, farmaci ed esercizi degli u
 
 \subsubsection{Paziente Anziano}
 
-Il paziente anziano utilizza un'interfaccia semplificata. L'obiettivo non e' gestire dati complessi, ma svolgere azioni quotidiane: indicare l'umore, completare esercizi e confermare i farmaci.
+Il paziente anziano usa l'applicazione per comunicare poche informazioni essenziali. Non gestisce il proprio piano terapeutico, ma interagisce con quanto configurato dall'operatore: vede i farmaci, conferma l'assunzione, vede gli esercizi, li completa e registra l'umore del giorno.
 
 \begin{table}[H]
 \centering
@@ -55,19 +55,17 @@ Il paziente anziano utilizza un'interfaccia semplificata. L'obiettivo non e' ges
 \hline
 \textbf{Stakeholder} & \textbf{Goal} & \textbf{Subgoal} & \textbf{C} & \textbf{R} & \textbf{U} & \textbf{D} \\
 \hline
-Paziente Anziano & Accesso & Login con email e password & & X & & \\
-\cline{3-7}
- & & Registrazione associata a un operatore & X & & & \\
+Paziente Anziano & Accesso & Login e registrazione associata a un operatore & X & X & & \\
 \hline
-Paziente Anziano & Umore & Registra umore quotidiano & X & X & X & \\
+Paziente Anziano & Umore & Registra o aggiorna umore quotidiano & X & X & X & \\
 \hline
 Paziente Anziano & Esercizi fisici & Visualizza lista esercizi & & X & & \\
 \cline{3-7}
- & & Completa esercizio guidato passo-passo & X & X & & \\
+ & & Completa esercizio guidato & X & X & & \\
 \hline
 Paziente Anziano & Farmaci & Visualizza farmaci per fascia oraria & & X & & \\
 \cline{3-7}
- & & Conferma o annulla assunzione farmaco & X & X & X & \\
+ & & Conferma o annulla assunzione & X & X & X & \\
 \hline
 \end{tabular}
 \caption{Goal e operazioni CRUD del Paziente Anziano}
@@ -77,29 +75,31 @@ Paziente Anziano & Farmaci & Visualizza farmaci per fascia oraria & & X & & \\
 \newpage
 \subsection{Diagramma di Contesto}
 
-Il diagramma di contesto rappresenta gli attori esterni e i principali flussi informativi. Rispetto alla versione precedente, il diagramma e' allineato al codice effettivo: il sistema usa Next.js come applicazione web, Supabase per dati/autenticazione e Groq solo per il suggerimento AI.
+Il diagramma di contesto rappresenta A.L.I.C.E. come una scatola nera posta al centro dell'interazione tra utenti e servizi esterni. L'operatore sanitario invia al sistema configurazioni e aggiornamenti relativi a pazienti, farmaci ed esercizi; in cambio riceve dashboard, metriche, storico dei log e suggerimenti sintetici. Il paziente invia conferme giornaliere, completamenti degli esercizi e valore dell'umore; in cambio riceve una home semplificata, l'elenco delle attivita' e le istruzioni operative.
+
+Sul lato dei servizi, Supabase fornisce autenticazione, persistenza dei dati e controllo di visibilita' tramite Row Level Security. La Groq API viene usata solo dalla route server-side dedicata al suggerimento AI: il browser non riceve la chiave del servizio esterno e il testo generato e' destinato all'operatore.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3.5cm, minimum height=1cm, text centered, font=\small\bfseries},
-    system/.style={rectangle, draw=aliceblue, fill=aliceblue!15, thick, rounded corners=6pt, minimum width=4.5cm, minimum height=2cm, text centered, font=\large\bfseries},
-    service/.style={rectangle, draw=alicegreen, fill=green!8, thick, rounded corners=4pt, minimum width=3.6cm, minimum height=1cm, text centered, font=\small\bfseries},
+    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, minimum width=3.5cm, minimum height=1cm, align=center, font=\small\bfseries},
+    system/.style={rectangle, draw=aliceblue, fill=aliceblue!15, thick, rounded corners=6pt, minimum width=4.5cm, minimum height=2cm, align=center, font=\large\bfseries},
+    service/.style={rectangle, draw=alicegreen, fill=green!8, thick, rounded corners=4pt, minimum width=3.6cm, minimum height=1cm, align=center, font=\small\bfseries},
     flow/.style={-{Stealth[length=2.5mm]}, thick, color=aliceblue},
     flowlabel/.style={font=\scriptsize, fill=white, inner sep=2pt, align=center},
 ]
-\node[system] (alice) {A.L.I.C.E.\\Next.js};
+\node[system] (alice) {A.L.I.C.E.\\Applicazione Web};
 \node[entity, above left=2.4cm and 2.8cm of alice] (operatore) {Operatore\\Sanitario};
 \node[entity, above right=2.4cm and 2.8cm of alice] (paziente) {Paziente\\Anziano};
-\node[service, below left=2.2cm and 1.8cm of alice] (supabase) {Supabase\\PostgreSQL + Auth};
-\node[service, below right=2.2cm and 1.8cm of alice] (groq) {Groq API\\Suggerimento AI};
+\node[service, below left=2.2cm and 1.8cm of alice] (supabase) {Supabase\\Auth + PostgreSQL};
+\node[service, below right=2.2cm and 1.8cm of alice] (groq) {Groq API\\AI};
 
-\draw[flow] (operatore) -- node[flowlabel] {pazienti, farmaci,\\esercizi} (alice);
-\draw[flow] (alice) -- node[flowlabel] {dashboard, metriche,\\storici} (operatore);
-\draw[flow] (paziente) -- node[flowlabel] {umore, farmaci presi,\\esercizi completati} (alice);
-\draw[flow] (alice) -- node[flowlabel] {home, esercizi,\\lista farmaci} (paziente);
-\draw[flow] (alice) -- node[flowlabel] {query e sessioni} (supabase);
-\draw[flow] (supabase) -- node[flowlabel] {dati persistenti} (alice);
+\draw[flow] (operatore) -- node[flowlabel] {configura pazienti,\\farmaci, esercizi} (alice);
+\draw[flow] (alice) -- node[flowlabel] {dashboard, metriche,\\storici, suggerimento} (operatore);
+\draw[flow] (paziente) -- node[flowlabel] {umore, conferme,\\completamenti} (alice);
+\draw[flow] (alice) -- node[flowlabel] {home, farmaci,\\esercizi guidati} (paziente);
+\draw[flow] (alice) -- node[flowlabel] {sessioni e query} (supabase);
+\draw[flow] (supabase) -- node[flowlabel] {dati e RLS} (alice);
 \draw[flow] (alice) -- node[flowlabel] {dati sintetici} (groq);
 \draw[flow] (groq) -- node[flowlabel] {frase operativa} (alice);
 \end{tikzpicture}
@@ -112,21 +112,40 @@ Il diagramma di contesto rappresenta gli attori esterni e i principali flussi in
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    actor/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=4pt, minimum width=3.4cm, minimum height=1cm, text centered, font=\small\bfseries},
-    system/.style={circle, draw=aliceblue, fill=aliceblue!15, thick, minimum size=2.4cm, text centered, font=\bfseries},
-    flow/.style={-{Stealth[length=2.3mm]}, thick},
+    system/.style={circle, draw=aliceblue, fill=aliceblue!12, thick, minimum size=2.7cm, align=center, font=\bfseries},
+    ai/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=4pt, minimum width=2.8cm, minimum height=0.8cm, align=center, font=\scriptsize\bfseries},
+    flow/.style={-{Stealth[length=2.5mm]}, thick},
     label/.style={font=\scriptsize, fill=white, inner sep=2pt, align=center},
 ]
-\node[system] (alice) {A.L.I.C.E.};
-\node[actor, left=4.5cm of alice] (op) {Operatore\\Sanitario};
-\node[actor, right=4.5cm of alice] (pz) {Paziente\\Anziano};
 
-\draw[flow, color=aliceblue] (op.north east) -- node[label] {configura\\pazienti, farmaci, esercizi} (alice.north west);
-\draw[flow, color=alicegreen] (alice.south west) -- node[label] {metriche, storici,\\suggerimento AI} (op.south east);
-\draw[flow, color=aliceorange] (pz.north west) -- node[label] {umore, conferme,\\completamenti} (alice.north east);
-\draw[flow, color=aliceblue] (alice.south east) -- node[label] {interfaccia semplice,\\piano giornaliero} (pz.south west);
+\node[system] (alice) at (0, 0) {A.L.I.C.E.};
+\node[ai] (ai) at (0, -2.3) {Feature AI\\Suggerimento};
+
+% omino operatore
+\coordinate (op) at (-5.5, 0);
+\draw[aliceblue, thick] ($(op)+(0,0.8)$) circle (0.35);
+\draw[aliceblue, thick] ($(op)+(0,0.45)$) -- ($(op)+(0,-0.55)$);
+\draw[aliceblue, thick] ($(op)+(-0.65,0.1)$) -- ($(op)+(0.65,0.1)$);
+\draw[aliceblue, thick] ($(op)+(0,-0.55)$) -- ($(op)+(-0.55,-1.25)$);
+\draw[aliceblue, thick] ($(op)+(0,-0.55)$) -- ($(op)+(0.55,-1.25)$);
+\node[align=center, font=\small\bfseries] at ($(op)+(0,-1.75)$) {Operatore\\Sanitario};
+
+% omino paziente
+\coordinate (pz) at (5.5, 0);
+\draw[alicegreen, thick] ($(pz)+(0,0.8)$) circle (0.35);
+\draw[alicegreen, thick] ($(pz)+(0,0.45)$) -- ($(pz)+(0,-0.55)$);
+\draw[alicegreen, thick] ($(pz)+(-0.65,0.1)$) -- ($(pz)+(0.65,0.1)$);
+\draw[alicegreen, thick] ($(pz)+(0,-0.55)$) -- ($(pz)+(-0.55,-1.25)$);
+\draw[alicegreen, thick] ($(pz)+(0,-0.55)$) -- ($(pz)+(0.55,-1.25)$);
+\node[align=center, font=\small\bfseries] at ($(pz)+(0,-1.75)$) {Paziente\\Anziano};
+
+\draw[flow, color=aliceblue] (-4.5, 0.7) -- node[label] {pazienti, farmaci,\\esercizi} (-1.45, 0.75);
+\draw[flow, color=aliceblue] (-1.45, -0.7) -- node[label] {metriche, storico,\\supporto decisionale} (-4.5, -0.7);
+\draw[flow, color=alicegreen] (4.5, 0.7) -- node[label] {umore, conferme,\\completamenti} (1.45, 0.75);
+\draw[flow, color=alicegreen] (1.45, -0.7) -- node[label] {interfaccia semplice,\\routine giornaliera} (4.5, -0.7);
+\draw[flow, color=aliceorange] (alice) -- node[label, right] {genera frase\\per operatore} (ai);
 \end{tikzpicture}
-\caption{Scambio di valore tra stakeholder e sistema}
+\caption{Scambio di valore con Operatore, Paziente e feature AI}
 \label{fig:scambio-valore}
 \end{figure}
 

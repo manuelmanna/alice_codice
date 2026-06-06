@@ -1,0 +1,77 @@
+flowchart LR
+
+    %% --- Stili ---
+    classDef entity fill:#f9f9f9,stroke:#333,stroke-width:2px,font-weight:bold,color:#000,text-align:center
+    classDef relation fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000,text-align:center
+    classDef note fill:#fff9c4,stroke:#fbc02d,stroke-width:1px,color:#000,text-align:left,font-size:13px
+
+    %% --- Entità ---
+
+    Prof["profiles"]:::entity
+    ProfA["id (PK)<br>role<br>email<br>nome_completo<br>created_at<br>updated_at"]:::note
+    ProfA@{ shape: comment }
+    Prof -.- ProfA
+
+    Op["operatori"]:::entity
+    OpA["id (PK)<br>profile_id (FK, UNIQUE)<br>codice_operatore (UNIQUE)<br>nome_completo<br>email<br>struttura_sanitaria<br>telefono<br>created_at<br>updated_at"]:::note
+    OpA@{ shape: comment }
+    Op -.- OpA
+
+    Paz["pazienti"]:::entity
+    PazA["id (PK)<br>profile_id (FK, UNIQUE)<br>operatore_id (FK)<br>nome_completo<br>email<br>eta<br>telefono<br>indirizzo<br>contatto_emergenza<br>stato<br>created_at<br>updated_at"]:::note
+    PazA@{ shape: comment }
+    Paz -.- PazA
+
+    Far["farmaci"]:::entity
+    FarA["id (PK)<br>paziente_id (FK)<br>nome<br>dosaggio<br>fascia<br>orario<br>attivo<br>created_at<br>updated_at"]:::note
+    FarA@{ shape: comment }
+    Far -.- FarA
+
+    FarLog["farmaci_log"]:::entity
+    FarLogA["id (PK)<br>farmaco_id (FK)<br>paziente_id (FK)<br>data<br>preso<br>preso_at<br>created_at<br>UNIQUE (farmaco_id, data)"]:::note
+    FarLogA@{ shape: comment }
+    FarLog -.- FarLogA
+
+    Es["esercizi"]:::entity
+    EsA["id (PK)<br>paziente_id (FK)<br>nome<br>durata_minuti<br>frequenza<br>attivo<br>created_at<br>updated_at"]:::note
+    EsA@{ shape: comment }
+    Es -.- EsA
+
+    Step["esercizi_step"]:::entity
+    StepA["id (PK)<br>esercizio_id (FK)<br>numero_step<br>istruzione<br>created_at<br>UNIQUE (esercizio_id, numero_step)"]:::note
+    StepA@{ shape: comment }
+    Step -.- StepA
+
+    EsLog["esercizi_log"]:::entity
+    EsLogA["id (PK)<br>esercizio_id (FK)<br>paziente_id (FK)<br>data<br>completato<br>completato_at<br>created_at<br>UNIQUE (esercizio_id, data)"]:::note
+    EsLogA@{ shape: comment }
+    EsLog -.- EsLogA
+
+    Um["umore_log"]:::entity
+    UmA["id (PK)<br>paziente_id (FK)<br>data<br>valore<br>created_at<br>updated_at<br>UNIQUE (paziente_id, data)"]:::note
+    UmA@{ shape: comment }
+    Um -.- UmA
+
+    %% --- Relazioni (Rombi) ---
+    
+    R1{"profilo operatore"}:::relation
+    R2{"profilo paziente"}:::relation
+    R3{"gestisce"}:::relation
+    R4{"assegna farmaci"}:::relation
+    R5{"traccia assunzioni"}:::relation
+    R6{"assegna esercizi"}:::relation
+    R7{"composto da step"}:::relation
+    R8{"traccia completamenti"}:::relation
+    R9{"registra umore"}:::relation
+
+    %% --- Collegamenti Strutturali con Cardinalità ---
+
+    Prof ---|"(0,1)"| R1 ---|"(1,1)"| Op
+    Prof ---|"(0,1)"| R2 ---|"(1,1)"| Paz
+    Op ---|"(0,N)"| R3 ---|"(1,1)"| Paz
+    Paz ---|"(0,N)"| R4 ---|"(1,1)"| Far
+    Far ---|"(0,N)"| R5 ---|"(1,1)"| FarLog
+    Paz ---|"(0,N)"| R6 ---|"(1,1)"| Es
+    Es ---|"(1,N)"| R7 ---|"(1,1)"| Step
+    Es ---|"(0,N)"| R8 ---|"(1,1)"| EsLog
+    Paz ---|"(0,N)"| R9 ---|"(1,1)"| Um

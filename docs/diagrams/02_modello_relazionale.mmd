@@ -1,0 +1,113 @@
+erDiagram
+    AUTH_USERS ||--|| PROFILES : "id"
+    PROFILES ||--o| OPERATORI : "profile_id"
+    PROFILES ||--o| PAZIENTI : "profile_id"
+    OPERATORI ||--o{ PAZIENTI : "operatore_id"
+    PAZIENTI ||--o{ FARMACI : "paziente_id"
+    FARMACI ||--o{ FARMACI_LOG : "farmaco_id"
+    PAZIENTI ||--o{ FARMACI_LOG : "paziente_id"
+    PAZIENTI ||--o{ ESERCIZI : "paziente_id"
+    ESERCIZI ||--o{ ESERCIZI_STEP : "esercizio_id"
+    ESERCIZI ||--o{ ESERCIZI_LOG : "esercizio_id"
+    PAZIENTI ||--o{ ESERCIZI_LOG : "paziente_id"
+    PAZIENTI ||--o{ UMORE_LOG : "paziente_id"
+
+    AUTH_USERS {
+        uuid id PK
+    }
+
+    PROFILES {
+        uuid id PK
+        user_role role
+        text email
+        text nome_completo
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    OPERATORI {
+        uuid id PK
+        uuid profile_id FK
+        text codice_operatore UK
+        text nome_completo
+        text email
+        text struttura_sanitaria
+        text telefono
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    PAZIENTI {
+        uuid id PK
+        uuid profile_id FK
+        uuid operatore_id FK
+        text nome_completo
+        text email
+        integer eta
+        text telefono
+        text indirizzo
+        text contatto_emergenza
+        stato_paziente stato
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    FARMACI {
+        uuid id PK
+        uuid paziente_id FK
+        text nome
+        text dosaggio
+        fascia_farmaco fascia
+        time orario
+        boolean attivo
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    FARMACI_LOG {
+        uuid id PK
+        uuid farmaco_id FK
+        uuid paziente_id FK
+        date data
+        boolean preso
+        timestamptz preso_at
+        timestamptz created_at
+    }
+
+    ESERCIZI {
+        uuid id PK
+        uuid paziente_id FK
+        text nome
+        integer durata_minuti
+        text frequenza
+        boolean attivo
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    ESERCIZI_STEP {
+        uuid id PK
+        uuid esercizio_id FK
+        integer numero_step
+        text istruzione
+        timestamptz created_at
+    }
+
+    ESERCIZI_LOG {
+        uuid id PK
+        uuid esercizio_id FK
+        uuid paziente_id FK
+        date data
+        boolean completato
+        timestamptz completato_at
+        timestamptz created_at
+    }
+
+    UMORE_LOG {
+        uuid id PK
+        uuid paziente_id FK
+        date data
+        valore_umore valore
+        timestamptz created_at
+        timestamptz updated_at
+    }

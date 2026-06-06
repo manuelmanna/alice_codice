@@ -1,41 +1,19 @@
 \section{Descrizione Informale del Contesto e degli Obiettivi}
 
-La nostra applicazione mira a offrire una piattaforma web per il monitoraggio remoto e l'assistenza domiciliare di pazienti anziani. L'invecchiamento della popolazione richiede strumenti digitali accessibili, ma molte soluzioni esistenti risultano troppo complesse per l'utenza anziana oppure troppo frammentate per essere davvero utili agli operatori sanitari.
+Il progetto \textbf{A.L.I.C.E.} nasce dall'esigenza di supportare il monitoraggio quotidiano di pazienti anziani fragili, soprattutto quando l'assistenza non avviene sempre in presenza. In molti contesti familiari e sanitari il paziente segue una terapia, svolge piccoli esercizi fisici e comunica il proprio stato d'animo in modo frammentato: una parte viene riferita verbalmente, una parte viene annotata dall'operatore e una parte rischia di non essere registrata. Questo rende piu' difficile avere una visione continua dell'andamento del paziente.
 
-Il progetto \textbf{A.L.I.C.E.} nasce per colmare questo divario. Il sistema permette all'operatore sanitario di gestire i propri pazienti, assegnare esercizi fisici, configurare farmaci e monitorare umore, aderenza farmacologica e completamento degli esercizi. Il paziente, invece, utilizza un'interfaccia semplificata con card grandi, testi brevi e percorsi lineari.
+L'applicazione propone una piattaforma web con due esperienze distinte. Da un lato c'e' l'operatore sanitario, che ha bisogno di una dashboard ordinata per controllare piu' pazienti, verificare l'aderenza ai farmaci, controllare gli esercizi completati e leggere lo storico dell'umore. Dall'altro lato c'e' il paziente anziano, che non deve usare un gestionale complesso, ma solo compiere poche azioni semplici: indicare come si sente, confermare l'assunzione dei farmaci e completare gli esercizi assegnati.
 
-\subsection{Doppia vista del sistema}
+La scelta di una web application consente di evitare installazioni dedicate e permette l'accesso da dispositivi comuni, come PC e tablet. L'interfaccia del paziente e' pensata per ridurre il carico cognitivo: le pagine sono brevi, i percorsi sono lineari e le azioni principali sono presentate tramite card e pulsanti ben visibili. L'interfaccia dell'operatore, invece, e' piu' informativa e raccoglie dati, metriche e strumenti di gestione in un'unica area.
 
-La piattaforma e' organizzata in due aree distinte:
+Il sistema non vuole sostituire il giudizio clinico dell'operatore. Il suo obiettivo e' fornire un supporto organizzativo e informativo, raccogliendo in modo strutturato dati che altrimenti sarebbero dispersi. Per questo motivo A.L.I.C.E. integra anche un suggerimento AI rivolto esclusivamente all'operatore: il suggerimento non formula diagnosi, ma riassume una possibile micro-azione operativa a partire da dati sintetici come aderenza ai farmaci, completamento degli esercizi e ultimo umore registrato.
 
-\begin{itemize}
-    \item \textbf{Area Operatore Sanitario:} comprende login, registrazione, dashboard con elenco pazienti, filtri per stato clinico, ricerca per nome, schede riepilogative e pagina di dettaglio del paziente. Nel dettaglio l'operatore puo' consultare metriche, storico umore, storico farmaci, storico esercizi, modificare i dati anagrafici, aggiungere o rimuovere farmaci ed esercizi.
-    \item \textbf{Area Paziente Anziano:} comprende login, registrazione, home semplificata e tre funzionalita' principali: registrazione dell'umore quotidiano, esecuzione di esercizi fisici guidati passo-passo e conferma dell'assunzione dei farmaci.
-\end{itemize}
+\subsection{Obiettivi generali}
 
-\subsection{Funzionalita' principali}
+Gli obiettivi principali del progetto sono quattro. Il primo e' \textbf{semplificare l'interazione del paziente}, rendendo l'uso quotidiano dell'applicazione comprensibile anche a utenti non abituati a strumenti digitali complessi. Il secondo e' \textbf{centralizzare le informazioni utili all'operatore}, evitando che farmaci, esercizi e umore siano controllati con strumenti separati. Il terzo e' \textbf{misurare l'aderenza giornaliera}, cosi' da individuare rapidamente eventuali cali nella routine del paziente. Il quarto e' \textbf{mantenere il progetto tecnicamente semplice}, usando Next.js, React, Supabase e poche astrazioni, in modo che il codice resti spiegabile e manutenibile.
 
-Le funzionalita' effettivamente implementate nel progetto sono:
+\subsection{Funzionalita' implementate}
 
-\begin{itemize}
-    \item \textbf{Gestione utenza:} registrazione e login separati per operatore e paziente, con controllo del ruolo tramite Supabase Auth e tabella \texttt{profiles}.
-    \item \textbf{Gestione pazienti:} ogni paziente e' associato a un operatore. L'operatore puo' visualizzare la lista, filtrarla, cercare per nome e accedere al dettaglio.
-    \item \textbf{Gestione farmaci:} l'operatore inserisce nome, dosaggio e orario; il sistema calcola automaticamente la fascia oraria (\texttt{mattina}, \texttt{pranzo}, \texttt{sera}). Il paziente conferma l'assunzione giornaliera.
-    \item \textbf{Gestione esercizi:} l'operatore crea esercizi fisici con durata, frequenza e passaggi guidati. Il paziente li esegue step-by-step e registra il completamento.
-    \item \textbf{Monitoraggio umore:} il paziente registra ogni giorno il proprio umore scegliendo tra \texttt{triste}, \texttt{normale} e \texttt{felice}. L'operatore visualizza lo storico settimanale.
-    \item \textbf{Suggerimento AI per l'operatore:} nella pagina di dettaglio paziente e' presente una route API che invia a Groq dati sintetici sul paziente e riceve una frase operativa di supporto.
-\end{itemize}
-
-\subsection{Obiettivi del progetto}
-
-Gli obiettivi principali sono:
-
-\begin{enumerate}
-    \item \textbf{Semplificare l'interazione del paziente anziano}, riducendo la navigazione a pochi passaggi e usando componenti visivi chiari.
-    \item \textbf{Centralizzare le informazioni utili all'operatore}, evitando che umore, farmaci ed esercizi siano gestiti in strumenti separati.
-    \item \textbf{Misurare l'aderenza quotidiana}, tramite metriche percentuali su farmaci presi ed esercizi completati.
-    \item \textbf{Migliorare la continuita' assistenziale}, permettendo all'operatore di controllare l'andamento del paziente anche tra una visita e l'altra.
-    \item \textbf{Mantenere una struttura tecnica semplice}, basata su Next.js, React, Server Actions e Supabase, cosi' da rendere il progetto comprensibile e manutenibile.
-\end{enumerate}
+Nella versione attuale sono implementati la registrazione e il login separati per operatore e paziente, la dashboard dell'operatore, la pagina di dettaglio paziente, la gestione di farmaci ed esercizi, la registrazione dell'umore, la conferma giornaliera dei farmaci, il completamento guidato degli esercizi e il suggerimento AI per l'operatore. Tutte queste funzionalita' sono collegate allo schema Supabase del progetto e rispettano la separazione tra area operatore e area paziente.
 
 \newpage

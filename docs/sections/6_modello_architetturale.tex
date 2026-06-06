@@ -1,15 +1,10 @@
 \section{Modello Architetturale}
 
-L'architettura di A.L.I.C.E. e' una web application full-stack basata su
-\textbf{Next.js App Router} e \textbf{Supabase}. Il progetto non usa un backend
-Express separato: la logica server viene gestita da Server Components, Server Actions,
-Route Handlers e dal database PostgreSQL esposto da Supabase.
+A.L.I.C.E. e' una web application full-stack basata su \textbf{Next.js App Router} e \textbf{Supabase}. Il progetto non usa un application server separato: Next.js gestisce pagine, componenti server, componenti client, Server Actions, route API e proxy; Supabase gestisce autenticazione, database PostgreSQL, API PostgREST e Row Level Security.
 
 \subsection{Architettura hardware}
 
-Il sistema e' pensato per un'infrastruttura managed. L'utente usa un browser, mentre
-l'applicazione viene eseguita su piattaforma serverless e si appoggia a servizi esterni
-per database, autenticazione e generazione del suggerimento AI.
+L'architettura hardware e' volutamente leggera. Gli utenti accedono tramite browser, mentre il codice applicativo viene eseguito su un ambiente serverless compatibile con Next.js. I dati persistenti e le sessioni sono gestiti da Supabase; il suggerimento AI viene generato tramite Groq API.
 
 \begin{table}[H]
 \centering
@@ -18,15 +13,13 @@ per database, autenticazione e generazione del suggerimento AI.
 \hline
 \textbf{Componente} & \textbf{Servizio} & \textbf{Responsabilita'} \\
 \hline
-Client & Browser web & Visualizza l'interfaccia React e invia le azioni dell'utente. \\
+Client & Browser web & Visualizzazione interfaccia e invio azioni utente. \\
 \hline
-Applicazione & Next.js su ambiente serverless & Rendering delle pagine, Server Actions, route API e protezione tramite proxy. \\
+Web app & Next.js serverless & Rendering, routing, Server Actions, proxy e route API. \\
 \hline
-Database & Supabase PostgreSQL & Conserva profili, pazienti, farmaci, esercizi e log giornalieri. \\
+Backend gestito & Supabase & Auth, PostgreSQL, PostgREST e policy RLS. \\
 \hline
-Autenticazione & Supabase Auth & Gestisce registrazione, login, sessione e collegamento con \texttt{profiles}. \\
-\hline
-AI & Groq API & Genera una frase di supporto per l'operatore partendo da dati sintetici. \\
+Servizio AI & Groq API & Generazione del suggerimento testuale per l'operatore. \\
 \hline
 \end{tabularx}
 \caption{Componenti hardware e servizi esterni}
@@ -35,57 +28,54 @@ AI & Groq API & Genera una frase di supporto per l'operatore partendo da dati si
 
 \subsection{Modello architetturale}
 
-Il modello architetturale adottato e' una combinazione di:
+Il modello architetturale non e' un MVC classico. La separazione delle responsabilita' e' ottenuta tramite il modello di Next.js App Router:
 
 \begin{itemize}
-    \item \textbf{architettura serverless}, per evitare la gestione manuale di un server applicativo;
-    \item \textbf{Backend-as-a-Service}, per delegare a Supabase autenticazione, database, API REST e Row Level Security;
-    \item \textbf{architettura component-based}, per costruire l'interfaccia con componenti React riutilizzabili;
-    \item \textbf{pattern Server Action}, per gestire le modifiche ai dati direttamente lato server senza creare molti endpoint manuali.
+    \item le \textbf{pagine} definiscono le viste raggiungibili dall'utente;
+    \item i \textbf{Server Components} caricano dati e preparano la UI lato server;
+    \item i \textbf{Client Components} gestiscono interazioni complesse nel browser;
+    \item le \textbf{Server Actions} gestiscono mutazioni come login, registrazione, farmaci ed esercizi;
+    \item il \textbf{proxy} gestisce sessione e redirect delle aree private;
+    \item Supabase rappresenta il livello dati e applica le policy di visibilita'.
 \end{itemize}
 
-Non si tratta quindi di un classico MVC con controller separati. Nel progetto:
-
-\begin{itemize}
-    \item le \textbf{viste} sono le pagine e i componenti React;
-    \item la \textbf{logica applicativa} e' distribuita tra Server Components, Server Actions e helper in \texttt{src/lib};
-    \item il \textbf{modello dei dati} e' lo schema PostgreSQL gestito da Supabase.
-\end{itemize}
+Questa architettura riduce il numero di file necessari rispetto a un backend separato e mantiene la logica vicino alle pagine che la utilizzano.
 
 \subsection{Architettura software}
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{
+\resizebox{0.98\textwidth}{!}{
 \begin{tikzpicture}[
-    box/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=4pt, minimum width=4cm, minimum height=1cm, align=center, font=\scriptsize},
-    group/.style={rectangle, draw=gray, dashed, rounded corners=5pt, inner sep=0.35cm},
+    layer/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=4pt, minimum width=11cm, minimum height=1.35cm, align=center},
+    comp/.style={rectangle, draw=gray, fill=white, thick, rounded corners=3pt, minimum width=2.7cm, minimum height=0.75cm, align=center, font=\scriptsize},
+    ext/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=3pt, minimum width=4.2cm, minimum height=0.85cm, align=center, font=\scriptsize\bfseries},
     line/.style={thick, color=aliceblue, -{Stealth[length=2.5mm]}},
-    ext/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=4pt, minimum width=4cm, minimum height=1cm, align=center, font=\scriptsize},
 ]
 
-\node[box] (browser) at (0, 0) {Browser\\Operatore e Paziente};
+\node[layer] (browser) at (0, 0) {Browser: Operatore e Paziente};
 
-\node[box] (pages) at (0, -2) {Next.js App Router\\Pagine e layout};
-\node[box] (components) at (-4.6, -4) {React Components\\UI e stati client};
-\node[box] (actions) at (0, -4) {Server Actions\\Login e CRUD};
-\node[box] (proxy) at (4.6, -4) {\texttt{proxy.ts}\\Sessione e redirect};
-\node[box] (api) at (0, -6) {Route Handler AI\\\texttt{/api/ai/...}};
+\node[layer] (next) at (0, -2) {};
+\node[comp] at (-3.6, -2) {App Router\\pagine e layout};
+\node[comp] at (-1.2, -2) {Server\\Components};
+\node[comp] at (1.2, -2) {Client\\Components};
+\node[comp] at (3.6, -2) {\texttt{proxy.ts}\\redirect};
 
-\node[ext] (supabase) at (-3.5, -8) {Supabase\\Auth, PostgREST, PostgreSQL, RLS};
-\node[ext] (groq) at (3.5, -8) {Groq API\\Chat completions};
+\node[layer] (server) at (0, -4) {};
+\node[comp] at (-2.8, -4) {Server Actions\\CRUD e auth};
+\node[comp] at (0, -4) {Route Handler\\AI};
+\node[comp] at (2.8, -4) {Helper\\\texttt{src/lib}};
 
-\draw[line] (browser) -- (pages);
-\draw[line] (pages) -- (components);
-\draw[line] (pages) -- (actions);
-\draw[line] (pages) -- (proxy);
-\draw[line] (components) -- (api);
-\draw[line] (actions) -- (supabase);
-\draw[line] (proxy) -- (supabase);
-\draw[line] (api) -- (groq);
+\node[ext] (supabase) at (-3.0, -6) {Supabase\\Auth + PostgreSQL + RLS};
+\node[ext] (groq) at (3.0, -6) {Groq API\\Suggerimento operatore};
+
+\draw[line] (browser) -- (next);
+\draw[line] (next) -- (server);
+\draw[line] (server) -- (supabase);
+\draw[line] (server) -- (groq);
 \end{tikzpicture}
 }
-\caption{Architettura software aggiornata del sistema A.L.I.C.E.}
+\caption{Architettura software a livelli del sistema A.L.I.C.E.}
 \label{fig:architettura-software}
 \end{figure}
 
@@ -98,15 +88,15 @@ Non si tratta quindi di un classico MVC con controller separati. Nel progetto:
 \hline
 \textbf{Livello} & \textbf{Responsabilita'} \\
 \hline
-Presentazione & Pagine React, layout, form, card paziente, dashboard e schermate semplificate per il paziente. \\
+Presentazione & Componenti React, form, dashboard, card e pagine semplificate del paziente. \\
 \hline
-Logica applicativa & Server Actions per login, registrazione, modifica paziente, farmaci, esercizi e logout. \\
+Navigazione & App Router per le route e \texttt{proxy.ts} per redirect e sessione. \\
 \hline
-Navigazione protetta & \texttt{src/proxy.ts}, che legge la sessione Supabase e applica i redirect principali. \\
+Logica applicativa & Server Actions, pagine server e helper in \texttt{src/lib}. \\
 \hline
-Persistenza & Tabelle PostgreSQL, funzioni SQL, trigger e policy RLS nello schema Supabase. \\
+Dati & Tabelle Supabase, funzioni SQL, trigger e policy RLS. \\
 \hline
-Integrazione AI & Route \texttt{src/app/api/ai/suggerimento-operatore/route.ts}, che chiama Groq con dati non identificativi. \\
+Integrazione AI & Route \texttt{/api/ai/suggerimento-operatore}, chiamata server-side a Groq. \\
 \hline
 \end{tabularx}
 \caption{Responsabilita' dei livelli software}
@@ -120,60 +110,27 @@ Integrazione AI & Route \texttt{src/app/api/ai/suggerimento-operatore/route.ts},
 \renewcommand{\arraystretch}{1.25}
 \begin{tabularx}{\textwidth}{|l|l|X|}
 \hline
-\textbf{Tecnologia} & \textbf{Versione nel progetto} & \textbf{Utilizzo} \\
+\textbf{Tecnologia} & \textbf{Versione} & \textbf{Uso nel progetto} \\
 \hline
-\texttt{next} & 16.1.6 & Framework full-stack, routing, rendering e build. \\
+\texttt{next} & 16.1.6 & Framework full-stack, App Router, build e proxy. \\
 \hline
-\texttt{react} / \texttt{react-dom} & 19.2.3 & Costruzione dell'interfaccia utente. \\
+\texttt{react} / \texttt{react-dom} & 19.2.3 & Componenti dell'interfaccia utente. \\
 \hline
-\texttt{@supabase/ssr} & 0.8.0 & Creazione del client Supabase compatibile con Server Components, Server Actions e proxy. \\
+\texttt{@supabase/ssr} & 0.8.0 & Client Supabase compatibile con server, client e proxy. \\
 \hline
-\texttt{typescript} & 5.x & Tipizzazione statica del codice. \\
+\texttt{typescript} & 5.x & Tipizzazione del codice applicativo. \\
 \hline
-CSS Modules / CSS globale & n.d. & Stili dell'interfaccia senza librerie grafiche esterne. \\
+CSS Modules / CSS globale & n.d. & Stile delle pagine senza librerie UI esterne. \\
 \hline
-Groq API & via \texttt{fetch} & Chiamata HTTP server-side per generare il suggerimento AI. \\
+Groq API & via \texttt{fetch} & Suggerimento AI lato server. \\
 \hline
 \end{tabularx}
-\caption{Stack tecnologico realmente presente in \texttt{package.json}}
+\caption{Stack tecnologico realmente presente nel progetto}
 \label{tab:stack-tecnologico}
 \end{table}
 
-\subsection{DBMS}
+\subsection{DBMS, browser e sistemi supportati}
 
-Il DBMS e' PostgreSQL, fornito tramite Supabase. Il codice applicativo non apre connessioni SQL
-dirette, ma usa il client Supabase per interrogare tabelle e funzioni. Le regole di accesso ai
-dati vengono applicate anche a livello database tramite Row Level Security.
-
-Le principali motivazioni della scelta sono:
-
-\begin{itemize}
-    \item schema relazionale adatto a pazienti, operatori, farmaci, esercizi e log;
-    \item integrazione diretta con Supabase Auth;
-    \item policy RLS per limitare i dati visibili a ogni ruolo;
-    \item API REST generate automaticamente da PostgREST.
-\end{itemize}
-
-\subsection{Browser e dispositivi supportati}
-
-L'applicazione e' web based, quindi non richiede installazioni. L'operatore puo' usarla da PC o
-tablet, mentre il paziente e' favorito da tablet o schermi grandi, perche' le pagine paziente
-usano card e pulsanti piu' semplici da leggere.
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Utente} & \textbf{Dispositivo consigliato} \\
-\hline
-Operatore & PC, laptop o tablet con browser moderno. \\
-\hline
-Paziente & Tablet o PC con schermo ampio e browser moderno. \\
-\hline
-\end{tabular}
-\caption{Dispositivi client consigliati}
-\label{tab:dispositivi}
-\end{table}
+Il DBMS e' PostgreSQL tramite Supabase. Il codice applicativo usa il client Supabase per leggere e scrivere dati, mentre le regole RLS nel database impediscono l'accesso a dati non autorizzati. L'applicazione e' fruibile da browser moderni su Windows, macOS, Linux, Android e iPadOS. Per il paziente e' consigliato un tablet o un PC con schermo ampio; per l'operatore e' sufficiente un PC, laptop o tablet.
 
 \newpage

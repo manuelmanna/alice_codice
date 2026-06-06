@@ -1,9 +1,6 @@
 \section{Modello di Navigazione}
 
-Il modello di navigazione e' stato aggiornato partendo dalla struttura reale delle cartelle in
-\texttt{src/app}. In Next.js App Router, infatti, ogni cartella con un file \texttt{page.tsx}
-corrisponde a una pagina visitabile. In questo modo la documentazione descrive le pagine
-effettivamente presenti nel progetto, senza aggiungere viste non implementate.
+Il modello di navigazione e' stato ricavato dalla struttura reale di \texttt{src/app}. In Next.js App Router ogni cartella che contiene \texttt{page.tsx} diventa una pagina visitabile; per questo motivo il diagramma seguente non descrive funzionalita' ipotetiche, ma solo route presenti nel codice.
 
 \subsection{Legenda}
 
@@ -24,7 +21,7 @@ VG & Vista gestionale, usata per modificare dati o configurazioni. \\
 \hline
 VA & Vista assistita per il paziente, con percorso semplice e pochi pulsanti. \\
 \hline
-API & Route non navigabile dal browser come pagina, usata dal codice applicativo. \\
+API & Route non navigabile come pagina, usata dal codice applicativo. \\
 \hline
 \end{tabular}
 \caption{Legenda del modello di navigazione}
@@ -35,50 +32,46 @@ API & Route non navigabile dal browser come pagina, usata dal codice applicativo
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{
+\resizebox{0.98\textwidth}{!}{
 \begin{tikzpicture}[
-    page/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3.5cm, minimum height=0.9cm, align=center, font=\scriptsize},
-    role/.style={rectangle, draw=alicegreen, fill=alicegreen!10, thick, rounded corners=3pt, minimum width=3.5cm, minimum height=0.9cm, align=center, font=\scriptsize\bfseries},
-    api/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=3pt, minimum width=4cm, minimum height=0.9cm, align=center, font=\scriptsize},
-    line/.style={thick, color=aliceblue, -{Stealth[length=2.5mm]}},
-    apiLine/.style={thick, dashed, color=aliceorange, -{Stealth[length=2.5mm]}},
-    node distance=1cm and 1.2cm,
+    route/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, text width=3.7cm, minimum height=0.85cm, align=center, font=\scriptsize},
+    role/.style={rectangle, draw=alicegreen, fill=alicegreen!10, thick, rounded corners=3pt, text width=3.4cm, minimum height=0.85cm, align=center, font=\scriptsize\bfseries},
+    api/.style={rectangle, draw=aliceorange, fill=aliceorange!10, thick, rounded corners=3pt, text width=4cm, minimum height=0.85cm, align=center, font=\scriptsize},
+    line/.style={thick, color=aliceblue, -{Stealth[length=2.3mm]}},
+    apiLine/.style={thick, dashed, color=aliceorange, -{Stealth[length=2.3mm]}},
 ]
 
-\node[page] (landing) at (0, 0) {\texttt{/}\\Landing\\VP};
+\node[route] (home) at (0, 0) {\texttt{/}\\Landing\\VP};
 
-\node[role] (opArea) at (-5.5, -1.7) {Area Operatore};
-\node[role] (pzArea) at (5.5, -1.7) {Area Paziente};
-\draw[line] (landing) -- (opArea);
-\draw[line] (landing) -- (pzArea);
+\node[role] (opArea) at (-5.2, -1.55) {Area Operatore};
+\node[role] (pzArea) at (5.2, -1.55) {Area Paziente};
+\draw[line] (home) -- (opArea);
+\draw[line] (home) -- (pzArea);
 
-\node[page] (opLogin) at (-8.2, -3.4) {\texttt{/operatore/login}\\Login\\VF};
-\node[page] (opReg) at (-5.5, -3.4) {\texttt{/operatore/registrati}\\Registrazione\\VF};
-\node[page] (opDash) at (-2.8, -3.4) {\texttt{/operatore/dashboard}\\Dashboard\\VD};
+\node[route] (opLogin) at (-8.3, -3.2) {\texttt{/operatore/login}\\Login\\VF};
+\node[route] (opReg) at (-5.2, -3.2) {\texttt{/operatore/registrati}\\Registrazione\\VF};
+\node[route] (opDash) at (-2.1, -3.2) {\texttt{/operatore/dashboard}\\Dashboard\\VD};
 \draw[line] (opArea) -- (opLogin);
 \draw[line] (opArea) -- (opReg);
-\draw[line] (opLogin) -- (opDash);
-\draw[line] (opReg) -- (opDash);
+\draw[line] (opArea) -- (opDash);
 
-\node[page] (opDetail) at (-2.8, -5.2) {\texttt{/operatore/dashboard/pazienti/[id]}\\Dettaglio paziente\\VD};
-\node[page] (opManage) at (-2.8, -7.0) {\texttt{?tab=gestisci}\\Gestione farmaci, esercizi e dati\\VG};
+\node[route] (opDetail) at (-2.1, -4.9) {\texttt{/operatore/dashboard/pazienti/[id]}\\Dettaglio paziente\\VD};
+\node[route] (opManage) at (-2.1, -6.6) {\texttt{?tab=gestisci}\\Gestione dati, farmaci, esercizi\\VG};
+\node[api] (aiApi) at (-6.7, -5.75) {\texttt{/api/ai/suggerimento-operatore}\\Suggerimento AI\\API};
 \draw[line] (opDash) -- (opDetail);
 \draw[line] (opDetail) -- (opManage);
-
-\node[api] (aiApi) at (-7.5, -6.1) {\texttt{/api/ai/suggerimento-operatore}\\Suggerimento AI\\API};
 \draw[apiLine] (opDetail) -- (aiApi);
 
-\node[page] (pzLogin) at (2.5, -3.4) {\texttt{/paziente/login}\\Login\\VF};
-\node[page] (pzReg) at (5.5, -3.4) {\texttt{/paziente/registrati}\\Registrazione\\VF};
-\node[page] (pzHome) at (8.5, -3.4) {\texttt{/paziente/home}\\Home\\VA};
+\node[route] (pzLogin) at (2.1, -3.2) {\texttt{/paziente/login}\\Login\\VF};
+\node[route] (pzReg) at (5.2, -3.2) {\texttt{/paziente/registrati}\\Registrazione\\VF};
+\node[route] (pzHome) at (8.3, -3.2) {\texttt{/paziente/home}\\Home\\VA};
 \draw[line] (pzArea) -- (pzLogin);
 \draw[line] (pzArea) -- (pzReg);
-\draw[line] (pzLogin) -- (pzHome);
-\draw[line] (pzReg) -- (pzHome);
+\draw[line] (pzArea) -- (pzHome);
 
-\node[page] (pzMood) at (5.3, -5.3) {\texttt{/paziente/umore}\\Umore\\VA};
-\node[page] (pzEx) at (8.5, -5.3) {\texttt{/paziente/esercizi}\\Esercizi\\VA};
-\node[page] (pzMed) at (11.7, -5.3) {\texttt{/paziente/farmaci}\\Farmaci\\VA};
+\node[route] (pzMood) at (4.3, -4.9) {\texttt{/paziente/umore}\\Umore\\VA};
+\node[route] (pzEx) at (7.4, -4.9) {\texttt{/paziente/esercizi}\\Esercizi\\VA};
+\node[route] (pzMed) at (10.5, -4.9) {\texttt{/paziente/farmaci}\\Farmaci\\VA};
 \draw[line] (pzHome) -- (pzMood);
 \draw[line] (pzHome) -- (pzEx);
 \draw[line] (pzHome) -- (pzMed);
@@ -100,44 +93,39 @@ API & Route non navigabile dal browser come pagina, usata dal codice applicativo
 \begin{itemize}
     \item \textbf{\texttt{/operatore/login}:} form di accesso per l'operatore sanitario.
     \item \textbf{\texttt{/operatore/registrati}:} form di registrazione dell'operatore.
-    \item \textbf{\texttt{/operatore/dashboard}:} vista principale dell'operatore. Mostra elenco pazienti, ricerca, filtri per stato e metriche sintetiche.
-    \item \textbf{\texttt{/operatore/dashboard/pazienti/[id]}:} dettaglio del singolo paziente. Mostra dati anagrafici, farmaci, esercizi, umore, storico settimanale e suggerimento AI.
-    \item \textbf{\texttt{?tab=gestisci}:} non e' una nuova pagina, ma uno stato della pagina di dettaglio. Permette di modificare dati del paziente e gestire farmaci ed esercizi.
+    \item \textbf{\texttt{/operatore/dashboard}:} vista principale dell'operatore con elenco pazienti, ricerca, filtri e metriche sintetiche.
+    \item \textbf{\texttt{/operatore/dashboard/pazienti/[id]}:} dettaglio del paziente con dati anagrafici, farmaci, esercizi, umore, storico settimanale e suggerimento AI.
+    \item \textbf{\texttt{?tab=gestisci}:} stato della pagina di dettaglio, non nuova route. Serve a modificare dati, farmaci ed esercizi.
 \end{itemize}
 
 \subsubsection{Area paziente}
 \begin{itemize}
     \item \textbf{\texttt{/paziente/login}:} form di accesso del paziente.
     \item \textbf{\texttt{/paziente/registrati}:} form di registrazione del paziente.
-    \item \textbf{\texttt{/paziente/home}:} menu principale semplificato, composto da tre card grandi.
+    \item \textbf{\texttt{/paziente/home}:} home semplificata con tre scelte principali.
     \item \textbf{\texttt{/paziente/umore}:} registrazione o aggiornamento dell'umore giornaliero.
     \item \textbf{\texttt{/paziente/esercizi}:} elenco degli esercizi assegnati e percorso guidato step-by-step.
     \item \textbf{\texttt{/paziente/farmaci}:} elenco dei farmaci del giorno, divisi per fascia oraria, con conferma di assunzione.
 \end{itemize}
 
-\subsubsection{Route API}
-\begin{itemize}
-    \item \textbf{\texttt{/api/ai/suggerimento-operatore}:} route server-side chiamata dalla pagina dettaglio paziente. Riceve dati sintetici e restituisce una frase di supporto per l'operatore. Non e' una pagina navigabile.
-\end{itemize}
-
 \subsection{Regole di protezione e reindirizzamento}
 
-La navigazione privata viene controllata dal file \texttt{src/proxy.ts}. Il proxy legge la sessione Supabase e applica poche regole semplici:
+La navigazione privata viene controllata dal file \texttt{src/proxy.ts}. Il proxy legge la sessione Supabase e applica poche regole:
 
 \begin{itemize}
-    \item un utente non autenticato che prova ad aprire \texttt{/operatore/dashboard} viene mandato a \texttt{/operatore/login};
-    \item un utente non autenticato che prova ad aprire una pagina privata sotto \texttt{/paziente/} viene mandato a \texttt{/paziente/login};
-    \item un utente gia' autenticato che torna alla landing page viene mandato alla propria area principale;
-    \item un utente gia' autenticato che apre le pagine pubbliche di login o registrazione viene reindirizzato alla home del proprio ruolo.
+    \item utenti non autenticati verso \texttt{/operatore/dashboard} vengono mandati a \texttt{/operatore/login};
+    \item utenti non autenticati verso pagine private \texttt{/paziente/} vengono mandati a \texttt{/paziente/login};
+    \item utenti autenticati sulla landing vengono mandati alla home del proprio ruolo;
+    \item utenti autenticati sulle pagine pubbliche di login o registrazione vengono reindirizzati alla propria area.
 \end{itemize}
 
 \subsection{Principi di navigazione}
 
 \begin{enumerate}
-    \item \textbf{Separazione per ruolo:} operatore e paziente hanno percorsi distinti, cosi' le due esperienze non si mischiano.
-    \item \textbf{Percorso breve per il paziente:} dalla home paziente si raggiungono umore, esercizi e farmaci con un solo click.
-    \item \textbf{Dashboard unica per l'operatore:} l'operatore parte sempre dalla dashboard e poi entra nel dettaglio del paziente.
-    \item \textbf{Nessuna pagina fantasma:} il modello contiene solo route realmente presenti nel codice.
+    \item \textbf{Separazione per ruolo:} operatore e paziente hanno percorsi distinti.
+    \item \textbf{Percorso breve per il paziente:} dalla home paziente si arriva a umore, esercizi e farmaci con un solo click.
+    \item \textbf{Dashboard unica per l'operatore:} l'operatore parte dalla dashboard e poi entra nel dettaglio del paziente.
+    \item \textbf{Nessuna pagina non implementata:} il modello contiene solo route realmente presenti nel codice.
 \end{enumerate}
 
 \newpage

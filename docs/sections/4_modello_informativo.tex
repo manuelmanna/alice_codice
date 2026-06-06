@@ -1,82 +1,68 @@
 \section{Modello Informativo}
 
+Il modello informativo e' stato ricostruito a partire dallo schema Supabase presente nel file
+\texttt{supabase\_reverse\_engineered\_schema.sql}. Il database contiene profili utente, specializzazioni per operatore e paziente, configurazioni operative e log giornalieri.
+
 \subsection{Diagramma EER}
 
-Il modello informativo e' basato sullo schema Supabase ricostruito nel file \texttt{supabase\_reverse\_engineered\_schema.sql}. Il database contiene 9 tabelle applicative principali e alcuni tipi enumerativi per ruoli, stato paziente, fascia farmaco e valore dell'umore.
+Il diagramma EER rappresenta le entita' principali e le relazioni tra esse, mantenendo uno stile vicino alla versione consegnata nel precedente appello. L'immagine PNG e' stata generata a partire dal sorgente Mermaid presente in \texttt{docs/diagrams/01\_eer.mmd}.
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{
-\begin{tikzpicture}[
-    entity/.style={rectangle, draw=aliceblue, fill=alicelight, thick, rounded corners=3pt, minimum width=3.2cm, minimum height=0.9cm, text centered, font=\scriptsize\bfseries},
-    relation/.style={-{Stealth[length=2.5mm]}, thick, color=aliceblue},
-    note/.style={font=\tiny, fill=white, inner sep=2pt},
-]
-\node[entity] (profiles) at (0, 0) {profiles};
-\node[entity] (operatori) at (-4, -2) {operatori};
-\node[entity] (pazienti) at (4, -2) {pazienti};
-\node[entity] (farmaci) at (0, -4) {farmaci};
-\node[entity] (farmacilog) at (-4, -6) {farmaci\_log};
-\node[entity] (esercizi) at (4, -4) {esercizi};
-\node[entity] (esercizistep) at (8, -6) {esercizi\_step};
-\node[entity] (esercizilog) at (4, -6) {esercizi\_log};
-\node[entity] (umorelog) at (0, -8) {umore\_log};
-
-\draw[relation] (profiles) -- node[note, left] {1:1} (operatori);
-\draw[relation] (profiles) -- node[note, right] {1:1} (pazienti);
-\draw[relation] (operatori) -- node[note] {1:N} (pazienti);
-\draw[relation] (pazienti) -- node[note] {1:N} (farmaci);
-\draw[relation] (farmaci) -- node[note] {1:N} (farmacilog);
-\draw[relation] (pazienti) -- node[note] {1:N} (esercizi);
-\draw[relation] (esercizi) -- node[note] {1:N} (esercizistep);
-\draw[relation] (esercizi) -- node[note] {1:N} (esercizilog);
-\draw[relation] (pazienti) -- node[note] {1:N} (umorelog);
-\end{tikzpicture}
-}
-\caption{Diagramma EER del sistema A.L.I.C.E.}
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{diagrams/01_eer.png}
+\caption{Diagramma EER aggiornato allo schema Supabase}
 \label{fig:eer}
 \end{figure}
 
-\paragraph{Descrizione delle entita'}
+\paragraph{Entita' principali}
 \begin{itemize}
-    \item \textbf{profiles:} tabella collegata a \texttt{auth.users}. Contiene ruolo, email, nome completo e timestamp.
-    \item \textbf{operatori:} specializzazione del profilo operatore. Contiene codice operatore, dati professionali e contatti.
-    \item \textbf{pazienti:} specializzazione del profilo paziente. Contiene operatore assegnato, dati anagrafici, contatto di emergenza e stato clinico.
-    \item \textbf{farmaci:} farmaci prescritti al paziente, con dosaggio, orario e fascia oraria.
-    \item \textbf{farmaci\_log:} registro giornaliero dell'assunzione dei farmaci.
-    \item \textbf{esercizi:} esercizi fisici assegnati al paziente.
-    \item \textbf{esercizi\_step:} passaggi testuali di un esercizio.
-    \item \textbf{esercizi\_log:} registro giornaliero degli esercizi completati.
-    \item \textbf{umore\_log:} registrazione giornaliera dell'umore del paziente.
+    \item \textbf{\texttt{profiles}:} profilo applicativo collegato a \texttt{auth.users}. Contiene ruolo, email e nome completo.
+    \item \textbf{\texttt{operatori}:} dati dell'operatore sanitario, incluso codice operatore e struttura sanitaria.
+    \item \textbf{\texttt{pazienti}:} dati del paziente, operatore assegnato, contatti e stato clinico.
+    \item \textbf{\texttt{farmaci}:} farmaci assegnati al paziente, con dosaggio, orario, fascia e stato attivo.
+    \item \textbf{\texttt{farmaci\_log}:} registro giornaliero dell'assunzione dei farmaci.
+    \item \textbf{\texttt{esercizi}:} esercizi fisici assegnati al paziente.
+    \item \textbf{\texttt{esercizi\_step}:} passaggi guidati che compongono un esercizio.
+    \item \textbf{\texttt{esercizi\_log}:} registro giornaliero degli esercizi completati.
+    \item \textbf{\texttt{umore\_log}:} registrazione giornaliera dell'umore del paziente.
 \end{itemize}
 
 \newpage
 \subsection{Modello Relazionale}
 
+Il modello relazionale traduce il diagramma EER in tabelle, chiavi primarie, chiavi esterne e vincoli. Il diagramma seguente e' stato generato dal sorgente Mermaid \texttt{docs/diagrams/02\_modello\_relazionale.mmd}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{diagrams/02_modello_relazionale.png}
+\caption{Diagramma del modello relazionale con tabelle, PK e FK}
+\label{fig:relazionale}
+\end{figure}
+
 \begin{longtable}{|p{3.2cm}|p{5.8cm}|p{5.8cm}|}
 \hline
-\textbf{Tabella} & \textbf{Chiave primaria e campi principali} & \textbf{Relazioni} \\
+\textbf{Tabella} & \textbf{Chiave primaria e campi principali} & \textbf{Relazioni e vincoli} \\
 \hline
 \endhead
 \texttt{profiles} & \texttt{id}, \texttt{role}, \texttt{email}, \texttt{nome\_completo} & \texttt{id} riferisce \texttt{auth.users(id)} \\
 \hline
-\texttt{operatori} & \texttt{id}, \texttt{profile\_id}, \texttt{codice\_operatore}, \texttt{nome\_completo} & \texttt{profile\_id} riferisce \texttt{profiles(id)} \\
+\texttt{operatori} & \texttt{id}, \texttt{profile\_id}, \texttt{codice\_operatore}, \texttt{nome\_completo}, \texttt{struttura\_sanitaria} & \texttt{profile\_id} e \texttt{codice\_operatore} sono unici \\
 \hline
-\texttt{pazienti} & \texttt{id}, \texttt{profile\_id}, \texttt{operatore\_id}, \texttt{stato} & \texttt{profile\_id} riferisce \texttt{profiles}; \texttt{operatore\_id} riferisce \texttt{operatori} \\
+\texttt{pazienti} & \texttt{id}, \texttt{profile\_id}, \texttt{operatore\_id}, \texttt{eta}, \texttt{stato} & \texttt{profile\_id} unico; \texttt{operatore\_id} riferisce \texttt{operatori(id)} \\
 \hline
-\texttt{farmaci} & \texttt{id}, \texttt{paziente\_id}, \texttt{nome}, \texttt{dosaggio}, \texttt{fascia}, \texttt{orario} & \texttt{paziente\_id} riferisce \texttt{pazienti} \\
+\texttt{farmaci} & \texttt{id}, \texttt{paziente\_id}, \texttt{nome}, \texttt{dosaggio}, \texttt{fascia}, \texttt{orario}, \texttt{attivo} & \texttt{paziente\_id} riferisce \texttt{pazienti(id)} \\
 \hline
-\texttt{farmaci\_log} & \texttt{id}, \texttt{farmaco\_id}, \texttt{paziente\_id}, \texttt{data}, \texttt{preso} & \texttt{farmaco\_id} riferisce \texttt{farmaci}; vincolo unico \texttt{(farmaco\_id, data)} \\
+\texttt{farmaci\_log} & \texttt{id}, \texttt{farmaco\_id}, \texttt{paziente\_id}, \texttt{data}, \texttt{preso}, \texttt{preso\_at} & FK verso \texttt{farmaci} e \texttt{pazienti}; vincolo unico \texttt{(farmaco\_id, data)} \\
 \hline
-\texttt{esercizi} & \texttt{id}, \texttt{paziente\_id}, \texttt{nome}, \texttt{durata\_minuti}, \texttt{frequenza} & \texttt{paziente\_id} riferisce \texttt{pazienti} \\
+\texttt{esercizi} & \texttt{id}, \texttt{paziente\_id}, \texttt{nome}, \texttt{durata\_minuti}, \texttt{frequenza}, \texttt{attivo} & \texttt{paziente\_id} riferisce \texttt{pazienti(id)}; \texttt{durata\_minuti > 0} \\
 \hline
-\texttt{esercizi\_step} & \texttt{id}, \texttt{esercizio\_id}, \texttt{numero\_step}, \texttt{istruzione} & \texttt{esercizio\_id} riferisce \texttt{esercizi}; vincolo unico \texttt{(esercizio\_id, numero\_step)} \\
+\texttt{esercizi\_step} & \texttt{id}, \texttt{esercizio\_id}, \texttt{numero\_step}, \texttt{istruzione} & FK verso \texttt{esercizi}; vincolo unico \texttt{(esercizio\_id, numero\_step)} \\
 \hline
-\texttt{esercizi\_log} & \texttt{id}, \texttt{esercizio\_id}, \texttt{paziente\_id}, \texttt{data}, \texttt{completato} & \texttt{esercizio\_id} riferisce \texttt{esercizi}; vincolo unico \texttt{(esercizio\_id, data)} \\
+\texttt{esercizi\_log} & \texttt{id}, \texttt{esercizio\_id}, \texttt{paziente\_id}, \texttt{data}, \texttt{completato}, \texttt{completato\_at} & FK verso \texttt{esercizi} e \texttt{pazienti}; vincolo unico \texttt{(esercizio\_id, data)} \\
 \hline
-\texttt{umore\_log} & \texttt{id}, \texttt{paziente\_id}, \texttt{data}, \texttt{valore} & \texttt{paziente\_id} riferisce \texttt{pazienti}; vincolo unico \texttt{(paziente\_id, data)} \\
+\texttt{umore\_log} & \texttt{id}, \texttt{paziente\_id}, \texttt{data}, \texttt{valore} & FK verso \texttt{pazienti}; vincolo unico \texttt{(paziente\_id, data)} \\
 \hline
-\caption{Modello relazionale aggiornato}
+\caption{Modello relazionale aggiornato allo schema Supabase}
 \label{tab:modello-relazionale}
 \end{longtable}
 
@@ -93,7 +79,7 @@ Il modello informativo e' basato sullo schema Supabase ricostruito nel file \tex
 \hline
 profiles & 128 & UUID, ruolo, email, nome e timestamp \\
 \hline
-operatori & 384 & Dati professionali e codice operatore \\
+operatori & 384 & Dati professionali, codice operatore e contatti \\
 \hline
 pazienti & 512 & Dati anagrafici, stato e contatto emergenza \\
 \hline
@@ -119,59 +105,83 @@ umore\_log & 80 & Data e valore enum testuale \\
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{|l|r|r|r|}
+\begin{tabular}{|l|r|r|r|r|}
 \hline
-\textbf{Tabella} & \textbf{Righe primo mese} & \textbf{Byte/riga} & \textbf{Dimensione stimata} \\
+\textbf{Tabella} & \textbf{Righe iniziali} & \textbf{Crescita annua} & \textbf{Byte/riga} & \textbf{Dimensione annua stimata} \\
 \hline
-profiles & 105 & 128 & $\sim$ 13 KB \\
+profiles & 105 & 20 & 128 & $\sim$ 16 KB \\
 \hline
-operatori & 5 & 384 & $\sim$ 2 KB \\
+operatori & 5 & 1 & 384 & $\sim$ 2 KB \\
 \hline
-pazienti & 100 & 512 & $\sim$ 50 KB \\
+pazienti & 100 & 20 & 512 & $\sim$ 60 KB \\
 \hline
-farmaci & 500 & 208 & $\sim$ 102 KB \\
+farmaci & 500 & 100 & 208 & $\sim$ 122 KB \\
 \hline
-farmaci\_log & 4.500 & 96 & $\sim$ 422 KB \\
+farmaci\_log & 4.500 & 182.500 & 96 & $\sim$ 17,9 MB \\
 \hline
-esercizi & 300 & 192 & $\sim$ 56 KB \\
+esercizi & 300 & 60 & 192 & $\sim$ 67 KB \\
 \hline
-esercizi\_step & 900 & 320 & $\sim$ 281 KB \\
+esercizi\_step & 900 & 180 & 320 & $\sim$ 337 KB \\
 \hline
-esercizi\_log & 3.000 & 96 & $\sim$ 281 KB \\
+esercizi\_log & 3.000 & 109.500 & 96 & $\sim$ 10,8 MB \\
 \hline
-umore\_log & 3.000 & 80 & $\sim$ 234 KB \\
+umore\_log & 3.000 & 36.500 & 80 & $\sim$ 3,0 MB \\
 \hline
-\multicolumn{3}{|r|}{\textbf{Totale stimato}} & $\sim$ \textbf{1,4 MB} \\
+\multicolumn{4}{|r|}{\textbf{Totale dopo un anno}} & $\sim$ \textbf{32,3 MB} \\
 \hline
 \end{tabular}
-\caption{Stima del popolamento iniziale del database}
+\caption{Stima del popolamento e della crescita annua del database}
 \label{tab:popolamento}
 \end{table}
 
-\subsubsection{Modello di visibilita'}
+\subsection{Modello di Visibilita'}
 
-Il modello di visibilita' e' implementato tramite Supabase Auth e Row Level Security. L'operatore puo' accedere ai pazienti associati al proprio \texttt{operatore\_id}; il paziente puo' accedere solo ai propri dati.
+Il modello di visibilita' e' implementato tramite Supabase Auth e policy Row Level Security. La logica principale e' semplice: l'operatore accede ai pazienti assegnati al proprio \texttt{operatore\_id}; il paziente accede solo ai dati collegati al proprio profilo. I due diagrammi seguenti separano la visibilita' del paziente da quella dell'operatore.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{diagrams/03a_modello_visibilita_paziente.png}
+\caption{Modello di visibilita' RLS per il paziente}
+\label{fig:visibilita-paziente}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{diagrams/03b_modello_visibilita_operatore.png}
+\caption{Modello di visibilita' RLS per l'operatore}
+\label{fig:visibilita-operatore}
+\end{figure}
 
 \begin{table}[H]
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{|p{4cm}|p{5.3cm}|p{5.3cm}|}
+\begin{tabular}{|p{3.2cm}|c|c|c|c|c|c|c|c|}
 \hline
-\textbf{Risorsa} & \textbf{Operatore} & \textbf{Paziente} \\
+\multirow{2}{*}{\textbf{Risorsa}} & \multicolumn{4}{c|}{\textbf{Operatore}} & \multicolumn{4}{c|}{\textbf{Paziente}} \\
+\cline{2-9}
+ & C & R & U & D & C & R & U & D \\
 \hline
-Profilo & Legge e aggiorna il proprio profilo & Legge il proprio profilo \\
+profiles &  & X & X &  &  & X & X &  \\
 \hline
-Pazienti & Legge e aggiorna i pazienti assegnati & Legge solo il proprio record \\
+operatori &  & X & X &  &  & X &  &  \\
 \hline
-Farmaci & Crea, legge ed elimina farmaci dei propri pazienti & Legge farmaci propri e registra assunzione \\
+pazienti &  & X & X &  & X & X &  &  \\
 \hline
-Esercizi & Crea, legge ed elimina esercizi dei propri pazienti & Legge esercizi propri e registra completamento \\
+farmaci & X & X & X & X &  & X &  &  \\
 \hline
-Umore & Legge lo storico dei propri pazienti & Crea o aggiorna il proprio umore giornaliero \\
+farmaci\_log &  & X &  &  & X & X & X &  \\
+\hline
+esercizi & X & X & X & X &  & X &  &  \\
+\hline
+esercizi\_step & X & X & X & X &  & X &  &  \\
+\hline
+esercizi\_log &  & X &  &  & X & X & X &  \\
+\hline
+umore\_log &  & X &  &  & X & X & X &  \\
 \hline
 \end{tabular}
-\caption{Matrice di visibilita' per ruolo}
+\caption{Matrice CRUD di visibilita' per ruolo}
 \label{tab:visibilita}
 \end{table}
 

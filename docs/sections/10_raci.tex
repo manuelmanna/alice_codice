@@ -1,36 +1,35 @@
 \section{Matrice RACI}
 
-La matrice RACI indica chi ha seguito le principali attivita' del progetto. Usiamo le stesse
-quattro sigle della metodologia classica:
+La matrice RACI chiarisce la distribuzione delle responsabilita' tra i membri del gruppo. Le sigle utilizzate sono:
 
 \begin{itemize}
-    \item \textbf{R} -- Responsible: chi esegue materialmente l'attivita';
-    \item \textbf{A} -- Accountable: chi approva il risultato finale;
-    \item \textbf{C} -- Consulted: chi viene consultato;
-    \item \textbf{I} -- Informed: chi viene informato.
+    \item \textbf{R} -- Responsible: esegue l'attivita';
+    \item \textbf{A} -- Accountable: approva il risultato;
+    \item \textbf{C} -- Consulted: fornisce supporto o revisione;
+    \item \textbf{I} -- Informed: viene informato sull'esito.
 \end{itemize}
 
-\subsection{Team}
+\subsection{Ruoli del team}
 
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{|l|l|}
+\begin{tabularx}{\textwidth}{|l|X|}
 \hline
-\textbf{Studente} & \textbf{Ruolo prevalente nel progetto} \\
+\textbf{Studente} & \textbf{Responsabilita' prevalente} \\
 \hline
-Manuel Manna & Coordinamento documentazione e revisione complessiva. \\
+Manuel Manna & Coordinamento della relazione, contesto, stato dell'arte, revisione finale. \\
 \hline
-Alessio Mininni & Sviluppo applicativo, integrazione Supabase e refactoring. \\
+Alessio Mininni & Implementazione, refactoring, Supabase, architettura software e allineamento codice-documentazione. \\
 \hline
-Andrius Tamuliunaite & Analisi, supporto alla documentazione e verifica funzionale. \\
+Andrius Tamuliunaite & Analisi dei modelli, verifica funzionale, supporto alla navigazione e revisione dei contenuti. \\
 \hline
-\end{tabular}
-\caption{Team di progetto}
+\end{tabularx}
+\caption{Ruoli del team}
 \label{tab:team-raci}
 \end{table}
 
-\subsection{Documentazione}
+\subsection{RACI della documentazione}
 
 \begin{table}[H]
 \centering
@@ -40,28 +39,30 @@ Andrius Tamuliunaite & Analisi, supporto alla documentazione e verifica funziona
 \hline
 \textbf{Attivita'} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
 \hline
-Descrizione del contesto e obiettivi & A/R & C & C \\
+Capitolo 1: contesto e obiettivi & A/R & C & C \\
 \hline
-Stakeholder, goal e scambio di valore & R & C & A \\
+Capitolo 2: stakeholder, goal e valore & C & C & A/R \\
 \hline
-Analisi dello stato dell'arte & R & I & A/C \\
+Capitolo 3: stato dell'arte e make or buy & A/R & I & C \\
 \hline
-Modello informativo e schema relazionale & C & A/R & C \\
+Capitolo 4: EER, relazionale e visibilita' & C & A/R & C \\
 \hline
-Modello di navigazione aderente alle pagine reali & C & A/R & C \\
+Capitolo 5: modello di navigazione & C & A/R & C \\
 \hline
-Modello architetturale e architettura software & C & A/R & C \\
+Capitolo 6: modello architetturale & C & A/R & I \\
 \hline
-Aspetti implementativi & C & A/R & I \\
+Capitolo 7: aspetti implementativi & I & A/R & C \\
 \hline
-Test, conclusioni e revisione finale & A/R & C & C \\
+Capitoli 8-9: test e conclusioni & A & C & R \\
+\hline
+Revisione finale della relazione & A/R & C & C \\
 \hline
 \end{tabularx}
 \caption{Matrice RACI della documentazione}
 \label{tab:raci-documentazione}
 \end{table}
 
-\subsection{Sviluppo}
+\subsection{RACI dello sviluppo}
 
 \begin{table}[H]
 \centering
@@ -71,23 +72,25 @@ Test, conclusioni e revisione finale & A/R & C & C \\
 \hline
 \textbf{Attivita'} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
 \hline
-Configurazione Next.js e struttura \texttt{src/app} & C & A/R & I \\
+Configurazione progetto Next.js & I & A/R & C \\
 \hline
-Schema Supabase, tabelle e policy RLS & C & A/R & C \\
+Schema Supabase e policy RLS & C & A/R & C \\
 \hline
 Autenticazione operatore e paziente & I & A/R & C \\
 \hline
-Dashboard operatore e dettaglio paziente & C & A/R & C \\
+Dashboard operatore & C & A/R & C \\
 \hline
-Pagine paziente per umore, esercizi e farmaci & C & A/R & C \\
+Dettaglio paziente e gestione farmaci/esercizi & C & A/R & C \\
 \hline
-Proxy Next.js per redirect e sessione & I & A/R & C \\
+Pagine paziente: home, umore, esercizi, farmaci & C & A/R & R \\
+\hline
+Proxy Next.js e protezione navigazione & I & A/R & C \\
 \hline
 Route AI con Groq & I & A/R & C \\
 \hline
 Refactoring helper in \texttt{src/lib} & I & A/R & C \\
 \hline
-Test manuali dei flussi principali & R & C & A/R \\
+Test manuali dei flussi principali & C & C & A/R \\
 \hline
 \end{tabularx}
 \caption{Matrice RACI dello sviluppo}
