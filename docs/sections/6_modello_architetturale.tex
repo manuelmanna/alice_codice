@@ -34,7 +34,6 @@ Il modello architetturale non e' un MVC classico. La separazione delle responsab
     \item le \textbf{pagine} definiscono le viste raggiungibili dall'utente;
     \item i \textbf{Server Components} caricano dati e preparano la UI lato server;
     \item i \textbf{Client Components} gestiscono interazioni complesse nel browser;
-    \item le \textbf{Server Actions} gestiscono mutazioni come login, registrazione, farmaci ed esercizi;
     \item il \textbf{proxy} gestisce sessione e redirect delle aree private;
     \item Supabase rappresenta il livello dati e applica le policy di visibilita'.
 \end{itemize}
@@ -63,7 +62,7 @@ Presentazione & Componenti React, form, dashboard, card e pagine semplificate de
 \hline
 Navigazione & App Router per le route e \texttt{proxy.ts} per redirect e sessione. \\
 \hline
-Logica applicativa & Server Actions, pagine server e helper in \texttt{src/lib}. \\
+Logica applicativa & pagine server e helper in \texttt{src/lib}. \\
 \hline
 Dati & Tabelle Supabase, funzioni SQL, trigger e policy RLS. \\
 \hline

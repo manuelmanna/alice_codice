@@ -1,11 +1,8 @@
 \section{Modello Informativo}
 
-Il modello informativo e' stato ricostruito a partire dallo schema Supabase presente nel file
-\texttt{supabase\_reverse\_engineered\_schema.sql}. Il database contiene profili utente, specializzazioni per operatore e paziente, configurazioni operative e log giornalieri.
-
 \subsection{Diagramma EER}
 
-Il diagramma EER rappresenta le entita' principali e le relazioni tra esse, mantenendo uno stile vicino alla versione consegnata nel precedente appello. L'immagine PNG e' stata generata a partire dal sorgente Mermaid presente in \texttt{docs/diagrams/01\_eer.mmd}.
+l diagramma Entity-Enhanced Relationship descrive la struttura concettuale della base di dati. Le entità sono state individuate a partire dall'analisi dei requisiti funzionali e riflettono lo schema effettivamente implementato su Supabase (PostgreSQL).
 
 \begin{figure}[H]
 \centering
@@ -30,7 +27,7 @@ Il diagramma EER rappresenta le entita' principali e le relazioni tra esse, mant
 \newpage
 \subsection{Modello Relazionale}
 
-Il modello relazionale traduce il diagramma EER in tabelle, chiavi primarie, chiavi esterne e vincoli. Il diagramma seguente e' stato generato dal sorgente Mermaid \texttt{docs/diagrams/02\_modello\_relazionale.mmd}.
+Il modello relazionale descrive la struttura logica della base di dati, derivato dal diagramma EER. Le tabelle, le chiavi primarie (PK), le chiavi esterne (FK) e i vincoli di integrità referenziale sono rappresentati nel seguente schema:
 
 \begin{figure}[H]
 \centering
@@ -136,7 +133,7 @@ umore\_log & 3.000 & 36.500 & 80 & $\sim$ 3,0 MB \\
 
 \subsection{Modello di Visibilita'}
 
-Il modello di visibilita' e' implementato tramite Supabase Auth e policy Row Level Security. La logica principale e' semplice: l'operatore accede ai pazienti assegnati al proprio \texttt{operatore\_id}; il paziente accede solo ai dati collegati al proprio profilo. I due diagrammi seguenti separano la visibilita' del paziente da quella dell'operatore.
+Il modello di visibilità definisce le policy di accesso ai dati in base al ruolo dell'utente autenticato. Il sistema implementa un modello RBAC (Role-Based Access Control) a due livelli: ruolo (operatore vs paziente) e ownership (ogni utente accede solo ai dati di propria competenza).
 
 \begin{figure}[H]
 \centering

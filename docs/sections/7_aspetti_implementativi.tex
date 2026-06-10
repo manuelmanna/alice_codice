@@ -178,9 +178,9 @@ Le route principali sono separate per ruolo. L'area operatore contiene login, re
 \label{tab:pagine-implementate}
 \end{table}
 
-\subsection{Server Actions e accesso ai dati}
+\subsection{Server Components e accesso ai dati}
 
-Le Server Actions gestiscono le operazioni che modificano dati: registrazione, login, logout, aggiornamento del paziente, aggiunta o rimozione di farmaci ed esercizi. La scelta delle Server Actions evita controller REST manuali per ogni form e mantiene la logica lato server.
+I Server Components gestiscono l'accesso ai dati lato server: registrazione, login, logout, aggiornamento del paziente, aggiunta o rimozione di farmaci ed esercizi. La scelta dei Server Components evita controller REST manuali per ogni form e mantiene la logica lato server.
 
 \begin{table}[H]
 \centering
@@ -196,7 +196,7 @@ Le Server Actions gestiscono le operazioni che modificano dati: registrazione, l
 \path{src/app/operatore/dashboard/pazienti/actions.ts} & Update paziente, create/delete farmaco, create/delete esercizio. \\
 \hline
 \end{tabularx}
-\caption{Server Actions del progetto}
+\caption{Server Components del progetto}
 \label{tab:server-actions}
 \end{table}
 

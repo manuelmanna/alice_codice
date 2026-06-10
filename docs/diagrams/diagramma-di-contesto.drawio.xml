@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Diagramma di contesto A.L.I.C.E. con Groq AI" id="OgtdZ_9tssYD9DSWHqTg">
+    <mxGraphModel dx="1414" dy="759" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff0fa;strokeColor=#0072bc;strokeWidth=2;fontColor=#0072bc;fontSize=24;fontStyle=1;" value="A.L.I.C.E." vertex="1">
+          <mxGeometry height="120" width="260" x="380" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-2" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e6f4ff;strokeColor=#0072bc;strokeWidth=2;fontSize=18;fontStyle=1;" value="Operatore&lt;br&gt;Sanitario" vertex="1">
+          <mxGeometry height="70" width="190" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-3" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e6f4ff;strokeColor=#0072bc;strokeWidth=2;fontSize=18;fontStyle=1;" value="Paziente&lt;br&gt;Anziano" vertex="1">
+          <mxGeometry height="70" width="190" x="750" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-4" parent="1" style="whiteSpace=wrap;html=1;fillColor=#f3fbff;strokeColor=#0072bc;strokeWidth=2;fontSize=18;fontStyle=1;" value="Supabase&lt;br&gt;(PostgreSQL)" vertex="1">
+          <mxGeometry height="70" width="190" x="420" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ef6c00;strokeWidth=2;fontColor=#bf360c;fontSize=20;fontStyle=1;" value="Groq AI" vertex="1">
+          <mxGeometry height="70" width="170" x="900" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-6" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-2" style="endArrow=classic;html=1;rounded=0;strokeColor=#0072bc;fontColor=#0072bc;fontSize=14;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="M6GNTZ3ck7maoLL0jZju-1" value="Dati pazienti,&lt;br&gt;Piani terapeutici,&lt;br&gt;Esercizi assegnati">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-7" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-1" style="endArrow=classic;html=1;rounded=0;strokeColor=#0072bc;fontColor=#0072bc;fontSize=14;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" target="M6GNTZ3ck7maoLL0jZju-2" value="Report aderenza,&lt;br&gt;Mood check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-8" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-1" style="endArrow=classic;html=1;rounded=0;strokeColor=#0072bc;fontColor=#0072bc;fontSize=14;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="M6GNTZ3ck7maoLL0jZju-3" value="Esercizi assegnati,&lt;br&gt;Lista farmaci,&lt;br&gt;Interfaccia semplificata">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-9" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-3" style="endArrow=classic;html=1;rounded=0;strokeColor=#0072bc;fontColor=#0072bc;fontSize=14;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="M6GNTZ3ck7maoLL0jZju-1" value="Umore quotidiano,&lt;br&gt;Completamento esercizi,&lt;br&gt;Conferme farmaci">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-10" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-1" style="endArrow=classic;html=1;rounded=0;strokeColor=#0072bc;fontColor=#0072bc;fontSize=14;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" target="M6GNTZ3ck7maoLL0jZju-4" value="Supabase Client">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-11" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-4" style="endArrow=classic;html=1;rounded=0;strokeColor=#0072bc;fontColor=#0072bc;fontSize=14;entryX=0.158;entryY=1.008;entryDx=0;entryDy=0;exitX=0;exitY=0;exitDx=0;exitDy=0;entryPerimeter=0;" target="M6GNTZ3ck7maoLL0jZju-1" value="Dati persistenti">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-12" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-1" style="endArrow=classic;html=1;rounded=0;strokeColor=#ef6c00;fontColor=#bf360c;fontSize=14;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="M6GNTZ3ck7maoLL0jZju-5" value="Richieste AI contestuali,&lt;br&gt;prompt e dati autorizzati">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-13" edge="1" parent="1" source="M6GNTZ3ck7maoLL0jZju-5" style="endArrow=classic;html=1;rounded=0;strokeColor=#ef6c00;fontColor=#bf360c;fontSize=14;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" target="M6GNTZ3ck7maoLL0jZju-1" value="Risposte AI,&lt;br&gt;suggerimenti e testo generato">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M6GNTZ3ck7maoLL0jZju-14" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontColor=#000000;" value="Figura 1: Diagramma di contesto del sistema A.L.I.C.E. con integrazione Groq AI." vertex="1">
+          <mxGeometry height="30" width="520" x="250" y="620" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
