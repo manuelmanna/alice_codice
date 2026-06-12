@@ -7,7 +7,7 @@ l diagramma Entity-Enhanced Relationship descrive la struttura concettuale della
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{diagrams/01_eer.png}
-\caption{Diagramma EER aggiornato allo schema Supabase}
+\caption{Diagramma EER}
 \label{fig:eer}
 \end{figure}
 
@@ -35,33 +35,6 @@ Il modello relazionale descrive la struttura logica della base di dati, derivato
 \caption{Diagramma del modello relazionale con tabelle, PK e FK}
 \label{fig:relazionale}
 \end{figure}
-
-\begin{longtable}{|p{3.2cm}|p{5.8cm}|p{5.8cm}|}
-\hline
-\textbf{Tabella} & \textbf{Chiave primaria e campi principali} & \textbf{Relazioni e vincoli} \\
-\hline
-\endhead
-\texttt{profiles} & \texttt{id}, \texttt{role}, \texttt{email}, \texttt{nome\_completo} & \texttt{id} riferisce \texttt{auth.users(id)} \\
-\hline
-\texttt{operatori} & \texttt{id}, \texttt{profile\_id}, \texttt{codice\_operatore}, \texttt{nome\_completo}, \texttt{struttura\_sanitaria} & \texttt{profile\_id} e \texttt{codice\_operatore} sono unici \\
-\hline
-\texttt{pazienti} & \texttt{id}, \texttt{profile\_id}, \texttt{operatore\_id}, \texttt{eta}, \texttt{stato} & \texttt{profile\_id} unico; \texttt{operatore\_id} riferisce \texttt{operatori(id)} \\
-\hline
-\texttt{farmaci} & \texttt{id}, \texttt{paziente\_id}, \texttt{nome}, \texttt{dosaggio}, \texttt{fascia}, \texttt{orario}, \texttt{attivo} & \texttt{paziente\_id} riferisce \texttt{pazienti(id)} \\
-\hline
-\texttt{farmaci\_log} & \texttt{id}, \texttt{farmaco\_id}, \texttt{paziente\_id}, \texttt{data}, \texttt{preso}, \texttt{preso\_at} & FK verso \texttt{farmaci} e \texttt{pazienti}; vincolo unico \texttt{(farmaco\_id, data)} \\
-\hline
-\texttt{esercizi} & \texttt{id}, \texttt{paziente\_id}, \texttt{nome}, \texttt{durata\_minuti}, \texttt{frequenza}, \texttt{attivo} & \texttt{paziente\_id} riferisce \texttt{pazienti(id)}; \texttt{durata\_minuti > 0} \\
-\hline
-\texttt{esercizi\_step} & \texttt{id}, \texttt{esercizio\_id}, \texttt{numero\_step}, \texttt{istruzione} & FK verso \texttt{esercizi}; vincolo unico \texttt{(esercizio\_id, numero\_step)} \\
-\hline
-\texttt{esercizi\_log} & \texttt{id}, \texttt{esercizio\_id}, \texttt{paziente\_id}, \texttt{data}, \texttt{completato}, \texttt{completato\_at} & FK verso \texttt{esercizi} e \texttt{pazienti}; vincolo unico \texttt{(esercizio\_id, data)} \\
-\hline
-\texttt{umore\_log} & \texttt{id}, \texttt{paziente\_id}, \texttt{data}, \texttt{valore} & FK verso \texttt{pazienti}; vincolo unico \texttt{(paziente\_id, data)} \\
-\hline
-\caption{Modello relazionale aggiornato allo schema Supabase}
-\label{tab:modello-relazionale}
-\end{longtable}
 
 \subsection{Stima Dimensionale del Database}
 

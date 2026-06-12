@@ -4,25 +4,25 @@ A.L.I.C.E. e' una web application full-stack basata su \textbf{Next.js App Route
 
 \subsection{Architettura hardware}
 
-L'architettura hardware e' volutamente leggera. Gli utenti accedono tramite browser, mentre il codice applicativo viene eseguito su un ambiente serverless compatibile con Next.js. I dati persistenti e le sessioni sono gestiti da Supabase; il suggerimento AI viene generato tramite Groq API.
+L'architettura hardware del sistema e' composta da tre tipologie di nodi fisici: il dispositivo dell'utente finale, il server applicativo remoto e il server database remoto. Un quarto nodo esterno fornisce il servizio di intelligenza artificiale. Tutti i nodi remoti risiedono in infrastrutture cloud gestite da terze parti; il sistema non richiede server fisici dedicati.
 
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\textwidth}{|l|l|X|}
+\begin{tabularx}{\textwidth}{|l|X|}
 \hline
-\textbf{Componente} & \textbf{Servizio} & \textbf{Responsabilita'} \\
+\textbf{Nodo hardware} & \textbf{Ruolo nel sistema} \\
 \hline
-Client & Browser web & Visualizzazione interfaccia e invio azioni utente. \\
+Dispositivo client & PC, laptop o tablet dell'utente (operatore o paziente). Esegue il browser e invia le richieste HTTP al server applicativo. \\
 \hline
-Web app & Next.js serverless & Rendering, routing, Server Actions, proxy e route API. \\
+Server applicativo (cloud) & Server remoto che ospita ed esegue l'applicazione web. Riceve le richieste HTTP, elabora la logica applicativa e restituisce le risposte al client. \\
 \hline
-Backend gestito & Supabase & Auth, PostgreSQL, PostgREST e policy RLS. \\
+Server database (cloud) & Server remoto che ospita il database relazionale. Memorizza in modo persistente tutti i dati applicativi e gestisce autenticazione e controllo degli accessi a livello di riga. \\
 \hline
-Servizio AI & Groq API & Generazione del suggerimento testuale per l'operatore. \\
+Server API esterna (cloud) & Server remoto di terze parti che espone un servizio di intelligenza artificiale. Riceve richieste dal server applicativo e restituisce suggerimenti testuali. \\
 \hline
 \end{tabularx}
-\caption{Componenti hardware e servizi esterni}
+\caption{Nodi hardware del sistema}
 \label{tab:arch-hw}
 \end{table}
 
@@ -42,62 +42,16 @@ Questa architettura riduce il numero di file necessari rispetto a un backend sep
 
 \subsection{Architettura software}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.78\textwidth]{diagrams/figura_8_architettura_software_livelli.png}
-\caption{Architettura software a livelli del sistema A.L.I.C.E.}
-\label{fig:architettura-software}
-\end{figure}
+Il sistema e' sviluppato con le seguenti tecnologie:
 
-\subsection{Responsabilita' dei livelli}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\textwidth}{|l|X|}
-\hline
-\textbf{Livello} & \textbf{Responsabilita'} \\
-\hline
-Presentazione & Componenti React, form, dashboard, card e pagine semplificate del paziente. \\
-\hline
-Navigazione & App Router per le route e \texttt{proxy.ts} per redirect e sessione. \\
-\hline
-Logica applicativa & pagine server e helper in \texttt{src/lib}. \\
-\hline
-Dati & Tabelle Supabase, funzioni SQL, trigger e policy RLS. \\
-\hline
-Integrazione AI & Route \texttt{/api/ai/suggerimento-operatore}, chiamata server-side a Groq. \\
-\hline
-\end{tabularx}
-\caption{Responsabilita' dei livelli software}
-\label{tab:livelli-software}
-\end{table}
-
-\subsection{Stack tecnologico}
-
-\begin{table}[H]
-\centering
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\textwidth}{|l|l|X|}
-\hline
-\textbf{Tecnologia} & \textbf{Versione} & \textbf{Uso nel progetto} \\
-\hline
-\texttt{next} & 16.1.6 & Framework full-stack, App Router, build e proxy. \\
-\hline
-\texttt{react} / \texttt{react-dom} & 19.2.3 & Componenti dell'interfaccia utente. \\
-\hline
-\texttt{@supabase/ssr} & 0.8.0 & Client Supabase compatibile con server, client e proxy. \\
-\hline
-\texttt{typescript} & 5.x & Tipizzazione del codice applicativo. \\
-\hline
-CSS Modules / CSS globale & n.d. & Stile delle pagine senza librerie UI esterne. \\
-\hline
-Groq API & via \texttt{fetch} & Suggerimento AI lato server. \\
-\hline
-\end{tabularx}
-\caption{Stack tecnologico realmente presente nel progetto}
-\label{tab:stack-tecnologico}
-\end{table}
+\begin{itemize}
+    \item \textbf{Next.js 16} (App Router): framework full-stack che gestisce routing, rendering lato server, Server Actions e proxy di autenticazione.
+    \item \textbf{React 19}: libreria per la costruzione dei componenti dell'interfaccia utente.
+    \item \textbf{TypeScript 5}: tipizzazione statica del codice applicativo.
+    \item \textbf{CSS Modules / CSS globale}: stilizzazione delle pagine senza librerie UI esterne.
+    \item \textbf{Supabase} (\texttt{@supabase/ssr} 0.8.0): piattaforma Backend-as-a-Service che fornisce autenticazione, database PostgreSQL, API REST e policy Row Level Security.
+    \item \textbf{Groq API}: servizio esterno per la generazione del suggerimento testuale per l'operatore, invocato lato server tramite \texttt{fetch}.
+\end{itemize}
 
 \subsection{DBMS, browser e sistemi supportati}
 
