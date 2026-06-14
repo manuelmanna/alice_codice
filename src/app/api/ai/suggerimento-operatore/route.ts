@@ -58,7 +58,7 @@ function leggiTestoGroq(data: GroqResponse) {
   return data.choices?.[0]?.message?.content?.trim();
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) { // funzione che Next.js chiama automaticamente quando arriva una richiesta POST
   const supabase = await createClient();
 
   const {

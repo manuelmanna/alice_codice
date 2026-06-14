@@ -102,8 +102,9 @@ function getEserciziLogIcon(completatiCount: number, totaleCount: number) {
 }
 
 function getStepOrdinati(steps: EsercizioStep[]) {
-  // Copio l'array prima del sort, cosi' non modifico direttamente le props.
-  return [...steps].sort((a, b) => a.numero_step - b.numero_step);
+  const stepsOrdinati = steps.slice(); // crea copia array
+  stepsOrdinati.sort((a, b) => a.numero_step - b.numero_step);
+  return stepsOrdinati;
 }
 
 export default function PazienteDettaglio({
@@ -174,16 +175,27 @@ export default function PazienteDettaglio({
 
   // ---- Gestione step modal ----
   function addStep() {
-    setEsercizioSteps([...esercizioSteps, '']);
+    const nuoviSteps = esercizioSteps.slice();
+    nuoviSteps.push('');
+    setEsercizioSteps(nuoviSteps);
   }
   function updateStep(index: number, value: string) {
-    const updated = [...esercizioSteps];
-    updated[index] = value;
-    setEsercizioSteps(updated);
+    const stepsAggiornati = esercizioSteps.slice();
+    stepsAggiornati[index] = value;
+    setEsercizioSteps(stepsAggiornati);
   }
   function removeStep(index: number) {
     if (esercizioSteps.length <= 1) return;
-    setEsercizioSteps(esercizioSteps.filter((_, i) => i !== index));
+
+    const stepsRimasti: string[] = [];
+
+    for (let i = 0; i < esercizioSteps.length; i++) {
+      if (i !== index) {
+        stepsRimasti.push(esercizioSteps[i]);
+      }
+    }
+
+    setEsercizioSteps(stepsRimasti);
   }
 
   async function handleGenerateSuggestion() {

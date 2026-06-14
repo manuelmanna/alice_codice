@@ -6,14 +6,14 @@ import { notFound } from 'next/navigation';
 
 interface Props {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string }>;
-}
+  searchParams: Promise<{ tab?: string }>; //parametri dopo il punto interrogativo nell’URL /operatore/dashboard/pazienti/123?tab=gestisci
+} //Sono tipizzati come Promise perché nelle versioni recenti di Next.js questi valori possono essere asincroni e vanno letti con await.
 
-function contaValoriVeri(
-  rows: Record<string, unknown>[] | null,
-  campo: string
+function contaValoriVeri( //conta quante righe hanno un determinato campo “vero”.
+  rows: Record<string, unknown>[] | null, //array di oggetti generici
+  campo: string //nome della proprietà da controllare, ad esempio "preso" oppure "completato".
 ) {
-  return rows?.filter((row) => row[campo]).length || 0;
+  return rows?.filter((row) => row[campo]).length || 0; //Se rows è null, non va in errore e restituisce 0
 }
 
 function creaStoricoSettimana(
