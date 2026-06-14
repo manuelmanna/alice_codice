@@ -29,7 +29,7 @@ Andrius Tamuliunaite & Analisi dei modelli, verifica funzionale, supporto alla n
 \label{tab:team-raci}
 \end{table}
 
-\subsection{RACI della documentazione}
+\subsection{Matrice -- Documentazione}
 
 \begin{table}[H]
 \centering
@@ -37,32 +37,42 @@ Andrius Tamuliunaite & Analisi dei modelli, verifica funzionale, supporto alla n
 \footnotesize
 \begin{tabularx}{\textwidth}{|X|c|c|c|}
 \hline
-\textbf{Attivita'} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
+\textbf{Attivit\`a} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
 \hline
-Capitolo 1: contesto e obiettivi & A/R & C & C \\
+Descrizione del contesto e degli obiettivi & R/A & C & I \\
 \hline
-Capitolo 2: stakeholder, goal e valore & C & C & A/R \\
+Individuazione stakeholder e goal & I & R/A & C \\
 \hline
-Capitolo 3: stato dell'arte e make or buy & A/R & I & C \\
+Diagramma di contesto & C & I & R/A \\
 \hline
-Capitolo 4: EER, relazionale e visibilita' & C & A/R & C \\
+Stato dell'arte e analisi concorrenza & R/A & C & I \\
 \hline
-Capitolo 5: modello di navigazione & C & A/R & C \\
+Analisi ``Make or Buy'' & I & R/A & C \\
 \hline
-Capitolo 6: modello architetturale & C & A/R & I \\
+Modello informativo (EER, relazionale, stima DB) & R/A & R/A & R/A \\
 \hline
-Capitolo 7: aspetti implementativi & I & A/R & C \\
+Modello di visibilit\`a (RBAC) & R/A & C & I \\
 \hline
-Capitoli 8-9: test e conclusioni & A & C & R \\
+Modello di navigazione & I & R/A & C \\
 \hline
-Revisione finale della relazione & A/R & C & C \\
+Modello architetturale (HW e SW) & C & I & R/A \\
+\hline
+Aspetti implementativi & R/A & C & I \\
+\hline
+Sezione test e strumenti di verifica & I & R/A & C \\
+\hline
+Conclusioni e sviluppi futuri & C & I & R/A \\
+\hline
+Matrice RACI & R/A & R/A & R/A \\
+\hline
+Revisione finale della documentazione & R/A & R/A & R/A \\
 \hline
 \end{tabularx}
 \caption{Matrice RACI della documentazione}
 \label{tab:raci-documentazione}
 \end{table}
 
-\subsection{RACI dello sviluppo}
+\subsection{Matrice -- Sviluppo}
 
 \begin{table}[H]
 \centering
@@ -70,27 +80,39 @@ Revisione finale della relazione & A/R & C & C \\
 \footnotesize
 \begin{tabularx}{\textwidth}{|X|c|c|c|}
 \hline
-\textbf{Attivita'} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
+\textbf{Attivit\`a} & \textbf{Manna} & \textbf{Mininni} & \textbf{Tamuliunaite} \\
 \hline
-Configurazione progetto Next.js & I & A/R & C \\
+Landing page (selezione ruolo) & I & I & R/A \\
 \hline
-Schema Supabase e policy RLS & C & A/R & C \\
+Login e registrazione operatore & R/A & I & I \\
 \hline
-Autenticazione operatore e paziente & I & A/R & C \\
+Login e registrazione paziente & I & I & R/A \\
 \hline
-Dashboard operatore & C & A/R & C \\
+Dashboard operatore (lista pazienti, filtri, ricerca) & R/A & C & I \\
 \hline
-Dettaglio paziente e gestione farmaci/esercizi & C & A/R & C \\
+Dettaglio paziente (tab dettagli e gestisci) & C & R/A & I \\
 \hline
-Pagine paziente: home, umore, esercizi, farmaci & C & A/R & R \\
+Gestione farmaci (CRUD con fascia oraria automatica) & I & R/A & C \\
 \hline
-Proxy Next.js e protezione navigazione & I & A/R & C \\
+Gestione esercizi (CRUD con step guidati) & I & R/A & C \\
 \hline
-Route AI con Groq & R & A/R & - \\
+Registrazione umore quotidiano (``Come Mi Sento'') & I & I & R/A \\
 \hline
-Refactoring helper in \texttt{src/lib} & I & A/R & C \\
+Interfaccia farmaci paziente (conferma assunzione) & I & C & R/A \\
 \hline
-Test manuali dei flussi principali & C & C & A/R \\
+Interfaccia esercizi paziente (esecuzione step-by-step) & I & C & R/A \\
+\hline
+Componenti riutilizzabili (PatientCard, DashboardContent, ecc.) & R/A & C & I \\
+\hline
+Server Actions operatore (auth, CRUD pazienti) & R/A & R/A & I \\
+\hline
+Server Actions paziente (auth, umore, esercizi, farmaci) & I & I & R/A \\
+\hline
+Middleware Next.js (sessioni, redirect, protezione rotte) & R/A & I & C \\
+\hline
+Styling CSS Modules e design responsive & C & I & R/A \\
+\hline
+Route AI con Groq & A/R & A/R & -- \\
 \hline
 \end{tabularx}
 \caption{Matrice RACI dello sviluppo}
